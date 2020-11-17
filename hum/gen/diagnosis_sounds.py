@@ -1,5 +1,7 @@
-from numpy import *
-from numpy.random import randint
+# from numpy import *
+from numpy import (array, hstack, ones, ceil, zeros, floor, argmin, diff, where, reshape, math,
+                   arange, iinfo, int16, linspace, pi, unique, tile, repeat)
+from numpy.random import randint, random
 from itertools import islice, count
 
 from datetime import datetime as dt
@@ -273,14 +275,14 @@ from scipy import signal
 
 def mk_some_buzz_wf(sr=44100):
     bleep_wf = (signal.sawtooth(pi * (sr / 10) * linspace(0, 1, int(5 * sr))))
-    bleep_wf += random.randint(-1, 1, len(bleep_wf))
+    bleep_wf += randint(-1, 1, len(bleep_wf))
     return ((bleep_wf / 2) * iinfo(int16).max).astype(int16)
 
 
-def mk_sounds_with_timed_bleeps(bleep_loc_ms,
-                                bleep_spec=200,
-                                sr=6144,
-                                save_filepath='bleeps.wav'):
+def wf_with_timed_bleeps(bleep_loc_ms,
+                         bleep_spec=200,
+                         sr=6144):
+    """Not sure this works as expected. Docs needed."""
     if isinstance(bleep_spec, int):
         bleep_size_ms = bleep_spec
         bleep_size_frm = int(sr * bleep_size_ms / 1000)
@@ -292,6 +294,12 @@ def mk_sounds_with_timed_bleeps(bleep_loc_ms,
     wf = zeros(max_bleep_loc_frm)
     for loc_frm in bleep_loc_frm:
         wf[loc_frm:(loc_frm + bleep_size_frm)] = bleep_spec
-    if save_filepath:
-        sf.write(open(save_filepath, 'w'), wf, sr)
     return wf
+
+
+def mk_sounds_with_timed_bleeps(bleep_loc_ms,
+                                bleep_spec=200,
+                                sr=6144,
+                                save_filepath='bleeps.wav'):
+    wf = wf_with_timed_bleeps(bleep_loc_ms=bleep_loc_ms, bleep_spec=bleep_spec, sr=sr)
+    sf.write(open(save_filepath, 'w'), data=wf, samplerate=sr)

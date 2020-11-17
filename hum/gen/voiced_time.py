@@ -1,6 +1,10 @@
-import pyttsx3
 from datetime import datetime as dt
 import time
+
+from hum.util import ModuleNotFoundErrorNiceMessage
+
+with ModuleNotFoundErrorNiceMessage("You'll need to pip install pyttsx3 to use voiced_time"):
+    import pyttsx3
 
 DFLT_TIME_FORMAT = '%H %M %S'
 
