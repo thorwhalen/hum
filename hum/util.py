@@ -1,4 +1,10 @@
 from warnings import warn
+from inspect import getmodule
+
+
+def getmodulename(obj, default=''):
+    """Get name of module of object"""
+    return getattr(getmodule(obj), '__name__', default)
 
 
 class ModuleNotFoundErrorNiceMessage:
