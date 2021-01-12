@@ -5,7 +5,7 @@ import os
 import matplotlib.pylab as plt
 from IPython.display import Audio
 
-from agen.utils.date_ticks import str_ticks
+from hum.utils.plotting import plot_wf
 
 try:
     import librosa
@@ -95,25 +95,6 @@ def wf_and_sr(*args, **kwargs):
     kwargs_keys = list(kwargs.keys())
     if 'wf' in kwargs_keys:
         return kwargs['wf'], kwargs['sr']
-
-
-def plot_wf(wf, sr=None, figsize=(15, 5), offset_s=0, ax=None, **kwargs):
-    if figsize is not None:
-        plt.figure(figsize=figsize)
-    _ax = ax or plt
-    if sr is not None:
-        _ax.plot(offset_s + linspace(start=0, stop=len(wf) / float(sr), num=len(wf)), wf, **kwargs)
-    else:
-        _ax.plot(wf, **kwargs)
-    if _ax == plt:
-        _xticks, _ = plt.xticks()
-        plt.xticks(_xticks, str_ticks(ticks=_xticks, ticks_unit=1))
-        plt.margins(x=0)
-    else:
-        _xticks = _ax.get_xticks()
-        _ax.set_xticks(_xticks)
-        _ax.set_xticklabels(str_ticks(ticks=_xticks, ticks_unit=1))
-        _ax.margins(x=0)
 
 
 class Sound(object):
