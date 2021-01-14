@@ -23,8 +23,11 @@ def plot_wf(wf, sr=None, figsize=(15, 5), offset_s=0, ax=None, **kwargs):
     _ax = ax or plt
     if sr is not None:
         _ax.plot(offset_s + linspace(start=0, stop=len(wf) / float(sr), num=len(wf)), wf, **kwargs)
+        plt.margins(x=0)
     else:
         _ax.plot(wf, **kwargs)
+        plt.margins(x=0)
+        return
     if _ax == plt:
         _xticks, _ = plt.xticks()
         plt.xticks(_xticks, str_ticks(ticks=_xticks, ticks_unit=1))
@@ -33,8 +36,7 @@ def plot_wf(wf, sr=None, figsize=(15, 5), offset_s=0, ax=None, **kwargs):
         _xticks = _ax.get_xticks()
         _ax.set_xticks(_xticks)
         _ax.set_xticklabels(str_ticks(ticks=_xticks, ticks_unit=1))
-        _ax.margins(x=0)
-
+        plt.margins(x=0)
 
 def disp_wf(wf, sr=44100, autoplay=False, wf_plot_func=plt.specgram):
     if wf_plot_func is not None:
