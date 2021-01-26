@@ -3,6 +3,9 @@ import matplotlib.pylab as plt
 from numpy import linspace
 from hum.utils.date_ticks import str_ticks
 
+DFLT_FIGSIZE_FOR_WF_PLOTS = (22, 5)
+DFLT_SR = 44100
+
 
 def getmodulename(obj, default=''):
     """Get name of module of object"""
@@ -17,7 +20,7 @@ def getmodulename(obj, default=''):
 #     else:
 #         plt.plot(wf, **kwargs)
 
-def plot_wf(wf, sr=None, figsize=(15, 5), offset_s=0, ax=None, **kwargs):
+def plot_wf(wf, sr=None, figsize=DFLT_FIGSIZE_FOR_WF_PLOTS, offset_s=0, ax=None, **kwargs):
     if figsize is not None:
         plt.figure(figsize=figsize)
     _ax = ax or plt
@@ -38,10 +41,11 @@ def plot_wf(wf, sr=None, figsize=(15, 5), offset_s=0, ax=None, **kwargs):
         _ax.set_xticklabels(str_ticks(ticks=_xticks, ticks_unit=1))
         plt.margins(x=0)
 
-def disp_wf(wf, sr=44100, autoplay=False, wf_plot_func=plt.specgram):
+
+def disp_wf(wf, sr=DFLT_SR, autoplay=False, wf_plot_func=plt.specgram):
     if wf_plot_func is not None:
         if getmodulename(wf_plot_func, '').startswith('matplotlib'):
-            plt.figure(figsize=(16, 5))
+            plt.figure(figsize=DFLT_FIGSIZE_FOR_WF_PLOTS)
         wf_plot_func(wf)
     try:
         from IPython.display import Audio
