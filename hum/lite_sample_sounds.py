@@ -14,7 +14,7 @@ def chk_from_pattern(chk_size_frm=DFLT_CHK_SIZE_FRM, pattern=None):
     return np.tile(pattern, reps=int(np.ceil(chk_size_frm / float(len(pattern)))))[:chk_size_frm].astype(np.int16)
 
 
-def random(chk_size_frm=DFLT_CHK_SIZE_FRM, max_amplitude=DFLT_MAX_AMPLITUDE, **kwargs):
+def random_samples(chk_size_frm=DFLT_CHK_SIZE_FRM, max_amplitude=DFLT_MAX_AMPLITUDE, **kwargs):
     return np.random.randint(-max_amplitude, max_amplitude, chk_size_frm).astype(np.int16)
 
 
@@ -38,7 +38,7 @@ def square_tone(chk_size_frm=DFLT_CHK_SIZE_FRM, freq=440, sr=DFLT_SR, max_amplit
 
 
 tag_to_wf_gen_func = {
-    'random': random,
+    'random': random_samples,
     'pure_tone': pure_tone,
     'triangular_tone': triangular_tone,
     'square_tone': square_tone,
@@ -79,3 +79,26 @@ class AnnotatedWaveform(object):
             bt_cursor += self.chk_size_frm
 
         return np.array(wf), dict(slice_of_tag)
+
+
+import random
+import itertools
+from typing import Mapping, Callable, Sequence, Optional
+
+
+def tag_wf_gen(tag_wfgen_map: Optional[Mapping[object, Callable[[], Sequence]]] = None,
+               tag_sequence=None):
+    """Generate (tag, wf) pairs.
+
+    :param tag_wfgen_map: A {tag: wfgen, ...} map where wfgen is a callable taking no arguments and returning a sequence
+    :param tag_sequence: A sequence of tags (that should all be keys of tag_wfgen_map)
+    :return:
+    """
+    if tag_wfgen_map is None:
+        tag_wfgen_map = tag_to_wf_gen_func
+    if tag_sequence is None:
+        indefinite_random_choice_from_tags = map(random.choice, itertools.repeat(list(tag_wfgen_map)))
+        tag_sequence = indefinite_random_choice_from_tags
+
+    for tag in tag_sequence:
+        yield tag, tag_wfgen_map[tag]()

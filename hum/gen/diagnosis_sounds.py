@@ -1,9 +1,7 @@
-# from numpy import *
 from numpy import (array, hstack, ones, ceil, zeros, floor, argmin, diff, where, reshape, math,
                    arange, iinfo, int16, linspace, pi, unique, tile, repeat)
-from numpy.random import randint, random
-from itertools import islice, count
-
+from numpy.random import randint
+from itertools import islice, count, repeat
 from datetime import datetime as dt
 
 second_ms = 1000.0
