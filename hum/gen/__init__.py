@@ -10,3 +10,8 @@ with ModuleNotFoundIgnore():
 
 with ModuleNotFoundIgnore():
     from hum.gen.voiced_time import Voicer, tell_time_continuously
+
+with ModuleNotFoundIgnore():
+    from hum.gen.signal_generators import normal_dist, gen_words, categorical_gen, alphabet_to_bins, 
+    call_repeatedly, bernoulli, bernoulli_gen, inlier_outlier, signal, create_session, string_to_num, 
+    session_to_df
