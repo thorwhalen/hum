@@ -268,10 +268,10 @@ class TimeSound(WfGen):
 
 
 import soundfile as sf
-from scipy import signal
 
 
 def mk_some_buzz_wf(sr=44100):
+    from scipy import signal  # pip install scipy
     bleep_wf = (signal.sawtooth(pi * (sr / 10) * linspace(0, 1, int(5 * sr))))
     bleep_wf += randint(-1, 1, len(bleep_wf))
     return ((bleep_wf / 2) * iinfo(int16).max).astype(int16)
