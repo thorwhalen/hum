@@ -39,7 +39,7 @@ jobs:
       - name: Validate docstrings
         run: pylint ./$PROJECT_NAME --ignore=tests,examples --disable=all --enable=C0114
 
-      # - name: Test
+      - name: Test
         run: pytest --doctest-modules -v $PROJECT_NAME
   publish:
     name: Publish
