@@ -23,12 +23,25 @@ def getmodulename(obj, default=''):
 #     else:
 #         plt.plot(wf, **kwargs)
 
-def plot_wf(wf, sr=None, figsize=DFLT_FIGSIZE_FOR_WF_PLOTS, offset_s=0, ax=None, **kwargs):
+
+def plot_wf(
+    wf,
+    sr=None,
+    figsize=DFLT_FIGSIZE_FOR_WF_PLOTS,
+    offset_s=0,
+    ax=None,
+    **kwargs
+):
     if figsize is not None:
         plt.figure(figsize=figsize)
     _ax = ax or plt
     if sr is not None:
-        _ax.plot(offset_s + linspace(start=0, stop=len(wf) / float(sr), num=len(wf)), wf, **kwargs)
+        _ax.plot(
+            offset_s
+            + linspace(start=0, stop=len(wf) / float(sr), num=len(wf)),
+            wf,
+            **kwargs
+        )
         plt.margins(x=0)
     else:
         _ax.plot(wf, **kwargs)
@@ -52,6 +65,7 @@ def disp_wf(wf, sr=DFLT_SR, autoplay=False, wf_plot_func=plt.specgram):
         wf_plot_func(wf)
     try:
         from IPython.display import Audio
+
         return Audio(data=wf, rate=sr, autoplay=autoplay)
     except:
         pass

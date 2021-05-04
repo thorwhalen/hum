@@ -7,7 +7,7 @@ from itertools import chain
 import pandas as pd
 
 DFLT_WORD_LENGTH = 30
-DFLT_ALPHABET = list("abcde")
+DFLT_ALPHABET = list('abcde')
 
 
 def normal_dist(mu, sigma):
@@ -15,18 +15,18 @@ def normal_dist(mu, sigma):
 
 
 def gen_words(
-        N=DFLT_WORD_LENGTH,
-        alphabet=DFLT_ALPHABET,
-        spread_pct=0.01,
-        proba_dist="normal",
+    N=DFLT_WORD_LENGTH,
+    alphabet=DFLT_ALPHABET,
+    spread_pct=0.01,
+    proba_dist='normal',
 ):
-    if proba_dist == "normal":
+    if proba_dist == 'normal':
         sigma = N * spread_pct
         mu = N
         dist = normal_dist(mu, sigma)
     else:
         raise NotImplementedError(
-            f"Probability distribution {proba_dist} not implemented"
+            f'Probability distribution {proba_dist} not implemented'
         )
     while True:
         length = dist
@@ -38,7 +38,7 @@ def categorical_gen(gen_it):
     yield from chain.from_iterable(gen_it())
 
 
-def alphabet_to_bins(alphabet=list("abcde")):
+def alphabet_to_bins(alphabet=list('abcde')):
     length = len(alphabet)
     low = 0.0
     high = 10.0 * length
@@ -109,7 +109,7 @@ def string_to_num(word):
 def session_to_df(session):
     symbs, outliers, sigs = session
     df = pd.DataFrame()
-    df["symbols"] = string_to_num("".join(symbs))
-    df["outliers"] = outliers
-    df["signal"] = sigs
+    df['symbols'] = string_to_num(''.join(symbs))
+    df['outliers'] = outliers
+    df['signal'] = sigs
     return df

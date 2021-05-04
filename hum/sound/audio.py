@@ -1,7 +1,20 @@
 """
 Utils to view, hear, and manipulate audio
 """
-from numpy import array, mean, shape, linspace, max, log10, ceil, int16, hstack, zeros, argmin, ndim
+from numpy import (
+    array,
+    mean,
+    shape,
+    linspace,
+    max,
+    log10,
+    ceil,
+    int16,
+    hstack,
+    zeros,
+    argmin,
+    ndim,
+)
 from numpy.random import randint
 import soundfile as sf
 import os
@@ -19,13 +32,17 @@ except ImportError:
     WITH_LIBROSA = False
     import warnings
 
-    warnings.warn("Couldn't import librosa. You can install is, but know that you "
-                  "don't NEED it unless you want to compute melspectrograms.")
-
+    warnings.warn(
+        "Couldn't import librosa. You can install is, but know that you "
+        "don't NEED it unless you want to compute melspectrograms."
+    )
 
     class librosa:
         def __getattr__(self, a):
-            raise ModuleNotFoundError(f"You don't actually have {self.__class__.__name__}")
+            raise ModuleNotFoundError(
+                f"You don't actually have {self.__class__.__name__}"
+            )
+
 
 default_sr = 44100
 default_wf_type = int16
@@ -76,7 +93,9 @@ def plot_melspectrogram(spect_mat, sr=default_sr, hop_length=512, name=None):
     plt.figure(figsize=(12, 4))
     # Display the spectrogram on a mel scale
     # sample rate and hop length parameters are used to render the time axis
-    librosa.display.specshow(spect_mat, sr=sr, hop_length=hop_length, x_axis='time', y_axis='mel')
+    librosa.display.specshow(
+        spect_mat, sr=sr, hop_length=hop_length, x_axis='time', y_axis='mel'
+    )
     # Put a descriptive title on the plot
     if name is not None:
         plt.title('mel power spectrogram of "{}"'.format(name))
@@ -116,7 +135,11 @@ class Sound(object):
     def convert_interval_to_samples_unit(self, interval):
         if isinstance(interval, tuple) and len(interval) <= 3:
             interval = slice(*interval)
-        if isinstance(interval.start, float) or isinstance(interval.stop, float) or isinstance(interval.step, float):
+        if (
+            isinstance(interval.start, float)
+            or isinstance(interval.stop, float)
+            or isinstance(interval.step, float)
+        ):
             if interval.start is not None:
                 _start = int(interval.start * self.sr)
             else:
@@ -164,7 +187,9 @@ class Sound(object):
 
     @classmethod
     def from_(cls, sound):
-        if isinstance(sound, tuple) and len(sound) == 2:  # then it's a (wf, sr) tuple
+        if (
+            isinstance(sound, tuple) and len(sound) == 2
+        ):  # then it's a (wf, sr) tuple
             return cls(sound[0], sound[1])
         elif isinstance(sound, str) and os.path.isfile(sound):
             return cls.from_file(sound)
@@ -176,7 +201,9 @@ class Sound(object):
         elif hasattr(sound, 'wf') and hasattr(sound, 'sr'):
             return cls(sound.wf, sound.sr)
         else:
-            raise TypeError("Couldn't figure out how that format represents sound")
+            raise TypeError(
+                "Couldn't figure out how that format represents sound"
+            )
 
     @classmethod
     def silence(cls, seconds=0.0, sr=default_sr, wf_type=default_wf_type):
@@ -187,11 +214,17 @@ class Sound(object):
         samplerate = samplerate or self.sr
         if isinstance(filepath, int):
             rand_range = filepath
-            template = 'sound_save_{:0' + str(int(ceil(log10(rand_range)))) + '.0}.wav'
+            template = (
+                'sound_save_{:0'
+                + str(int(ceil(log10(rand_range))))
+                + '.0}.wav'
+            )
             filepath = template.format(randint(0, rand_range))
         else:
             filepath = filepath or 'sound_save.wav'
-        sf.write(filepath, self.wf, samplerate=samplerate, subtype=subtype, **kwargs)
+        sf.write(
+            filepath, self.wf, samplerate=samplerate, subtype=subtype, **kwargs
+        )
 
     ####################################################################################################################
     # TRANSFORMATIONS
@@ -201,20 +234,29 @@ class Sound(object):
 
     def crop_with_idx(self, first_idx, last_idx):
         cropped_sound = self.copy()
-        cropped_sound.wf = cropped_sound.wf[first_idx:(last_idx + 1)]
+        cropped_sound.wf = cropped_sound.wf[first_idx : (last_idx + 1)]
         return cropped_sound
 
     def crop_with_seconds(self, first_second, last_second):
-        return self.crop_with_idx(int(round(first_second * self.sr)), int(round(last_second * self.sr)))
+        return self.crop_with_idx(
+            int(round(first_second * self.sr)),
+            int(round(last_second * self.sr)),
+        )
 
     def melspectr_matrix(self, **mel_kwargs):
-        mel_kwargs = dict({'n_fft': 2048, 'hop_length': 512, 'n_mels': 128}, **mel_kwargs)
-        S = librosa.feature.melspectrogram(array(self.wf).astype(float), sr=self.sr, **mel_kwargs)
+        mel_kwargs = dict(
+            {'n_fft': 2048, 'hop_length': 512, 'n_mels': 128}, **mel_kwargs
+        )
+        S = librosa.feature.melspectrogram(
+            array(self.wf).astype(float), sr=self.sr, **mel_kwargs
+        )
         # Convert to log scale (dB). We'll use the peak power as reference.
         return librosa.amplitude_to_db(S, ref=max)
 
     def __add__(self, append_sound):
-        assert self.sr == append_sound.sr, "Sounds need to have the same sample rate to be appended"
+        assert (
+            self.sr == append_sound.sr
+        ), 'Sounds need to have the same sample rate to be appended'
         return Sound(sr=self.sr, wf=hstack(self.wf, append_sound.wf))
 
     ####################################################################################################################
@@ -222,7 +264,9 @@ class Sound(object):
 
     def hear(self, autoplay=False, **kwargs):
         wf = array(ensure_mono(self.wf)).astype(float)
-        wf[randint(len(wf))] *= 1.001  # hack to avoid having exactly the same sound twice (creates an Audio bug)
+        wf[
+            randint(len(wf))
+        ] *= 1.001  # hack to avoid having exactly the same sound twice (creates an Audio bug)
         return Audio(data=wf, rate=self.sr, autoplay=autoplay, **kwargs)
 
     def plot_wf(*args, **kwargs):
@@ -244,13 +288,20 @@ class Sound(object):
         return self.hear(autoplay=autoplay)
 
     if WITH_LIBROSA:
+
         def melspectrogram(self, plot_it=False, **mel_kwargs):
-            mel_kwargs = dict({'n_fft': 2048, 'hop_length': 512, 'n_mels': 128}, **mel_kwargs)
+            mel_kwargs = dict(
+                {'n_fft': 2048, 'hop_length': 512, 'n_mels': 128}, **mel_kwargs
+            )
             log_S = self.melspectr_matrix(**mel_kwargs)
             if plot_it:
-                plot_melspectrogram(log_S, sr=self.sr, hop_length=mel_kwargs['hop_length'])
+                plot_melspectrogram(
+                    log_S, sr=self.sr, hop_length=mel_kwargs['hop_length']
+                )
             return log_S
+
     else:
+
         def melspectrogram(self, plot_it=False, **mel_kwargs):
             if plot_it:
                 plt.figure(figsize=(16, 5))

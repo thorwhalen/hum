@@ -16,10 +16,16 @@ with suppress(ModuleNotFoundError, ImportError):
 
     DFLT_TIME_FORMAT = '%H %M %S'
 
-
     class Voicer:
-        def __init__(self, voice=None, volume=None, rate=None, engine_kwargs=None, time_format=DFLT_TIME_FORMAT,
-                     **kwargs):
+        def __init__(
+            self,
+            voice=None,
+            volume=None,
+            rate=None,
+            engine_kwargs=None,
+            time_format=DFLT_TIME_FORMAT,
+            **kwargs
+        ):
             engine_kwargs = engine_kwargs or {}
             self.engine = pyttsx3.init(**engine_kwargs)  # object creation
 
@@ -49,10 +55,14 @@ with suppress(ModuleNotFoundError, ImportError):
         @property
         def voices_df(self):
             import pandas as pd
+
             df = pd.DataFrame(self.voices)
             df = df.set_index('name')
             df['language'] = [x[0] for x in df['languages']]
-            df['gender'] = ['male' if x == 'VoiceGenderMale' else 'female' for x in df['gender']]
+            df['gender'] = [
+                'male' if x == 'VoiceGenderMale' else 'female'
+                for x in df['gender']
+            ]
             del df['languages']
             return df
 
@@ -85,12 +95,18 @@ with suppress(ModuleNotFoundError, ImportError):
                     elapsed = time.time() - tic
                     time.sleep(max(0, every_secs - elapsed))
             except KeyboardInterrupt:
-                print("KeyboardInterrupt!!!")
+                print('KeyboardInterrupt!!!')
                 self.engine.stop()
 
-
-    def tell_time_continuously(every_secs=3, voice=None, volume=1, rate=200, engine_kwargs=None,
-                               time_format=DFLT_TIME_FORMAT, verbose=False):
+    def tell_time_continuously(
+        every_secs=3,
+        voice=None,
+        volume=1,
+        rate=200,
+        engine_kwargs=None,
+        time_format=DFLT_TIME_FORMAT,
+        verbose=False,
+    ):
         """
         Loop, and say the time regularly.
 
@@ -109,9 +125,14 @@ with suppress(ModuleNotFoundError, ImportError):
         if voice == 'help':
             print(Voicer().voices_df)
         else:
-            voicer = Voicer(voice=voice, volume=volume, rate=rate, engine_kwargs=engine_kwargs, time_format=time_format)
+            voicer = Voicer(
+                voice=voice,
+                volume=volume,
+                rate=rate,
+                engine_kwargs=engine_kwargs,
+                time_format=time_format,
+            )
             voicer.tell_time_continuously(every_secs, verbose=verbose)
-
 
     if __name__ == '__main__':
         import argh
