@@ -103,19 +103,19 @@ class BinarySound(object):
             * an explicit array of nbits 0s and 1s to use for the header
             * a string indicating a method to generate it (for now, choices are "halfhalf" or "alternating")
         :return: a BinarySound object
-        >>> from oto.sound.diagnosis_sounds import BinarySound
-        >>> from numpy import *
-        >>> from numpy.random import randint
-        >>>
-        >>> nbits=50
-        >>> bs = BinarySound.for_audio_params(
-        ...     nbits=nbits, freq=6000, chk_size_frm=43008, sr=44100, header_size_words=1)
-        >>> utc = randint(0, 2, nbits)
-        >>> wf = bs.mk_phrase(utc)
-        >>> print(bs)
-        {'repetition': 3, 'word_size_frm': 150, 'redundancy': 142, 'phrase_data_frm': 21300}
-        >>> all(utc == bs.decode(wf))
-        True
+        # >>> from oto.sound.diagnosis_sounds import BinarySound
+        # >>> from numpy import *
+        # >>> from numpy.random import randint
+        # >>>
+        # >>> nbits=50
+        # >>> bs = BinarySound.for_audio_params(
+        # ...     nbits=nbits, freq=6000, chk_size_frm=43008, sr=44100, header_size_words=1)
+        # >>> utc = randint(0, 2, nbits)
+        # >>> wf = bs.mk_phrase(utc)
+        # >>> print(bs)
+        # {'repetition': 3, 'word_size_frm': 150, 'redundancy': 142, 'phrase_data_frm': 21300}
+        # >>> all(utc == bs.decode(wf))
+        # True
         """
         # repetition: how many times to repeat each bit to make a word
         repetition = int(floor(sr / (2 * freq)))
