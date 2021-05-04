@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>hum.gen.sine_mix &#8212; hum 0.1.2 documentation</title>
+    <title>hum.gen.sine_mix &#8212; hum 0.1.3 documentation</title>
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
@@ -35,8 +35,48 @@
 
           <div class="body" role="main">
             
-  <section id="hum-gen-sine-mix">
-<h1>hum.gen.sine_mix<a class="headerlink" href="#hum-gen-sine-mix" title="Permalink to this headline">¶</a></h1>
+  <section id="module-hum.gen.sine_mix">
+<span id="hum-gen-sine-mix"></span><h1>hum.gen.sine_mix<a class="headerlink" href="#module-hum.gen.sine_mix" title="Permalink to this headline">¶</a></h1>
+<p>Utils to mix sine waves</p>
+<dl class="py function">
+<dt id="hum.gen.sine_mix.freq_based_stationary_wf">
+<code class="sig-prename descclassname">hum.gen.sine_mix.</code><code class="sig-name descname">freq_based_stationary_wf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">freqs</span><span class="o">=</span><span class="default_value">(200, 400, 600, 800)</span></em>, <em class="sig-param"><span class="n">weights</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">n_samples</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">43008</span></em>, <em class="sig-param"><span class="n">sr</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">44100</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="../../../_modules/hum/gen/sine_mix.html#freq_based_stationary_wf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hum.gen.sine_mix.freq_based_stationary_wf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a stationary waveform by mixing a number of freqs together, possibly with different weights.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>freqs</strong> – List(-like) of frequencies (in Hz)</p></li>
+<li><p><strong>weights</strong> – The weights these frequencies should have (all weights will be normalized</p></li>
+<li><p><strong>n_samples</strong> – The number of samples of waveform you want</p></li>
+<li><p><strong>sr</strong> – Sample rate</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Waveform. A numpy array of samples of the specified sine wave</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="hum.gen.sine_mix.mk_sine_wf">
+<code class="sig-prename descclassname">hum.gen.sine_mix.</code><code class="sig-name descname">mk_sine_wf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">freq</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">n_samples</span><span class="o">=</span><span class="default_value">43008</span></em>, <em class="sig-param"><span class="n">sr</span><span class="o">=</span><span class="default_value">44100</span></em>, <em class="sig-param"><span class="n">phase</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">gain</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hum/gen/sine_mix.html#mk_sine_wf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hum.gen.sine_mix.mk_sine_wf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a sine waveform</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>freq</strong> – Frequency (in Hz)</p></li>
+<li><p><strong>n_samples</strong> – The number of samples of waveform you want</p></li>
+<li><p><strong>sr</strong> – Sample rate</p></li>
+<li><p><strong>phase</strong> – Phase (in radians)</p></li>
+<li><p><strong>gain</strong> – (A number to multiply the base sine wave by)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Waveform. A numpy array of samples of the specified sine wave</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 

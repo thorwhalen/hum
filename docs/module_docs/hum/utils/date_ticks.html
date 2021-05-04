@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>hum.utils.date_ticks &#8212; hum 0.1.2 documentation</title>
+    <title>hum.utils.date_ticks &#8212; hum 0.1.3 documentation</title>
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
@@ -35,8 +35,48 @@
 
           <div class="body" role="main">
             
-  <section id="hum-utils-date-ticks">
-<h1>hum.utils.date_ticks<a class="headerlink" href="#hum-utils-date-ticks" title="Permalink to this headline">¶</a></h1>
+  <section id="module-hum.utils.date_ticks">
+<span id="hum-utils-date-ticks"></span><h1>hum.utils.date_ticks<a class="headerlink" href="#module-hum.utils.date_ticks" title="Permalink to this headline">¶</a></h1>
+<p>Date utils</p>
+<dl class="py function">
+<dt id="hum.utils.date_ticks.largest_unit_that_changes_at_every_tick">
+<code class="sig-prename descclassname">hum.utils.date_ticks.</code><code class="sig-name descname">largest_unit_that_changes_at_every_tick</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ticks</span></em>, <em class="sig-param"><span class="n">ticks_unit</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hum/utils/date_ticks.html#largest_unit_that_changes_at_every_tick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hum.utils.date_ticks.largest_unit_that_changes_at_every_tick" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the largest time unit for which each time tick changes.
+:param ticks: The list of ticks
+:param ticks_unit: The unit of the elements of ticks, expressed in seconds. For example, if the list</p>
+<blockquote>
+<div><p>contains hours, unit=3600, if minutes, unit=60, if seconds unit=1,
+if milliseconds unit=0.001.</p>
+<blockquote>
+<div><p>Note: You can also use a string to express the unit, as long as it’s recognized by the
+unit_str_to_unit_in_seconds dict. Keys recognized:
+[‘day’, ‘hour’, ‘h’, ‘minute’, ‘mn’, ‘second’, ‘s’, ‘millisecond’, ‘ms’, ‘microsecond’, ‘us’]</p>
+</div></blockquote>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="hum.utils.date_ticks.strftime_with_precision">
+<code class="sig-prename descclassname">hum.utils.date_ticks.</code><code class="sig-name descname">strftime_with_precision</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tick</span></em>, <em class="sig-param"><span class="n">format</span></em>, <em class="sig-param"><span class="n">sub_secs_precision</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hum/utils/date_ticks.html#strftime_with_precision"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hum.utils.date_ticks.strftime_with_precision" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a formatted string for a datetime (tick).
+:param tick: The datetime for this tick
+:param format: The formatting string
+:param sub_secs_precision: Number of digits to used for sub-seconds.</p>
+<blockquote>
+<div><p>If None, will choose it “smartly/dynamically”</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Formatted string</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 

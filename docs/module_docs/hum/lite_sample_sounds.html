@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>hum.lite_sample_sounds &#8212; hum 0.1.2 documentation</title>
+    <title>hum.lite_sample_sounds &#8212; hum 0.1.3 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
@@ -35,8 +35,26 @@
 
           <div class="body" role="main">
             
-  <section id="hum-lite-sample-sounds">
-<h1>hum.lite_sample_sounds<a class="headerlink" href="#hum-lite-sample-sounds" title="Permalink to this headline">¶</a></h1>
+  <section id="module-hum.lite_sample_sounds">
+<span id="hum-lite-sample-sounds"></span><h1>hum.lite_sample_sounds<a class="headerlink" href="#module-hum.lite_sample_sounds" title="Permalink to this headline">¶</a></h1>
+<p>Generate simple waveforms</p>
+<dl class="py function">
+<dt id="hum.lite_sample_sounds.tag_wf_gen">
+<code class="sig-prename descclassname">hum.lite_sample_sounds.</code><code class="sig-name descname">tag_wf_gen</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tag_wfgen_map</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Mapping<span class="p">[</span>object<span class="p">, </span>Callable<span class="p">[</span><span class="p">]</span><span class="p">, </span>Sequence<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tag_sequence</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/lite_sample_sounds.html#tag_wf_gen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hum.lite_sample_sounds.tag_wf_gen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate (tag, wf) pairs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tag_wfgen_map</strong> – A {tag: wfgen, …} map where wfgen is a callable taking no arguments and returning a sequence</p></li>
+<li><p><strong>tag_sequence</strong> – A sequence of tags (that should all be keys of tag_wfgen_map)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
