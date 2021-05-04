@@ -21,8 +21,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          apt-get -qq update
-          apt-get install -y gcc libsndfile-dev
+          sudo apt-get -qq update
+          sudo apt-get install -y gcc libsndfile-dev
           python -m pip install --upgrade pip
           pip -q install axblack pytest pylint isee
           isee install-requires
