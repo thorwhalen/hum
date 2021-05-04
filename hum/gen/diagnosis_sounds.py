@@ -53,12 +53,12 @@ def ums_to_01_array(ums, n_ums_bits):
 
 class BinarySound(object):
     def __init__(
-            self,
-            redundancy,
-            repetition,
-            nbits=50,
-            header_size_words=1,
-            header_pattern=None,
+        self,
+        redundancy,
+        repetition,
+        nbits=50,
+        header_size_words=1,
+        header_pattern=None,
     ):
         """
         :param redundancy: num of times a word will be repeated (to implement error correction)
@@ -111,7 +111,7 @@ class BinarySound(object):
                 )
         else:
             assert (
-                    len(header_pattern) == nbits
+                len(header_pattern) == nbits
             ), 'header_pattern must have nbits={}'.format(nbits)
             assert set(unique(header_pattern).astype(int)) == {
                 0,
@@ -119,21 +119,21 @@ class BinarySound(object):
             }, 'header_pattern must be an array of 0s and 1s'
         self.header_pattern = header_pattern
         self.header_word = tile(
-            repeat(self.header_pattern,
-                   self.repetition),
-            self.header_size_words)
+            repeat(self.header_pattern, self.repetition),
+            self.header_size_words,
+        )
 
         self.phrase_data_frm = self.redundancy * self.word_size_frm
 
     @classmethod
     def for_audio_params(
-            cls,
-            nbits=50,
-            freq=3000,
-            chk_size_frm=43008,
-            sr=44100,
-            header_size_words=1,
-            header_pattern=None,
+        cls,
+        nbits=50,
+        freq=3000,
+        chk_size_frm=43008,
+        sr=44100,
+        header_size_words=1,
+        header_pattern=None,
     ):
         """
         Construct a BinarySound object for a set of audio params
@@ -212,9 +212,9 @@ class BinarySound(object):
         header_pos = self.header_position(wf)
         header_end_idx = header_pos + len(self.header_word)
         wf = wf > 0
-        m = wf[header_end_idx: (header_end_idx + self.phrase_data_frm)]
+        m = wf[header_end_idx : (header_end_idx + self.phrase_data_frm)]
         size_to_make_it_a_multiple_of_word_size = len(m) - (
-                len(m) % self.word_size_frm
+            len(m) % self.word_size_frm
         )
         m = m[:size_to_make_it_a_multiple_of_word_size]
         m = reshape(m, (-1, self.word_size_frm))
@@ -258,8 +258,8 @@ class WfGen(object):
             amplitude = 0.0
         self.amplitude = float(amplitude)
         self.lookup_table_freqs = (
-                                          arange(int(buf_size_frm / 2)) + 1
-                                  ) / self.buf_size_s
+            arange(int(buf_size_frm / 2)) + 1
+        ) / self.buf_size_s
         self.lookup_tables = list(
             map(self.mk_lookup_table, self.lookup_table_freqs)
         )
@@ -308,7 +308,7 @@ class WfGen(object):
 
 class TimeSound(WfGen):
     def __init__(
-            self, sr=44100, buf_size_frm=2048, amplitude=0.5, n_ums_bits=30
+        self, sr=44100, buf_size_frm=2048, amplitude=0.5, n_ums_bits=30
     ):
         super(TimeSound, self).__init__(
             sr=sr, buf_size_frm=buf_size_frm, amplitude=amplitude
@@ -381,12 +381,12 @@ def wf_with_timed_bleeps(bleep_loc_ms, bleep_spec=200, sr=6144):
     max_bleep_loc_frm = max(bleep_loc_frm) + len(bleep_spec)
     wf = zeros(max_bleep_loc_frm)
     for loc_frm in bleep_loc_frm:
-        wf[loc_frm: (loc_frm + bleep_size_frm)] = bleep_spec
+        wf[loc_frm : (loc_frm + bleep_size_frm)] = bleep_spec
     return wf
 
 
 def mk_sounds_with_timed_bleeps(
-        bleep_loc_ms, bleep_spec=200, sr=6144, save_filepath='bleeps.wav'
+    bleep_loc_ms, bleep_spec=200, sr=6144, save_filepath='bleeps.wav'
 ):
     wf = wf_with_timed_bleeps(
         bleep_loc_ms=bleep_loc_ms, bleep_spec=bleep_spec, sr=sr
