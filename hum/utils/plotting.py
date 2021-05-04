@@ -1,3 +1,6 @@
+"""
+Plot utils
+"""
 from inspect import getmodule
 import matplotlib.pylab as plt
 from numpy import linspace

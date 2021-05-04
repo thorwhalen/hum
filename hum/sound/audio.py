@@ -1,3 +1,6 @@
+"""
+Utils to view, hear, and manipulate audio
+"""
 from numpy import array, mean, shape, linspace, max, log10, ceil, int16, hstack, zeros, argmin, ndim
 from numpy.random import randint
 import soundfile as sf

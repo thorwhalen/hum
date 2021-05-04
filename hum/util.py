@@ -1,3 +1,6 @@
+"""
+A few general utils
+"""
 from warnings import warn
 from inspect import getmodule
 

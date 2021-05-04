@@ -1,4 +1,6 @@
-__author__ = 'thorwhalen'
+"""
+Date utils
+"""
 
 import numpy as np
 from datetime import datetime as dt

@@ -1,3 +1,6 @@
+"""
+Tools to create audio
+"""
 from hum.gen import *
 from hum.utils import *
 from hum.lite_sample_sounds import (

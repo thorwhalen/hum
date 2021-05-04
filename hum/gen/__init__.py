@@ -1,3 +1,6 @@
+"""
+Generate Audio
+"""
 from contextlib import suppress
 
 with suppress(ModuleNotFoundError):

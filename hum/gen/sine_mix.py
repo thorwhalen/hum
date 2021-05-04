@@ -1,3 +1,6 @@
+"""
+Utils to mix sine waves
+"""
 import matplotlib.pylab as plt
 from numpy import sin, arange, pi, ones, linspace, ndarray
 from functools import partial

@@ -1,3 +1,6 @@
+"""
+Generating Signals
+"""
 import numpy as np
 import random
 from itertools import chain

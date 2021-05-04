@@ -1,3 +1,6 @@
+"""
+Simple infinite waveform
+"""
 from random import random
 import numpy as np
 

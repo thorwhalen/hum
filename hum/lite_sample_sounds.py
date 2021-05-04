@@ -1,3 +1,6 @@
+"""
+Generate simple waveforms
+"""
 import numpy as np
 from collections import defaultdict
 
