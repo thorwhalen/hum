@@ -11,7 +11,7 @@ from datetime import datetime as dt
 import time
 from contextlib import suppress
 
-with suppress():
+with suppress(ModuleNotFoundError, ImportError):
     import pyttsx3
 
     DFLT_TIME_FORMAT = '%H %M %S'
