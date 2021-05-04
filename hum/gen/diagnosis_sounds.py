@@ -4,7 +4,7 @@ Sounds that are meant to diagnose audio pipelines
 from numpy import (array, hstack, ones, ceil, zeros, floor, argmin, diff, where, reshape, math,
                    arange, iinfo, int16, linspace, pi, unique, tile, repeat)
 from numpy.random import randint
-from itertools import islice, count, repeat
+from itertools import islice, count
 from datetime import datetime as dt
 
 second_ms = 1000.0
@@ -48,19 +48,18 @@ class BinarySound(object):
 
         # TODO: Repair: TypeError: unsupported operand type(s) for *: 'int' and 'map'
 
-        # >>> from hum.gen.diagnosis_sounds import BinarySound
-        # >>> from numpy import *
-        # >>> from numpy.random import randint
-        # >>>
-        # >>> nbits=50
-        # >>> bs = BinarySound(
-        # ...     nbits=nbits, redundancy=142, repetition=3, header_size_words=1)
-        # >>> utc = randint(0, 2, nbits)
-        # >>> wf = bs.mk_phrase(utc)
-        # >>> print(bs)
-        # {'repetition': 3, 'word_size_frm': 150, 'redundancy': 142, 'phrase_data_frm': 21300}
-        # >>> all(utc == bs.decode(wf))
-        # True
+        >>> from numpy import *
+        >>> from numpy.random import randint
+        >>>
+        >>> nbits=50
+        >>> bs = BinarySound(
+        ...     nbits=nbits, redundancy=142, repetition=3, header_size_words=1)
+        >>> utc = randint(0, 2, nbits)
+        >>> wf = bs.mk_phrase(utc)
+        >>> print(bs)
+        {'repetition': 3, 'word_size_frm': 150, 'redundancy': 142, 'phrase_data_frm': 21300}
+        >>> all(utc == bs.decode(wf))
+        True
         """
         self.nbits = nbits
 
@@ -84,7 +83,10 @@ class BinarySound(object):
             assert len(header_pattern) == nbits, "header_pattern must have nbits={}".format(nbits)
             assert set(unique(header_pattern).astype(int)) == {0, 1}, "header_pattern must be an array of 0s and 1s"
         self.header_pattern = header_pattern
-        self.header_word = tile(map(list, repeat(self.header_pattern, self.repetition)), self.header_size_words)
+        self.header_word = tile(
+            repeat(self.header_pattern,
+                   self.repetition),
+            self.header_size_words)
         self.phrase_data_frm = self.redundancy * self.word_size_frm
 
     @classmethod
@@ -103,7 +105,6 @@ class BinarySound(object):
             * an explicit array of nbits 0s and 1s to use for the header
             * a string indicating a method to generate it (for now, choices are "halfhalf" or "alternating")
         :return: a BinarySound object
-        >>> from oto.sound.diagnosis_sounds import BinarySound
         >>> from numpy import *
         >>> from numpy.random import randint
         >>>
@@ -134,8 +135,9 @@ class BinarySound(object):
         return self
 
     def mk_phrase(self, bit_array):
-        wf = hstack((self.header_word,
-                     tile(map(list, repeat(bit_array, self.repetition)), self.redundancy)))
+        repeated_bit_array = repeat(bit_array, self.repetition)
+        tiled = tile(repeated_bit_array, self.redundancy)
+        wf = hstack((self.header_word, tiled))
         return (2 * wf) - 1
 
     def mk_utc_phrases(self, sound_duration_s=12):
