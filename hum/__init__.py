@@ -11,4 +11,5 @@ from hum.lite_sample_sounds import (
     pure_tone,
     triangular_tone,
     square_tone,
-    tag_to_wf_gen_func)
+    tag_to_wf_gen_func,
+)

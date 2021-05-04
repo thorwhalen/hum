@@ -5,7 +5,12 @@ from contextlib import suppress
 
 with suppress(ModuleNotFoundError, ImportError):
     from hum.gen.diagnosis_sounds import (
-        WfGen, TimeSound, BinarySound, slow_mask, wf_with_timed_bleeps, mk_sounds_with_timed_bleeps
+        WfGen,
+        TimeSound,
+        BinarySound,
+        slow_mask,
+        wf_with_timed_bleeps,
+        mk_sounds_with_timed_bleeps,
     )
 
 with suppress(ModuleNotFoundError, ImportError):
@@ -16,7 +21,16 @@ with suppress(ModuleNotFoundError, ImportError):
 
 with suppress(ModuleNotFoundError, ImportError):
     from hum.gen.signal_generators import (
-        normal_dist, gen_words, categorical_gen, alphabet_to_bins,
-        call_repeatedly, bernoulli, bernoulli_gen, inlier_outlier, signal, create_session, string_to_num,
-        session_to_df
+        normal_dist,
+        gen_words,
+        categorical_gen,
+        alphabet_to_bins,
+        call_repeatedly,
+        bernoulli,
+        bernoulli_gen,
+        inlier_outlier,
+        signal,
+        create_session,
+        string_to_num,
+        session_to_df,
     )

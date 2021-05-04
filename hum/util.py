@@ -19,7 +19,9 @@ class ModuleNotFoundErrorNiceMessage:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if exc_type is ModuleNotFoundError:
-            msg = self.msg or f"""
+            msg = (
+                self.msg
+                or f'''
 It seems you don't have required `{exc_val.name}` package for this Store.
 Try installing it by running:
 
@@ -27,7 +29,8 @@ Try installing it by running:
 
 in your terminal.
 For more information: https://pypi.org/project/{exc_val.name}
-            """
+            '''
+            )
             warn(msg)
 
 
