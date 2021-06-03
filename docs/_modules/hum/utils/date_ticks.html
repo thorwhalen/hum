@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hum.utils.date_ticks &#8212; hum 0.1.4 documentation</title>
+    <title>hum.utils.date_ticks &#8212; hum 0.1.5 documentation</title>
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
@@ -156,9 +156,7 @@
     <span class="n">t_format</span> <span class="o">=</span> <span class="n">strftime_format_for_ticks</span><span class="p">(</span><span class="n">ticks</span><span class="p">,</span> <span class="n">ticks_unit</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">[</span>
         <span class="n">strftime_with_precision</span><span class="p">(</span>
-            <span class="n">utc_datetime_from_val_and_unit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ticks_unit</span><span class="p">),</span>
-            <span class="n">t_format</span><span class="p">,</span>
-            <span class="n">sub_secs_precision</span><span class="p">,</span>
+            <span class="n">utc_datetime_from_val_and_unit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ticks_unit</span><span class="p">),</span> <span class="n">t_format</span><span class="p">,</span> <span class="n">sub_secs_precision</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ticks</span>
     <span class="p">]</span>

@@ -119,8 +119,7 @@ class BinarySound(object):
             }, 'header_pattern must be an array of 0s and 1s'
         self.header_pattern = header_pattern
         self.header_word = tile(
-            repeat(self.header_pattern, self.repetition),
-            self.header_size_words,
+            repeat(self.header_pattern, self.repetition), self.header_size_words,
         )
 
         self.phrase_data_frm = self.redundancy * self.word_size_frm
@@ -166,9 +165,7 @@ class BinarySound(object):
         # word_size_frm: the size of a word, in frames
         word_size_frm = int(nbits * repetition)
         # redundancy: how many times to repeat a word to make (along with header) a phrase
-        redundancy = int(
-            floor((chk_size_frm / 2) / word_size_frm) - header_size_words
-        )
+        redundancy = int(floor((chk_size_frm / 2) / word_size_frm) - header_size_words)
 
         self = cls(
             nbits=nbits,
@@ -197,9 +194,7 @@ class BinarySound(object):
             return len(wf) / float(self.sr)
 
         while wf_seconds(wf) < sound_duration_s:
-            bit_array = ums_to_01_array(
-                ums=int(utcnow_ms()), n_ums_bits=self.nbits
-            )
+            bit_array = ums_to_01_array(ums=int(utcnow_ms()), n_ums_bits=self.nbits)
             wf += list(self.mk_phrase(bit_array))
 
         return array(wf)[: int(sound_duration_s * self.sr)]
@@ -213,9 +208,7 @@ class BinarySound(object):
         header_end_idx = header_pos + len(self.header_word)
         wf = wf > 0
         m = wf[header_end_idx : (header_end_idx + self.phrase_data_frm)]
-        size_to_make_it_a_multiple_of_word_size = len(m) - (
-            len(m) % self.word_size_frm
-        )
+        size_to_make_it_a_multiple_of_word_size = len(m) - (len(m) % self.word_size_frm)
         m = m[:size_to_make_it_a_multiple_of_word_size]
         m = reshape(m, (-1, self.word_size_frm))
         m = m.sum(axis=0).reshape((-1, self.repetition))
@@ -257,12 +250,8 @@ class WfGen(object):
         if amplitude < 0.0:
             amplitude = 0.0
         self.amplitude = float(amplitude)
-        self.lookup_table_freqs = (
-            arange(int(buf_size_frm / 2)) + 1
-        ) / self.buf_size_s
-        self.lookup_tables = list(
-            map(self.mk_lookup_table, self.lookup_table_freqs)
-        )
+        self.lookup_table_freqs = (arange(int(buf_size_frm / 2)) + 1) / self.buf_size_s
+        self.lookup_tables = list(map(self.mk_lookup_table, self.lookup_table_freqs))
 
     def mk_sine_wave_from_lookup_table(self, lookup_table):
         period = len(lookup_table)
@@ -290,10 +279,7 @@ class WfGen(object):
         lookup_table = [
             self.amplitude
             * math.sin(
-                2.0
-                * math.pi
-                * float(freq)
-                * (float(i % period) / float(self.sr))
+                2.0 * math.pi * float(freq) * (float(i % period) / float(self.sr))
             )
             for i in range(period)
         ]
@@ -307,9 +293,7 @@ class WfGen(object):
 
 
 class TimeSound(WfGen):
-    def __init__(
-        self, sr=44100, buf_size_frm=2048, amplitude=0.5, n_ums_bits=30
-    ):
+    def __init__(self, sr=44100, buf_size_frm=2048, amplitude=0.5, n_ums_bits=30):
         super(TimeSound, self).__init__(
             sr=sr, buf_size_frm=buf_size_frm, amplitude=amplitude
         )
@@ -320,9 +304,7 @@ class TimeSound(WfGen):
         self.buf_size_ms = self.buf_size_s * 1000
 
     def ums_to_01_array(self, ums):
-        return array(
-            [int(x == '1') for x in self.ums_bits_str_format.format(ums)]
-        )
+        return array([int(x == '1') for x in self.ums_bits_str_format.format(ums)])
 
     def freq_weight_array_for_ums(self, ums):
         return tile(self.ums_to_01_array(ums), self.n_freqs_per_ums_bit)
@@ -351,10 +333,7 @@ class TimeSound(WfGen):
             ums = int(ums + n_bufs_per_tick * self.buf_size_ms)
         wf = array(wf)
         return hstack(
-            (
-                wf,
-                zeros((wf.shape[0], int(self.buf_size_frm / 2 - wf.shape[1]))),
-            )
+            (wf, zeros((wf.shape[0], int(self.buf_size_frm / 2 - wf.shape[1]))),)
         )
 
 
@@ -388,7 +367,5 @@ def wf_with_timed_bleeps(bleep_loc_ms, bleep_spec=200, sr=6144):
 def mk_sounds_with_timed_bleeps(
     bleep_loc_ms, bleep_spec=200, sr=6144, save_filepath='bleeps.wav'
 ):
-    wf = wf_with_timed_bleeps(
-        bleep_loc_ms=bleep_loc_ms, bleep_spec=bleep_spec, sr=sr
-    )
+    wf = wf_with_timed_bleeps(bleep_loc_ms=bleep_loc_ms, bleep_spec=bleep_spec, sr=sr)
     sf.write(open(save_filepath, 'w'), data=wf, samplerate=sr)

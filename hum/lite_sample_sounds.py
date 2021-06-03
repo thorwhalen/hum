@@ -16,17 +16,17 @@ def chk_from_pattern(chk_size_frm=DFLT_CHK_SIZE_FRM, pattern=None):
         pattern = np.random.randint(
             -DFLT_MAX_AMPLITUDE, DFLT_MAX_AMPLITUDE, DFLT_PATTERN_LEN
         )
-    return np.tile(
-        pattern, reps=int(np.ceil(chk_size_frm / float(len(pattern))))
-    )[:chk_size_frm].astype(np.int16)
+    return np.tile(pattern, reps=int(np.ceil(chk_size_frm / float(len(pattern)))))[
+        :chk_size_frm
+    ].astype(np.int16)
 
 
 def random_samples(
     chk_size_frm=DFLT_CHK_SIZE_FRM, max_amplitude=DFLT_MAX_AMPLITUDE, **kwargs
 ):
-    return np.random.randint(
-        -max_amplitude, max_amplitude, chk_size_frm
-    ).astype(np.int16)
+    return np.random.randint(-max_amplitude, max_amplitude, chk_size_frm).astype(
+        np.int16
+    )
 
 
 def pure_tone(
@@ -58,9 +58,7 @@ def square_tone(
     max_amplitude=DFLT_MAX_AMPLITUDE,
 ):
     pattern_length = int(sr / freq)
-    half_pattern_length = int(
-        pattern_length / 2
-    )  # oh well for the plus minus 1
+    half_pattern_length = int(pattern_length / 2)  # oh well for the plus minus 1
     pattern = [max_amplitude] * half_pattern_length + [
         -max_amplitude
     ] * half_pattern_length
@@ -95,15 +93,13 @@ class AnnotatedWaveform(object):
         }
 
     def chk_and_tag_gen(
-        self,
-        chk_tags=('random', 'pure_tone', 'triangular_tone', 'square_tone'),
+        self, chk_tags=('random', 'pure_tone', 'triangular_tone', 'square_tone'),
     ):
         for tag in chk_tags:
             yield tag_to_wf_gen_func[tag](**self._default_kwargs), tag
 
     def get_wf_and_annots(
-        self,
-        chk_tags=('random', 'pure_tone', 'triangular_tone', 'square_tone'),
+        self, chk_tags=('random', 'pure_tone', 'triangular_tone', 'square_tone'),
     ):
         slice_of_tag = defaultdict(list)
         bt_cursor = 0
@@ -118,9 +114,7 @@ class AnnotatedWaveform(object):
                 slice_of_tag[tag][-1] = tuple(slice_of_tag[tag][-1])
             else:
                 current_tag = tag
-                slice_of_tag[tag].append(
-                    (bt_cursor, bt_cursor + self.chk_size_frm)
-                )
+                slice_of_tag[tag].append((bt_cursor, bt_cursor + self.chk_size_frm))
 
             bt_cursor += self.chk_size_frm
 

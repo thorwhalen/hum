@@ -187,9 +187,7 @@ class Sound(object):
 
     @classmethod
     def from_(cls, sound):
-        if (
-            isinstance(sound, tuple) and len(sound) == 2
-        ):  # then it's a (wf, sr) tuple
+        if isinstance(sound, tuple) and len(sound) == 2:  # then it's a (wf, sr) tuple
             return cls(sound[0], sound[1])
         elif isinstance(sound, str) and os.path.isfile(sound):
             return cls.from_file(sound)
@@ -201,9 +199,7 @@ class Sound(object):
         elif hasattr(sound, 'wf') and hasattr(sound, 'sr'):
             return cls(sound.wf, sound.sr)
         else:
-            raise TypeError(
-                "Couldn't figure out how that format represents sound"
-            )
+            raise TypeError("Couldn't figure out how that format represents sound")
 
     @classmethod
     def silence(cls, seconds=0.0, sr=default_sr, wf_type=default_wf_type):
@@ -214,17 +210,11 @@ class Sound(object):
         samplerate = samplerate or self.sr
         if isinstance(filepath, int):
             rand_range = filepath
-            template = (
-                'sound_save_{:0'
-                + str(int(ceil(log10(rand_range))))
-                + '.0}.wav'
-            )
+            template = 'sound_save_{:0' + str(int(ceil(log10(rand_range)))) + '.0}.wav'
             filepath = template.format(randint(0, rand_range))
         else:
             filepath = filepath or 'sound_save.wav'
-        sf.write(
-            filepath, self.wf, samplerate=samplerate, subtype=subtype, **kwargs
-        )
+        sf.write(filepath, self.wf, samplerate=samplerate, subtype=subtype, **kwargs)
 
     ####################################################################################################################
     # TRANSFORMATIONS
@@ -239,8 +229,7 @@ class Sound(object):
 
     def crop_with_seconds(self, first_second, last_second):
         return self.crop_with_idx(
-            int(round(first_second * self.sr)),
-            int(round(last_second * self.sr)),
+            int(round(first_second * self.sr)), int(round(last_second * self.sr)),
         )
 
     def melspectr_matrix(self, **mel_kwargs):

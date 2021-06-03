@@ -25,20 +25,14 @@ def getmodulename(obj, default=''):
 
 
 def plot_wf(
-    wf,
-    sr=None,
-    figsize=DFLT_FIGSIZE_FOR_WF_PLOTS,
-    offset_s=0,
-    ax=None,
-    **kwargs
+    wf, sr=None, figsize=DFLT_FIGSIZE_FOR_WF_PLOTS, offset_s=0, ax=None, **kwargs
 ):
     if figsize is not None:
         plt.figure(figsize=figsize)
     _ax = ax or plt
     if sr is not None:
         _ax.plot(
-            offset_s
-            + linspace(start=0, stop=len(wf) / float(sr), num=len(wf)),
+            offset_s + linspace(start=0, stop=len(wf) / float(sr), num=len(wf)),
             wf,
             **kwargs
         )

@@ -60,8 +60,7 @@ with suppress(ModuleNotFoundError, ImportError):
             df = df.set_index('name')
             df['language'] = [x[0] for x in df['languages']]
             df['gender'] = [
-                'male' if x == 'VoiceGenderMale' else 'female'
-                for x in df['gender']
+                'male' if x == 'VoiceGenderMale' else 'female' for x in df['gender']
             ]
             del df['languages']
             return df

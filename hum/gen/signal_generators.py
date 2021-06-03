@@ -15,10 +15,7 @@ def normal_dist(mu, sigma):
 
 
 def gen_words(
-    N=DFLT_WORD_LENGTH,
-    alphabet=DFLT_ALPHABET,
-    spread_pct=0.01,
-    proba_dist='normal',
+    N=DFLT_WORD_LENGTH, alphabet=DFLT_ALPHABET, spread_pct=0.01, proba_dist='normal',
 ):
     if proba_dist == 'normal':
         sigma = N * spread_pct
@@ -44,9 +41,7 @@ def alphabet_to_bins(alphabet=list('abcde')):
     high = 10.0 * length
     bins = np.linspace(low, high, length + 1)
     # print(bins)
-    return {
-        letter: (bins[i], bins[i + 1]) for i, letter in enumerate(alphabet)
-    }
+    return {letter: (bins[i], bins[i + 1]) for i, letter in enumerate(alphabet)}
 
 
 # def context_to_signal(cat_gen, dict_symbol_to_interval)

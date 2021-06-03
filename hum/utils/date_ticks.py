@@ -121,9 +121,7 @@ def str_ticks(ticks, ticks_unit, sub_secs_precision=2):
     t_format = strftime_format_for_ticks(ticks, ticks_unit)
     return [
         strftime_with_precision(
-            utc_datetime_from_val_and_unit(x, ticks_unit),
-            t_format,
-            sub_secs_precision,
+            utc_datetime_from_val_and_unit(x, ticks_unit), t_format, sub_secs_precision,
         )
         for x in ticks
     ]
