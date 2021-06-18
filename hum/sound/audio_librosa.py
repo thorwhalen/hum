@@ -1,7 +1,20 @@
 """
 Utils to view, hear, and manipulate audio
 """
-from numpy import array, max, log10, ceil, int16, hstack, zeros, argmin, ndim
+from numpy import (
+    array,
+    mean,
+    shape,
+    linspace,
+    max,
+    log10,
+    ceil,
+    int16,
+    hstack,
+    zeros,
+    argmin,
+    ndim,
+)
 from numpy.random import randint
 import soundfile as sf
 import os
@@ -9,7 +22,26 @@ import matplotlib.pylab as plt
 from IPython.display import Audio
 
 from hum.utils.plotting import plot_wf
-from hum.utils.librosa_utils import specshow, melspectrogram, amplitude_to_db
+
+try:
+    import librosa
+    import librosa.display
+
+    WITH_LIBROSA = True
+except ImportError:
+    WITH_LIBROSA = False
+    import warnings
+
+    warnings.warn(
+        "Couldn't import librosa. You can install is, but know that you "
+        "don't NEED it unless you want to compute melspectrograms."
+    )
+
+    class librosa:
+        def __getattr__(self, a):
+            raise ModuleNotFoundError(
+                f"You don't actually have {self.__class__.__name__}"
+            )
 
 
 default_sr = 44100
@@ -61,7 +93,9 @@ def plot_melspectrogram(spect_mat, sr=default_sr, hop_length=512, name=None):
     plt.figure(figsize=(12, 4))
     # Display the spectrogram on a mel scale
     # sample rate and hop length parameters are used to render the time axis
-    specshow(spect_mat, sr=sr, hop_length=hop_length, x_axis='time', y_axis='mel')
+    librosa.display.specshow(
+        spect_mat, sr=sr, hop_length=hop_length, x_axis='time', y_axis='mel'
+    )
     # Put a descriptive title on the plot
     if name is not None:
         plt.title('mel power spectrogram of "{}"'.format(name))
@@ -202,9 +236,11 @@ class Sound(object):
         mel_kwargs = dict(
             {'n_fft': 2048, 'hop_length': 512, 'n_mels': 128}, **mel_kwargs
         )
-        S = melspectrogram(array(self.wf).astype(float), sr=self.sr, **mel_kwargs)
+        S = librosa.feature.melspectrogram(
+            array(self.wf).astype(float), sr=self.sr, **mel_kwargs
+        )
         # Convert to log scale (dB). We'll use the peak power as reference.
-        return amplitude_to_db(S, ref=max)
+        return librosa.amplitude_to_db(S, ref=max)
 
     def __add__(self, append_sound):
         assert (
@@ -232,15 +268,29 @@ class Sound(object):
         :param kwargs:
         :return:
         """
-        self.melspectrogram(plot_it=True, **kwargs)
+        if WITH_LIBROSA:
+            self.melspectrogram(plot_it=True, **kwargs)
+        else:
+            self.plot_wf()
 
         return self.hear(autoplay=autoplay)
 
-    def melspectrogram(self, plot_it=False, **mel_kwargs):
-        mel_kwargs = dict(
-            {'n_fft': 2048, 'hop_length': 512, 'n_mels': 128}, **mel_kwargs
-        )
-        log_S = self.melspectr_matrix(**mel_kwargs)
-        if plot_it:
-            plot_melspectrogram(log_S, sr=self.sr, hop_length=mel_kwargs['hop_length'])
-        return log_S
+    if WITH_LIBROSA:
+
+        def melspectrogram(self, plot_it=False, **mel_kwargs):
+            mel_kwargs = dict(
+                {'n_fft': 2048, 'hop_length': 512, 'n_mels': 128}, **mel_kwargs
+            )
+            log_S = self.melspectr_matrix(**mel_kwargs)
+            if plot_it:
+                plot_melspectrogram(
+                    log_S, sr=self.sr, hop_length=mel_kwargs['hop_length']
+                )
+            return log_S
+
+    else:
+
+        def melspectrogram(self, plot_it=False, **mel_kwargs):
+            if plot_it:
+                plt.figure(figsize=(16, 5))
+                plt.plot(self.wf)
