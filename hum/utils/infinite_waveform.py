@@ -1,3 +1,6 @@
+"""
+Simple infinite waveform
+"""
 from random import random
 import numpy as np
 
@@ -23,7 +26,7 @@ class InfiniteWaveform(object):
             self.noise_amp = max_amp * noise_amp
         self.win_size = len(self.reconstituted_wf)
 
-    def querry(self, bt, tt):
+    def query(self, bt, tt):
         if not self.noise_amp:
             for i in range(bt, tt):
                 yield self.reconstituted_wf[i % self.win_size]
@@ -37,4 +40,7 @@ class InfiniteWaveform(object):
 
     def __getitem__(self, idx):
         random.seed(a=idx)
-        return self.reconstituted_wf(idx % self.win_size) + random.random() * self.noise_amp
+        return (
+            self.reconstituted_wf(idx % self.win_size)
+            + random.random() * self.noise_amp
+        )

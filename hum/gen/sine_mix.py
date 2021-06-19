@@ -1,3 +1,6 @@
+"""
+Utils to mix sine waves
+"""
 import matplotlib.pylab as plt
 from numpy import sin, arange, pi, ones, linspace, ndarray
 from functools import partial
@@ -19,8 +22,12 @@ def mk_sine_wf(freq=5, n_samples=DFLT_N_SAMPLES, sr=DFLT_SR, phase=0, gain=1):
     return gain * sin(phase + arange(n_samples) * 2 * pi * freq / sr)
 
 
-def freq_based_stationary_wf(freqs=(200, 400, 600, 800), weights=None,
-                             n_samples: int = DFLT_N_SAMPLES, sr: int = DFLT_SR) -> ndarray:
+def freq_based_stationary_wf(
+    freqs=(200, 400, 600, 800),
+    weights=None,
+    n_samples: int = DFLT_N_SAMPLES,
+    sr: int = DFLT_SR,
+) -> ndarray:
     """
     Makes a stationary waveform by mixing a number of freqs together, possibly with different weights.
 

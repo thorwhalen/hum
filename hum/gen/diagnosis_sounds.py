@@ -1,9 +1,29 @@
-# from numpy import *
-from numpy import (array, hstack, ones, ceil, zeros, floor, argmin, diff, where, reshape, math,
-                   arange, iinfo, int16, linspace, pi, unique, tile, repeat)
-from numpy.random import randint, random
+"""
+Sounds that are meant to diagnose audio pipelines
+"""
+from numpy import (
+    array,
+    hstack,
+    ones,
+    ceil,
+    zeros,
+    floor,
+    argmin,
+    diff,
+    where,
+    reshape,
+    math,
+    arange,
+    iinfo,
+    int16,
+    linspace,
+    pi,
+    unique,
+    tile,
+    repeat,
+)
+from numpy.random import randint
 from itertools import islice, count
-
 from datetime import datetime as dt
 
 second_ms = 1000.0
@@ -15,8 +35,8 @@ def utcnow_ms():
 
 
 def window(seq, n=2):
-    "Returns a sliding window (of width n) over data from the iterable"
-    "   s -> (s0,s1,...s[n-1]), (s1,s2,...,sn), ...                   "
+    'Returns a sliding window (of width n) over data from the iterable'
+    '   s -> (s0,s1,...s[n-1]), (s1,s2,...,sn), ...                   '
     it = iter(seq)
     result = tuple(islice(it, n))
     if len(result) == n:
@@ -27,12 +47,19 @@ def window(seq, n=2):
 
 
 def ums_to_01_array(ums, n_ums_bits):
-    ums_bits_str_format = "{:0" + str(n_ums_bits) + "b}"
+    ums_bits_str_format = '{:0' + str(n_ums_bits) + 'b}'
     return array([int(x == '1') for x in ums_bits_str_format.format(ums)])
 
 
 class BinarySound(object):
-    def __init__(self, redundancy, repetition, nbits=50, header_size_words=1, header_pattern=None):
+    def __init__(
+        self,
+        redundancy,
+        repetition,
+        nbits=50,
+        header_size_words=1,
+        header_pattern=None,
+    ):
         """
         :param redundancy: num of times a word will be repeated (to implement error correction)
         :param repetition: num of times to repeat each element of a pattern.
@@ -44,7 +71,9 @@ class BinarySound(object):
             * None: Default. Will choose a random array of 0s and 1s
             * an explicit array of nbits 0s and 1s to use for the header
             * a string indicating a method to generate it (for now, choices are "halfhalf" or "alternating")
-        >>> from oto.sound.diagnosis_sounds import BinarySound
+
+        # TODO: Repair: TypeError: unsupported operand type(s) for *: 'int' and 'map'
+
         >>> from numpy import *
         >>> from numpy.random import randint
         >>>
@@ -54,7 +83,7 @@ class BinarySound(object):
         >>> utc = randint(0, 2, nbits)
         >>> wf = bs.mk_phrase(utc)
         >>> print(bs)
-        {'repetition': 3, 'redundancy': 142, 'word_size_frm': 150, 'phrase_data_frm': 21300}
+        {'repetition': 3, 'word_size_frm': 150, 'redundancy': 142, 'phrase_data_frm': 21300}
         >>> all(utc == bs.decode(wf))
         True
         """
@@ -71,21 +100,40 @@ class BinarySound(object):
             header_pattern = randint(0, 2, nbits)
         elif isinstance(header_pattern, str):
             if header_pattern == 'halfhalf':
-                header_pattern = hstack((ones(int(ceil(nbits / 2))), zeros(int(floor(nbits / 2))))).astype(int)
+                header_pattern = hstack(
+                    (ones(int(ceil(nbits / 2))), zeros(int(floor(nbits / 2))))
+                ).astype(int)
             elif header_pattern == 'alternating':
                 header_pattern = array([1, 0] * int(ceil(nbits / 2)))[:nbits]
             else:
-                raise ValueError("header_pattern not recognized: {}".format(header_pattern))
+                raise ValueError(
+                    'header_pattern not recognized: {}'.format(header_pattern)
+                )
         else:
-            assert len(header_pattern) == nbits, "header_pattern must have nbits={}".format(nbits)
-            assert set(unique(header_pattern).astype(int)) == {0, 1}, "header_pattern must be an array of 0s and 1s"
+            assert (
+                len(header_pattern) == nbits
+            ), 'header_pattern must have nbits={}'.format(nbits)
+            assert set(unique(header_pattern).astype(int)) == {
+                0,
+                1,
+            }, 'header_pattern must be an array of 0s and 1s'
         self.header_pattern = header_pattern
-        self.header_word = tile(repeat(self.header_pattern, self.repetition), self.header_size_words)
+        self.header_word = tile(
+            repeat(self.header_pattern, self.repetition), self.header_size_words,
+        )
+
         self.phrase_data_frm = self.redundancy * self.word_size_frm
 
     @classmethod
-    def for_audio_params(cls, nbits=50, freq=3000, chk_size_frm=43008, sr=44100, header_size_words=1,
-                         header_pattern=None):
+    def for_audio_params(
+        cls,
+        nbits=50,
+        freq=3000,
+        chk_size_frm=43008,
+        sr=44100,
+        header_size_words=1,
+        header_pattern=None,
+    ):
         """
         Construct a BinarySound object for a set of audio params
         :param nbits: num of bits of a word of data we want to encode
@@ -99,7 +147,6 @@ class BinarySound(object):
             * an explicit array of nbits 0s and 1s to use for the header
             * a string indicating a method to generate it (for now, choices are "halfhalf" or "alternating")
         :return: a BinarySound object
-        >>> from oto.sound.diagnosis_sounds import BinarySound
         >>> from numpy import *
         >>> from numpy.random import randint
         >>>
@@ -109,7 +156,7 @@ class BinarySound(object):
         >>> utc = randint(0, 2, nbits)
         >>> wf = bs.mk_phrase(utc)
         >>> print(bs)
-        {'repetition': 3, 'redundancy': 142, 'word_size_frm': 150, 'phrase_data_frm': 21300}
+        {'repetition': 3, 'word_size_frm': 150, 'redundancy': 142, 'phrase_data_frm': 21300}
         >>> all(utc == bs.decode(wf))
         True
         """
@@ -118,10 +165,15 @@ class BinarySound(object):
         # word_size_frm: the size of a word, in frames
         word_size_frm = int(nbits * repetition)
         # redundancy: how many times to repeat a word to make (along with header) a phrase
-        redundancy = (int(floor((chk_size_frm / 2) / word_size_frm) - header_size_words))
+        redundancy = int(floor((chk_size_frm / 2) / word_size_frm) - header_size_words)
 
-        self = cls(nbits=nbits, redundancy=redundancy, repetition=repetition, header_size_words=header_size_words,
-                   header_pattern=header_pattern)
+        self = cls(
+            nbits=nbits,
+            redundancy=redundancy,
+            repetition=repetition,
+            header_size_words=header_size_words,
+            header_pattern=header_pattern,
+        )
         self.freq = freq
         self.sr = sr
         self.chk_size_frm = chk_size_frm
@@ -130,8 +182,9 @@ class BinarySound(object):
         return self
 
     def mk_phrase(self, bit_array):
-        wf = hstack((self.header_word,
-                     tile(repeat(bit_array, self.repetition), self.redundancy)))
+        repeated_bit_array = repeat(bit_array, self.repetition)
+        tiled = tile(repeated_bit_array, self.redundancy)
+        wf = hstack((self.header_word, tiled))
         return (2 * wf) - 1
 
     def mk_utc_phrases(self, sound_duration_s=12):
@@ -144,7 +197,7 @@ class BinarySound(object):
             bit_array = ums_to_01_array(ums=int(utcnow_ms()), n_ums_bits=self.nbits)
             wf += list(self.mk_phrase(bit_array))
 
-        return array(wf)[:int(sound_duration_s * self.sr)]
+        return array(wf)[: int(sound_duration_s * self.sr)]
 
     def header_position(self, wf):
         wf = wf > 0
@@ -154,8 +207,8 @@ class BinarySound(object):
         header_pos = self.header_position(wf)
         header_end_idx = header_pos + len(self.header_word)
         wf = wf > 0
-        m = wf[header_end_idx:(header_end_idx + self.phrase_data_frm)]
-        size_to_make_it_a_multiple_of_word_size = (len(m) - (len(m) % self.word_size_frm))
+        m = wf[header_end_idx : (header_end_idx + self.phrase_data_frm)]
+        size_to_make_it_a_multiple_of_word_size = len(m) - (len(m) % self.word_size_frm)
         m = m[:size_to_make_it_a_multiple_of_word_size]
         m = reshape(m, (-1, self.word_size_frm))
         m = m.sum(axis=0).reshape((-1, self.repetition))
@@ -163,12 +216,14 @@ class BinarySound(object):
         return (m / float(self.repetition * self.redundancy) > 0.5).astype(int)
 
     def __repr__(self):
-        return str({
-            'repetition': self.repetition,
-            'word_size_frm': self.word_size_frm,
-            'redundancy': self.redundancy,
-            'phrase_data_frm': self.phrase_data_frm
-        })
+        return str(
+            {
+                'repetition': self.repetition,
+                'word_size_frm': self.word_size_frm,
+                'redundancy': self.redundancy,
+                'phrase_data_frm': self.phrase_data_frm,
+            }
+        )
 
 
 def zero_crossing_gaps(wf):
@@ -190,8 +245,10 @@ class WfGen(object):
         self.sr = sr
         self.buf_size_frm = buf_size_frm
         self.buf_size_s = buf_size_frm / float(self.sr)
-        if amplitude > 1.0: amplitude = 1.0
-        if amplitude < 0.0: amplitude = 0.0
+        if amplitude > 1.0:
+            amplitude = 1.0
+        if amplitude < 0.0:
+            amplitude = 0.0
         self.amplitude = float(amplitude)
         self.lookup_table_freqs = (arange(int(buf_size_frm / 2)) + 1) / self.buf_size_s
         self.lookup_tables = list(map(self.mk_lookup_table, self.lookup_table_freqs))
@@ -219,8 +276,13 @@ class WfGen(object):
     def mk_lookup_table(self, freq=440):
         freq = float(freq)
         period = int(self.sr / freq)
-        lookup_table = [self.amplitude * math.sin(2.0 * math.pi * float(freq) * (float(i % period) / float(self.sr)))
-                        for i in range(period)]
+        lookup_table = [
+            self.amplitude
+            * math.sin(
+                2.0 * math.pi * float(freq) * (float(i % period) / float(self.sr))
+            )
+            for i in range(period)
+        ]
         return lookup_table
 
     def mk_wf_from_freq_weight_array(self, n_frm, freq_weight_array):
@@ -232,9 +294,11 @@ class WfGen(object):
 
 class TimeSound(WfGen):
     def __init__(self, sr=44100, buf_size_frm=2048, amplitude=0.5, n_ums_bits=30):
-        super(TimeSound, self).__init__(sr=sr, buf_size_frm=buf_size_frm, amplitude=amplitude)
+        super(TimeSound, self).__init__(
+            sr=sr, buf_size_frm=buf_size_frm, amplitude=amplitude
+        )
         self.n_ums_bits = n_ums_bits
-        self.ums_bits_str_format = "{:0" + str(n_ums_bits) + "b}"
+        self.ums_bits_str_format = '{:0' + str(n_ums_bits) + 'b}'
         self.n_freqs_per_ums_bit = len(self.lookup_tables) // self.n_ums_bits
         self.n_freqs_for_ums = self.n_freqs_per_ums_bit * self.n_ums_bits
         self.buf_size_ms = self.buf_size_s * 1000
@@ -246,8 +310,10 @@ class TimeSound(WfGen):
         return tile(self.ums_to_01_array(ums), self.n_freqs_per_ums_bit)
 
     def ums_to_wf(self, ums, n_bufs=1):
-        return self.mk_wf_from_freq_weight_array(n_frm=n_bufs * self.buf_size_frm,
-                                                 freq_weight_array=self.freq_weight_array_for_ums(ums))
+        return self.mk_wf_from_freq_weight_array(
+            n_frm=n_bufs * self.buf_size_frm,
+            freq_weight_array=self.freq_weight_array_for_ums(ums),
+        )
 
     def timestamped_wf(self, offset_ums=0, n_bufs=21, n_bufs_per_tick=1):
         wf = list()
@@ -266,22 +332,23 @@ class TimeSound(WfGen):
                 wf.append(list(zeros(self.n_freqs_for_ums)))
             ums = int(ums + n_bufs_per_tick * self.buf_size_ms)
         wf = array(wf)
-        return hstack((wf, zeros((wf.shape[0], int(self.buf_size_frm / 2 - wf.shape[1])))))
+        return hstack(
+            (wf, zeros((wf.shape[0], int(self.buf_size_frm / 2 - wf.shape[1]))),)
+        )
 
 
 import soundfile as sf
-from scipy import signal
 
 
 def mk_some_buzz_wf(sr=44100):
-    bleep_wf = (signal.sawtooth(pi * (sr / 10) * linspace(0, 1, int(5 * sr))))
+    from scipy import signal  # pip install scipy
+
+    bleep_wf = signal.sawtooth(pi * (sr / 10) * linspace(0, 1, int(5 * sr)))
     bleep_wf += randint(-1, 1, len(bleep_wf))
     return ((bleep_wf / 2) * iinfo(int16).max).astype(int16)
 
 
-def wf_with_timed_bleeps(bleep_loc_ms,
-                         bleep_spec=200,
-                         sr=6144):
+def wf_with_timed_bleeps(bleep_loc_ms, bleep_spec=200, sr=6144):
     """Not sure this works as expected. Docs needed."""
     if isinstance(bleep_spec, int):
         bleep_size_ms = bleep_spec
@@ -293,13 +360,12 @@ def wf_with_timed_bleeps(bleep_loc_ms,
     max_bleep_loc_frm = max(bleep_loc_frm) + len(bleep_spec)
     wf = zeros(max_bleep_loc_frm)
     for loc_frm in bleep_loc_frm:
-        wf[loc_frm:(loc_frm + bleep_size_frm)] = bleep_spec
+        wf[loc_frm : (loc_frm + bleep_size_frm)] = bleep_spec
     return wf
 
 
-def mk_sounds_with_timed_bleeps(bleep_loc_ms,
-                                bleep_spec=200,
-                                sr=6144,
-                                save_filepath='bleeps.wav'):
+def mk_sounds_with_timed_bleeps(
+    bleep_loc_ms, bleep_spec=200, sr=6144, save_filepath='bleeps.wav'
+):
     wf = wf_with_timed_bleeps(bleep_loc_ms=bleep_loc_ms, bleep_spec=bleep_spec, sr=sr)
     sf.write(open(save_filepath, 'w'), data=wf, samplerate=sr)

@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>hum.utils.date_ticks &#8212; hum 0.1.5 documentation</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="hum.utils.infinite_waveform" href="infinite_waveform.html" />
+    <link rel="prev" title="hum.utils" href="../utils.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-hum.utils.date_ticks">
+<span id="hum-utils-date-ticks"></span><h1>hum.utils.date_ticks<a class="headerlink" href="#module-hum.utils.date_ticks" title="Permalink to this headline">¶</a></h1>
+<p>Date utils</p>
+<dl class="py function">
+<dt id="hum.utils.date_ticks.largest_unit_that_changes_at_every_tick">
+<code class="sig-prename descclassname">hum.utils.date_ticks.</code><code class="sig-name descname">largest_unit_that_changes_at_every_tick</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ticks</span></em>, <em class="sig-param"><span class="n">ticks_unit</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hum/utils/date_ticks.html#largest_unit_that_changes_at_every_tick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hum.utils.date_ticks.largest_unit_that_changes_at_every_tick" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the largest time unit for which each time tick changes.
+:param ticks: The list of ticks
+:param ticks_unit: The unit of the elements of ticks, expressed in seconds. For example, if the list</p>
+<blockquote>
+<div><p>contains hours, unit=3600, if minutes, unit=60, if seconds unit=1,
+if milliseconds unit=0.001.</p>
+<blockquote>
+<div><p>Note: You can also use a string to express the unit, as long as it’s recognized by the
+unit_str_to_unit_in_seconds dict. Keys recognized:
+[‘day’, ‘hour’, ‘h’, ‘minute’, ‘mn’, ‘second’, ‘s’, ‘millisecond’, ‘ms’, ‘microsecond’, ‘us’]</p>
+</div></blockquote>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="hum.utils.date_ticks.strftime_with_precision">
+<code class="sig-prename descclassname">hum.utils.date_ticks.</code><code class="sig-name descname">strftime_with_precision</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tick</span></em>, <em class="sig-param"><span class="n">format</span></em>, <em class="sig-param"><span class="n">sub_secs_precision</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hum/utils/date_ticks.html#strftime_with_precision"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hum.utils.date_ticks.strftime_with_precision" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a formatted string for a datetime (tick).
+:param tick: The datetime for this tick
+:param format: The formatting string
+:param sub_secs_precision: Number of digits to used for sub-seconds.</p>
+<blockquote>
+<div><p>If None, will choose it “smartly/dynamically”</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Formatted string</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">hum</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../hum.html">hum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gen.html">hum.gen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gen/diagnosis_sounds.html">hum.gen.diagnosis_sounds</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gen/signal_generators.html">hum.gen.signal_generators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gen/sine_mix.html">hum.gen.sine_mix</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gen/voiced_time.html">hum.gen.voiced_time</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lite_sample_sounds.html">hum.lite_sample_sounds</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sound.html">hum.sound</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sound/audio.html">hum.sound.audio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../util.html">hum.util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils.html">hum.utils</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">hum.utils.date_ticks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="infinite_waveform.html">hum.utils.infinite_waveform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">hum.utils.plotting</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../utils.html" title="previous chapter">hum.utils</a></li>
+      <li>Next: <a href="infinite_waveform.html" title="next chapter">hum.utils.infinite_waveform</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;NO COPYRIGHT.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../../_sources/module_docs/hum/utils/date_ticks.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
