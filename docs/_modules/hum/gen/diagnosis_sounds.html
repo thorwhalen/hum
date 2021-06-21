@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hum.gen.diagnosis_sounds &#8212; hum 0.1.5 documentation</title>
+    <title>hum.gen.diagnosis_sounds &#8212; hum 0.1.6 documentation</title>
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
@@ -374,6 +374,10 @@
 
 <span class="kn">import</span> <span class="nn">soundfile</span> <span class="k">as</span> <span class="nn">sf</span>
 
+<span class="n">DFLT_SR</span> <span class="o">=</span> <span class="mi">44100</span>
+<span class="n">DFLT_BLEEP_LOC</span> <span class="o">=</span> <span class="mi">400</span>
+<span class="n">DFLT_BLEEP_SPEC</span> <span class="o">=</span> <span class="mi">100</span>
+
 
 <span class="k">def</span> <span class="nf">mk_some_buzz_wf</span><span class="p">(</span><span class="n">sr</span><span class="o">=</span><span class="mi">44100</span><span class="p">):</span>
     <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">signal</span>  <span class="c1"># pip install scipy</span>
@@ -383,26 +387,38 @@
     <span class="k">return</span> <span class="p">((</span><span class="n">bleep_wf</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">iinfo</span><span class="p">(</span><span class="n">int16</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">int16</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="wf_with_timed_bleeps"><a class="viewcode-back" href="../../../module_docs/hum/gen/diagnosis_sounds.html#hum.gen.diagnosis_sounds.wf_with_timed_bleeps">[docs]</a><span class="k">def</span> <span class="nf">wf_with_timed_bleeps</span><span class="p">(</span><span class="n">bleep_loc_ms</span><span class="p">,</span> <span class="n">bleep_spec</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="mi">6144</span><span class="p">):</span>
+<div class="viewcode-block" id="wf_with_timed_bleeps"><a class="viewcode-back" href="../../../module_docs/hum/gen/diagnosis_sounds.html#hum.gen.diagnosis_sounds.wf_with_timed_bleeps">[docs]</a><span class="k">def</span> <span class="nf">wf_with_timed_bleeps</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="n">DFLT_SR</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">bleep_loc</span><span class="o">=</span><span class="n">DFLT_BLEEP_LOC</span><span class="p">,</span>
+    <span class="n">bleep_spec</span><span class="o">=</span><span class="n">DFLT_BLEEP_SPEC</span><span class="p">,</span>
+    <span class="n">sr</span><span class="o">=</span><span class="n">DFLT_SR</span><span class="p">,</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Not sure this works as expected. Docs needed.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bleep_spec</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="n">bleep_size_ms</span> <span class="o">=</span> <span class="n">bleep_spec</span>
-        <span class="n">bleep_size_frm</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sr</span> <span class="o">*</span> <span class="n">bleep_size_ms</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span>
-        <span class="n">bleep_spec</span> <span class="o">=</span> <span class="n">mk_some_buzz_wf</span><span class="p">(</span><span class="n">sr</span><span class="p">)[:</span><span class="n">bleep_size_frm</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bleep_spec</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+        <span class="n">bleep_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bleep_spec</span><span class="p">)</span>
+        <span class="n">bleep_spec</span> <span class="o">=</span> <span class="n">mk_some_buzz_wf</span><span class="p">(</span><span class="n">sr</span><span class="p">)[:</span><span class="n">bleep_size</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bleep_loc</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+        <span class="n">bleep_loc</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">bleep_loc</span><span class="p">)</span>
 
-    <span class="n">bleep_size_frm</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bleep_spec</span><span class="p">)</span>
-    <span class="n">bleep_loc_frm</span> <span class="o">=</span> <span class="p">(</span><span class="n">sr</span> <span class="o">*</span> <span class="p">(</span><span class="n">array</span><span class="p">(</span><span class="n">bleep_loc_ms</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-    <span class="n">max_bleep_loc_frm</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">bleep_loc_frm</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">bleep_spec</span><span class="p">)</span>
-    <span class="n">wf</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">max_bleep_loc_frm</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">loc_frm</span> <span class="ow">in</span> <span class="n">bleep_loc_frm</span><span class="p">:</span>
-        <span class="n">wf</span><span class="p">[</span><span class="n">loc_frm</span> <span class="p">:</span> <span class="p">(</span><span class="n">loc_frm</span> <span class="o">+</span> <span class="n">bleep_size_frm</span><span class="p">)]</span> <span class="o">=</span> <span class="n">bleep_spec</span>
+    <span class="n">bleep_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bleep_spec</span><span class="p">)</span>
+    <span class="c1"># bleep_loc = (sr * (array(bleep_loc_ms) / 1000)).astype(int)</span>
+    <span class="c1"># max_bleep_loc = max(bleep_size) + len(bleep_spec)</span>
+    <span class="n">wf</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">loc_frm</span> <span class="ow">in</span> <span class="n">bleep_loc</span><span class="p">:</span>
+        <span class="n">wf</span><span class="p">[</span><span class="n">loc_frm</span> <span class="p">:</span> <span class="p">(</span><span class="n">loc_frm</span> <span class="o">+</span> <span class="n">bleep_size</span><span class="p">)]</span> <span class="o">=</span> <span class="n">bleep_spec</span>
     <span class="k">return</span> <span class="n">wf</span></div>
 
 
 <span class="k">def</span> <span class="nf">mk_sounds_with_timed_bleeps</span><span class="p">(</span>
-    <span class="n">bleep_loc_ms</span><span class="p">,</span> <span class="n">bleep_spec</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="mi">6144</span><span class="p">,</span> <span class="n">save_filepath</span><span class="o">=</span><span class="s1">&#39;bleeps.wav&#39;</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="n">DFLT_SR</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">bleep_loc</span><span class="o">=</span><span class="n">DFLT_BLEEP_LOC</span><span class="p">,</span>
+    <span class="n">bleep_spec</span><span class="o">=</span><span class="n">DFLT_BLEEP_SPEC</span><span class="p">,</span>
+    <span class="n">sr</span><span class="o">=</span><span class="n">DFLT_SR</span><span class="p">,</span>
+    <span class="n">save_filepath</span><span class="o">=</span><span class="s1">&#39;bleeps.wav&#39;</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="n">wf</span> <span class="o">=</span> <span class="n">wf_with_timed_bleeps</span><span class="p">(</span><span class="n">bleep_loc_ms</span><span class="o">=</span><span class="n">bleep_loc_ms</span><span class="p">,</span> <span class="n">bleep_spec</span><span class="o">=</span><span class="n">bleep_spec</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">)</span>
+    <span class="n">wf</span> <span class="o">=</span> <span class="n">wf_with_timed_bleeps</span><span class="p">(</span>
+        <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">bleep_loc_ms</span><span class="o">=</span><span class="n">bleep_loc</span><span class="p">,</span> <span class="n">bleep_spec</span><span class="o">=</span><span class="n">bleep_spec</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span>
+    <span class="p">)</span>
     <span class="n">sf</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">save_filepath</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">),</span> <span class="n">data</span><span class="o">=</span><span class="n">wf</span><span class="p">,</span> <span class="n">samplerate</span><span class="o">=</span><span class="n">sr</span><span class="p">)</span>
 </pre></div>
 
