@@ -11,8 +11,10 @@
    module_docs/hum/lite_sample_sounds
    module_docs/hum/sound
    module_docs/hum/sound/audio
+   module_docs/hum/sound/audio_librosa
    module_docs/hum/util
    module_docs/hum/utils
    module_docs/hum/utils/date_ticks
    module_docs/hum/utils/infinite_waveform
+   module_docs/hum/utils/librosa_utils
    module_docs/hum/utils/plotting

@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>hum.utils.plotting &#8212; hum 0.1.7 documentation</title>
+    <title>hum.utils.librosa_utils &#8212; hum 0.1.7 documentation</title>
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
@@ -17,7 +17,8 @@
     <script src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="prev" title="hum.utils.librosa_utils" href="librosa_utils.html" />
+    <link rel="next" title="hum.utils.plotting" href="plotting.html" />
+    <link rel="prev" title="hum.utils.infinite_waveform" href="infinite_waveform.html" />
    
   <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
   
@@ -34,14 +35,29 @@
 
           <div class="body" role="main">
             
-  <section id="module-hum.utils.plotting">
-<span id="hum-utils-plotting"></span><h1>hum.utils.plotting<a class="headerlink" href="#module-hum.utils.plotting" title="Permalink to this headline">¶</a></h1>
-<p>Plot utils</p>
-<dl class="py function">
-<dt id="hum.utils.plotting.getmodulename">
-<code class="sig-prename descclassname">hum.utils.plotting.</code><code class="sig-name descname">getmodulename</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em>, <em class="sig-param"><span class="n">default</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hum/utils/plotting.html#getmodulename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hum.utils.plotting.getmodulename" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get name of module of object</p>
-</dd></dl>
+  <section id="module-hum.utils.librosa_utils">
+<span id="hum-utils-librosa-utils"></span><h1>hum.utils.librosa_utils<a class="headerlink" href="#module-hum.utils.librosa_utils" title="Permalink to this headline">¶</a></h1>
+<p>A few utils (specshow, melspectrogram) vendored from librosa.</p>
+<p>This code was copied from parts of librosa, and adapted, so as to be able to use
+targeted functionality with less dependencies and manual installation
+(namely for libsndfile) than librosa has.</p>
+<p>Librosa can be found here: <a class="reference external" href="https://librosa.org/">https://librosa.org/</a></p>
+<p>Librosa’s license follows.</p>
+<p>ISC License
+Copyright (c) 2013–2017, librosa development team.</p>
+<p>Permission to use, copy, modify, and/or distribute this software for any purpose with or
+without fee is hereby granted, provided that the above copyright notice and this
+permission notice appear in all copies.</p>
+<p>THE SOFTWARE IS PROVIDED “AS IS” AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO
+THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS.
+IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT,
+OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE,
+DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.</p>
+<dl class="py class">
+<dt id="hum.utils.librosa_utils.TimeFormatter">
+<em class="property">class </em><code class="sig-prename descclassname">hum.utils.librosa_utils.</code><code class="sig-name descname">TimeFormatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lag</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">unit</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hum/utils/librosa_utils.html#TimeFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hum.utils.librosa_utils.TimeFormatter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </section>
 
@@ -78,15 +94,16 @@
 <li class="toctree-l1"><a class="reference internal" href="../utils.html">hum.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="date_ticks.html">hum.utils.date_ticks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="infinite_waveform.html">hum.utils.infinite_waveform</a></li>
-<li class="toctree-l1"><a class="reference internal" href="librosa_utils.html">hum.utils.librosa_utils</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">hum.utils.plotting</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">hum.utils.librosa_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">hum.utils.plotting</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../../../index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="librosa_utils.html" title="previous chapter">hum.utils.librosa_utils</a></li>
+      <li>Previous: <a href="infinite_waveform.html" title="previous chapter">hum.utils.infinite_waveform</a></li>
+      <li>Next: <a href="plotting.html" title="next chapter">hum.utils.plotting</a></li>
   </ul></li>
 </ul>
 </div>
@@ -120,7 +137,7 @@
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
-      <a href="../../../_sources/module_docs/hum/utils/plotting.rst.txt"
+      <a href="../../../_sources/module_docs/hum/utils/librosa_utils.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
