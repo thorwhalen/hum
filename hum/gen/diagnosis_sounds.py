@@ -21,6 +21,7 @@ from numpy import (
     unique,
     tile,
     repeat,
+    all,
 )
 from numpy.random import randint
 from itertools import islice, count
@@ -31,12 +32,17 @@ epoch = dt.utcfromtimestamp(0)
 
 
 def utcnow_ms():
+    """
+    Returns the current time in UTC in milliseconds
+    """
     return (dt.utcnow() - epoch).total_seconds() * second_ms
 
 
 def window(seq, n=2):
-    'Returns a sliding window (of width n) over data from the iterable'
-    '   s -> (s0,s1,...s[n-1]), (s1,s2,...,sn), ...                   '
+    """
+    Returns a sliding window (of width n) over data from the iterable
+    s -> (s0,s1,...s[n-1]), (s1,s2,...,sn), ...
+    """
     it = iter(seq)
     result = tuple(islice(it, n))
     if len(result) == n:
@@ -47,6 +53,10 @@ def window(seq, n=2):
 
 
 def ums_to_01_array(ums, n_ums_bits):
+    """
+    Converts ums to an array with length n_ums_bits equivalent to a binary representation of ums
+    assert all(ums_to_01_array(100,1) == [1, 1, 0, 0, 1, 0, 0])
+    """
     ums_bits_str_format = '{:0' + str(n_ums_bits) + 'b}'
     return array([int(x == '1') for x in ums_bits_str_format.format(ums)])
 
@@ -345,6 +355,11 @@ DFLT_BLEEP_SPEC = 100
 
 
 def mk_some_buzz_wf(sr=44100):
+    """
+    >>> sr = 10
+    >>> wf = mk_some_buzz_wf(sr = sr)
+    >>> assert len(wf) == 5*sr
+    """
     from scipy import signal  # pip install scipy
 
     bleep_wf = signal.sawtooth(pi * (sr / 10) * linspace(0, 1, int(5 * sr)))
@@ -382,6 +397,6 @@ def mk_sounds_with_timed_bleeps(
     save_filepath='bleeps.wav',
 ):
     wf = wf_with_timed_bleeps(
-        n_samples=n_samples, bleep_loc_ms=bleep_loc, bleep_spec=bleep_spec, sr=sr
+        n_samples=n_samples, bleep_loc=bleep_loc, bleep_spec=bleep_spec, sr=sr
     )
-    sf.write(open(save_filepath, 'w'), data=wf, samplerate=sr)
+    sf.write(save_filepath, data=wf, samplerate=sr, format='WAV')

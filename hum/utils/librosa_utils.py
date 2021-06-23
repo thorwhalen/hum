@@ -33,6 +33,7 @@ from matplotlib.ticker import SymmetricalLogLocator
 import matplotlib
 from packaging.version import parse as version_parse
 import scipy
+import scipy.signal
 from numpy.lib.stride_tricks import as_strided
 import re
 
@@ -88,8 +89,6 @@ def specshow(
     # Get the x and y coordinates
     y_coords = __mesh_coords(y_axis, y_coords, data.shape[0], **all_params)
     x_coords = __mesh_coords(x_axis, x_coords, data.shape[1], **all_params)
-
-    print(ax)
 
     axes = __check_axes(ax)
 
