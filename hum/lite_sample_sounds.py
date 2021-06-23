@@ -82,7 +82,7 @@ def square_tone(
     """
     Generates a square tone using given arguments
     >>> np.random.seed(1)
-    >>> assert all(triangular_tone(5) == [30000, 30000, 30000, 30000, 30000])
+    >>> assert all(square_tone(5) == [30000, 30000, 30000, 30000, 30000])
     """
     pattern_length = int(sr / freq)
     half_pattern_length = int(pattern_length / 2)  # oh well for the plus minus 1
