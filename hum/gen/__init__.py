@@ -9,6 +9,7 @@ with suppress(ModuleNotFoundError, ImportError):
         TimeSound,
         BinarySound,
         slow_mask,
+        mk_some_buzz_wf,
         wf_with_timed_bleeps,
         mk_sounds_with_timed_bleeps,
     )

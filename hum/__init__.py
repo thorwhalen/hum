@@ -3,6 +3,7 @@ Tools to create audio
 """
 from hum.gen import *
 from hum.utils import *
+from hum.sound import *
 from hum.lite_sample_sounds import (
     tag_wf_gen,
     AnnotatedWaveform,
