@@ -74,6 +74,11 @@ def plot_melspectrogram(spect_mat, sr=default_sr, hop_length=512, name=None):
 
 
 def wf_and_sr(*args, **kwargs):
+    """
+    :param args: Either the file path to a sound or a tuple of (wf, sr)
+    :param kwargs: wf = wf, sr = sr
+    :return: wf, sr
+    """
     if len(args) > 0:
         args_0 = args[0]
         if isinstance(args_0, str):
@@ -153,6 +158,9 @@ class Sound(object):
 
     @classmethod
     def from_(cls, sound):
+        """
+        Construct sound object from another sound object
+        """
         if isinstance(sound, tuple) and len(sound) == 2:  # then it's a (wf, sr) tuple
             return cls(sound[0], sound[1])
         elif isinstance(sound, str) and os.path.isfile(sound):
@@ -169,6 +177,10 @@ class Sound(object):
 
     @classmethod
     def silence(cls, seconds=0.0, sr=default_sr, wf_type=default_wf_type):
+        """
+        Construct silent sound object with length seconds
+        >>> assert sum(sum(Sound.silence(seconds = 1).melspectr_matrix())) == 0.0
+        """
         return cls(sr=sr, wf=zeros(int(round(seconds * sr)), wf_type))
 
     def save_to_wav(self, filepath=None, samplerate=None, **kwargs):
@@ -199,6 +211,9 @@ class Sound(object):
         )
 
     def melspectr_matrix(self, **mel_kwargs):
+        """
+        Returns a melspectrogram matrix to be used to display a melspectrogram
+        """
         mel_kwargs = dict(
             {'n_fft': 2048, 'hop_length': 512, 'n_mels': 128}, **mel_kwargs
         )
@@ -216,6 +231,9 @@ class Sound(object):
     # DISPLAY FUNCTIONS
 
     def hear(self, autoplay=False, **kwargs):
+        """
+        Display UI to play sound
+        """
         wf = array(ensure_mono(self.wf)).astype(float)
         wf[
             randint(len(wf))
@@ -228,15 +246,16 @@ class Sound(object):
 
     def display(self, autoplay=False, **kwargs):
         """
-        :param sound_plot: 'mel' (default) to plot melspectrogram, 'wf' to plot wave form, and None to plot nothing at all
-        :param kwargs:
-        :return:
+        Display a melspectrogram of sound and UI to play sound
         """
         self.melspectrogram(plot_it=True, **kwargs)
 
         return self.hear(autoplay=autoplay)
 
     def melspectrogram(self, plot_it=False, **mel_kwargs):
+        """
+        Returns a melsepectrogram matrix and plots a melspectrogram if plot_it is True
+        """
         mel_kwargs = dict(
             {'n_fft': 2048, 'hop_length': 512, 'n_mels': 128}, **mel_kwargs
         )

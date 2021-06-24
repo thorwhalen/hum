@@ -117,6 +117,7 @@ with suppress(ModuleNotFoundError, ImportError):
             engine_kwargs: Stuff you don't need to worry about
             time_format: In what format the time (or even date) is transformed to text that is read.
                 See https://www.programiz.com/python-programming/datetime/strftime
+            verbose: Print the time every loop
 
         Returns:
             Nothing, just loops and says the time regularly

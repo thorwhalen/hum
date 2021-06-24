@@ -1,7 +1,7 @@
 """
 Simple infinite waveform
 """
-from random import random
+import random
 import numpy as np
 
 
@@ -24,9 +24,14 @@ class InfiniteWaveform(object):
             min_signal = np.min(self.reconstituted_wf)
             max_amp = max_signal - min_signal
             self.noise_amp = max_amp * noise_amp
+        else:
+            self.noise_amp = 0
         self.win_size = len(self.reconstituted_wf)
 
     def query(self, bt, tt):
+        """
+        Returns a generator of the infinite waveform from bt to tt
+        """
         if not self.noise_amp:
             for i in range(bt, tt):
                 yield self.reconstituted_wf[i % self.win_size]
@@ -41,6 +46,5 @@ class InfiniteWaveform(object):
     def __getitem__(self, idx):
         random.seed(a=idx)
         return (
-            self.reconstituted_wf(idx % self.win_size)
-            + random.random() * self.noise_amp
+            self.reconstituted_wf[idx % self.win_size] + random.random() * self.noise_amp
         )
