@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>hum.gen.signal_generators &#8212; hum 0.1.7 documentation</title>
+    <title>hum.gen.signal_generators &#8212; hum 0.1.8 documentation</title>
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
@@ -38,6 +38,72 @@
   <section id="module-hum.gen.signal_generators">
 <span id="hum-gen-signal-generators"></span><h1>hum.gen.signal_generators<a class="headerlink" href="#module-hum.gen.signal_generators" title="Permalink to this headline">¶</a></h1>
 <p>Generating Signals</p>
+<dl class="py function">
+<dt id="hum.gen.signal_generators.alphabet_to_bins">
+<code class="sig-prename descclassname">hum.gen.signal_generators.</code><code class="sig-name descname">alphabet_to_bins</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">alphabet</span><span class="o">=</span><span class="default_value">['a', 'b', 'c', 'd', 'e']</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hum/gen/signal_generators.html#alphabet_to_bins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hum.gen.signal_generators.alphabet_to_bins" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dictionary matching each word in alphabet to bins of size 10.0 ranging from 0 to 10 * len(alphabet)
+&gt;&gt;&gt; alphabet_to_bins()
+{‘a’: (0.0, 10.0), ‘b’: (10.0, 20.0), ‘c’: (20.0, 30.0), ‘d’: (30.0, 40.0), ‘e’: (40.0, 50.0)}</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="hum.gen.signal_generators.bernoulli">
+<code class="sig-prename descclassname">hum.gen.signal_generators.</code><code class="sig-name descname">bernoulli</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p_out</span><span class="o">=</span><span class="default_value">0.1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hum/gen/signal_generators.html#bernoulli"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hum.gen.signal_generators.bernoulli" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a random sample of a bernoulli distribution with probability p_out
+&gt;&gt;&gt; assert bernoulli(0) == 0
+&gt;&gt;&gt; assert bernoulli(1) == 1</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="hum.gen.signal_generators.bernoulli_gen">
+<code class="sig-prename descclassname">hum.gen.signal_generators.</code><code class="sig-name descname">bernoulli_gen</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p_out</span><span class="o">=</span><span class="default_value">0.5</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hum/gen/signal_generators.html#bernoulli_gen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hum.gen.signal_generators.bernoulli_gen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a generator that returns random samples of a bernoulli distribution with probability p_out</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="hum.gen.signal_generators.call_repeatedly">
+<code class="sig-prename descclassname">hum.gen.signal_generators.</code><code class="sig-name descname">call_repeatedly</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hum/gen/signal_generators.html#call_repeatedly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hum.gen.signal_generators.call_repeatedly" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a generator that calls func repeatedly with the given args and kwargs
+&gt;&gt;&gt; gen = call_repeatedly(alphabet_to_bins)
+&gt;&gt;&gt; assert next(gen) == {‘a’: (0.0, 10.0), ‘b’: (10.0, 20.0), ‘c’: (20.0, 30.0), ‘d’: (30.0, 40.0), ‘e’: (40.0, 50.0)}
+&gt;&gt;&gt; next(gen)
+{‘a’: (0.0, 10.0), ‘b’: (10.0, 20.0), ‘c’: (20.0, 30.0), ‘d’: (30.0, 40.0), ‘e’: (40.0, 50.0)}</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="hum.gen.signal_generators.gen_words">
+<code class="sig-prename descclassname">hum.gen.signal_generators.</code><code class="sig-name descname">gen_words</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">N</span><span class="o">=</span><span class="default_value">30</span></em>, <em class="sig-param"><span class="n">alphabet</span><span class="o">=</span><span class="default_value">['a', 'b', 'c', 'd', 'e']</span></em>, <em class="sig-param"><span class="n">spread_pct</span><span class="o">=</span><span class="default_value">0.01</span></em>, <em class="sig-param"><span class="n">proba_dist</span><span class="o">=</span><span class="default_value">'normal'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hum/gen/signal_generators.html#gen_words"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hum.gen.signal_generators.gen_words" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a generator of lists, with each consisting of n repetitions of a random word for alphabet, with n being
+determined by a normal distribution with mean N and variance N * spread_pct
+&gt;&gt;&gt; gen = gen_words(N=3, alphabet=[‘foo’], spread_pct=0)
+&gt;&gt;&gt; assert next(gen) == [‘foo’, ‘foo’, ‘foo’]</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="hum.gen.signal_generators.inlier_outlier">
+<code class="sig-prename descclassname">hum.gen.signal_generators.</code><code class="sig-name descname">inlier_outlier</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">segment</span></em>, <em class="sig-param"><span class="n">interval_size</span></em>, <em class="sig-param"><span class="n">outlier_status</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hum/gen/signal_generators.html#inlier_outlier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hum.gen.signal_generators.inlier_outlier" title="Permalink to this definition">¶</a></dt>
+<dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">inlier_outlier</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">low</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">high</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">inlier_outlier</span><span class="p">([</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">],</span> <span class="n">low</span><span class="o">*</span><span class="n">high</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">low</span> <span class="o">+</span> <span class="n">low</span><span class="o">*</span><span class="n">high</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="hum.gen.signal_generators.normal_dist">
+<code class="sig-prename descclassname">hum.gen.signal_generators.</code><code class="sig-name descname">normal_dist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mu</span></em>, <em class="sig-param"><span class="n">sigma</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hum/gen/signal_generators.html#normal_dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hum.gen.signal_generators.normal_dist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a random sample from a normal distribution with mean mu and variance sigma</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="hum.gen.signal_generators.string_to_num">
+<code class="sig-prename descclassname">hum.gen.signal_generators.</code><code class="sig-name descname">string_to_num</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">word</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hum/gen/signal_generators.html#string_to_num"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hum.gen.signal_generators.string_to_num" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a string to a list of numbers corresponding to the alphabetical order of the characters in the string
+&gt;&gt;&gt; assert string_to_num(‘abc’) == [0, 1, 2]
+&gt;&gt;&gt; assert string_to_num(‘generator’) == [2, 1, 3, 1, 5, 0, 6, 4, 5]</p>
+</dd></dl>
+
 </section>
 
 

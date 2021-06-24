@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hum.gen.sine_mix &#8212; hum 0.1.7 documentation</title>
+    <title>hum.gen.sine_mix &#8212; hum 0.1.8 documentation</title>
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
@@ -36,8 +36,7 @@
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Utils to mix sine waves</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pylab</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">sin</span><span class="p">,</span> <span class="n">arange</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="n">ones</span><span class="p">,</span> <span class="n">linspace</span><span class="p">,</span> <span class="n">ndarray</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">sin</span><span class="p">,</span> <span class="n">arange</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="n">ones</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">random</span><span class="p">,</span> <span class="nb">all</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
 
 <span class="n">DFLT_N_SAMPLES</span> <span class="o">=</span> <span class="mi">21</span> <span class="o">*</span> <span class="mi">2048</span>
@@ -53,6 +52,12 @@
 <span class="sd">    :param phase: Phase (in radians)</span>
 <span class="sd">    :param gain: (A number to multiply the base sine wave by)</span>
 <span class="sd">    :return: Waveform. A numpy array of samples of the specified sine wave</span>
+
+<span class="sd">    &gt;&gt;&gt; n_samples = random.randint(2,5)</span>
+<span class="sd">    &gt;&gt;&gt; wf = mk_sine_wf(n_samples=n_samples)</span>
+<span class="sd">    &gt;&gt;&gt; assert len(wf) == n_samples</span>
+<span class="sd">    &gt;&gt;&gt; wf = mk_sine_wf(n_samples=3)</span>
+<span class="sd">    &gt;&gt;&gt; assert all(wf == [0.0, 0.000712379226274755, 0.0014247580910282892])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">gain</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">phase</span> <span class="o">+</span> <span class="n">arange</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">*</span> <span class="n">freq</span> <span class="o">/</span> <span class="n">sr</span><span class="p">)</span></div>
 
@@ -71,6 +76,12 @@
 <span class="sd">    :param n_samples: The number of samples of waveform you want</span>
 <span class="sd">    :param sr: Sample rate</span>
 <span class="sd">    :return: Waveform. A numpy array of samples of the specified sine wave</span>
+
+<span class="sd">    &gt;&gt;&gt; n_samples = random.randint(2,5)</span>
+<span class="sd">    &gt;&gt;&gt; wf = freq_based_stationary_wf(n_samples=n_samples)</span>
+<span class="sd">    &gt;&gt;&gt; assert len(wf) == n_samples</span>
+<span class="sd">    &gt;&gt;&gt; wf = freq_based_stationary_wf(n_samples = 3, weights = [1,2,3,4])</span>
+<span class="sd">    &gt;&gt;&gt; assert all(wf == [0.0, 0.08534908048813569, 0.16988139234280178])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">weights</span> <span class="o">=</span> <span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">freqs</span><span class="p">))</span>

@@ -258,6 +258,7 @@ class WfGen(object):
     >>> wfgen.mk_sine_wf(n_frm=5, freq=4400)
     array([0.        , 0.293316  , 0.47508605, 0.47618432, 0.29619315])
     """
+
     def __init__(self, sr=44100, buf_size_frm=2048, amplitude=0.5):
         self.sr = sr
         self.buf_size_frm = buf_size_frm

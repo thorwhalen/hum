@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>hum.lite_sample_sounds &#8212; hum 0.1.7 documentation</title>
+    <title>hum.lite_sample_sounds &#8212; hum 0.1.8 documentation</title>
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
@@ -38,21 +38,80 @@
   <section id="module-hum.lite_sample_sounds">
 <span id="hum-lite-sample-sounds"></span><h1>hum.lite_sample_sounds<a class="headerlink" href="#module-hum.lite_sample_sounds" title="Permalink to this headline">¶</a></h1>
 <p>Generate simple waveforms</p>
+<dl class="py class">
+<dt id="hum.lite_sample_sounds.AnnotatedWaveform">
+<em class="property">class </em><code class="sig-prename descclassname">hum.lite_sample_sounds.</code><code class="sig-name descname">AnnotatedWaveform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chk_size_frm</span><span class="o">=</span><span class="default_value">43008</span></em>, <em class="sig-param"><span class="n">freq</span><span class="o">=</span><span class="default_value">440</span></em>, <em class="sig-param"><span class="n">sr</span><span class="o">=</span><span class="default_value">44100</span></em>, <em class="sig-param"><span class="n">max_amplitude</span><span class="o">=</span><span class="default_value">30000</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/lite_sample_sounds.html#AnnotatedWaveform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hum.lite_sample_sounds.AnnotatedWaveform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a waveform with chunks corresponding to the tags in tag_to_wf_gen_func.
+&gt;&gt;&gt; np.random.seed(1)
+&gt;&gt;&gt; annotated_wf = AnnotatedWaveform(chk_size_frm = 4)
+&gt;&gt;&gt; chk_tag_gen = annotated_wf.chk_and_tag_gen()
+&gt;&gt;&gt; wf, annots = annotated_wf.get_wf_and_annots()
+&gt;&gt;&gt; list(wf)
+[3003, -17828, -24808, 2511, 0, 1902, 3797, 5677, -30000, -29900, -29800, -29700, 30000, 30000, 30000, 30000]
+&gt;&gt;&gt; assert list(next(chk_tag_gen)[0]) == [20057, 13723, -22187, 22047]</p>
+<dl class="py method">
+<dt id="hum.lite_sample_sounds.AnnotatedWaveform.chk_and_tag_gen">
+<code class="sig-name descname">chk_and_tag_gen</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chk_tags</span><span class="o">=</span><span class="default_value">('random', 'pure_tone', 'triangular_tone', 'square_tone')</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/lite_sample_sounds.html#AnnotatedWaveform.chk_and_tag_gen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hum.lite_sample_sounds.AnnotatedWaveform.chk_and_tag_gen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yields (chk, tag) pairs for each tag given in chk_tags</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="hum.lite_sample_sounds.AnnotatedWaveform.get_wf_and_annots">
+<code class="sig-name descname">get_wf_and_annots</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chk_tags</span><span class="o">=</span><span class="default_value">('random', 'pure_tone', 'triangular_tone', 'square_tone')</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/lite_sample_sounds.html#AnnotatedWaveform.get_wf_and_annots"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hum.lite_sample_sounds.AnnotatedWaveform.get_wf_and_annots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yields (wf, annots) tuple where annots is a dictionary mapping tag to chunk indices</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="hum.lite_sample_sounds.chk_from_pattern">
+<code class="sig-prename descclassname">hum.lite_sample_sounds.</code><code class="sig-name descname">chk_from_pattern</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chk_size_frm</span><span class="o">=</span><span class="default_value">43008</span></em>, <em class="sig-param"><span class="n">pattern</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/lite_sample_sounds.html#chk_from_pattern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hum.lite_sample_sounds.chk_from_pattern" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a chk with length chk_size_frm that repeats pattern if given, or creates a random pattern of length 100
+&gt;&gt;&gt; np.random.seed(1)
+&gt;&gt;&gt; assert all(chk_from_pattern(5) == [3003, -17828, -24808, 2511, 20057])
+&gt;&gt;&gt; chk = chk_from_pattern(6, [1,2,3])
+&gt;&gt;&gt; assert all(chk == [1, 2, 3, 1, 2, 3])</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="hum.lite_sample_sounds.pure_tone">
+<code class="sig-prename descclassname">hum.lite_sample_sounds.</code><code class="sig-name descname">pure_tone</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chk_size_frm</span><span class="o">=</span><span class="default_value">43008</span></em>, <em class="sig-param"><span class="n">freq</span><span class="o">=</span><span class="default_value">440</span></em>, <em class="sig-param"><span class="n">sr</span><span class="o">=</span><span class="default_value">44100</span></em>, <em class="sig-param"><span class="n">max_amplitude</span><span class="o">=</span><span class="default_value">30000</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/lite_sample_sounds.html#pure_tone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hum.lite_sample_sounds.pure_tone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a pure tone using given arguments
+&gt;&gt;&gt; np.random.seed(1)
+&gt;&gt;&gt; assert all(pure_tone(5) == [0, 1902, 3797, 5677, 7534])</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="hum.lite_sample_sounds.random_samples">
+<code class="sig-prename descclassname">hum.lite_sample_sounds.</code><code class="sig-name descname">random_samples</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chk_size_frm</span><span class="o">=</span><span class="default_value">43008</span></em>, <em class="sig-param"><span class="n">max_amplitude</span><span class="o">=</span><span class="default_value">30000</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/lite_sample_sounds.html#random_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hum.lite_sample_sounds.random_samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a random sample of integers of length chk_size_frm in the range [-max_amplitude, max_amplitude]
+&gt;&gt;&gt; np.random.seed(1)
+&gt;&gt;&gt; assert all(random_samples(5) == [3003, -17828, -24808, 2511, 20057])</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="hum.lite_sample_sounds.square_tone">
+<code class="sig-prename descclassname">hum.lite_sample_sounds.</code><code class="sig-name descname">square_tone</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chk_size_frm</span><span class="o">=</span><span class="default_value">43008</span></em>, <em class="sig-param"><span class="n">freq</span><span class="o">=</span><span class="default_value">440</span></em>, <em class="sig-param"><span class="n">sr</span><span class="o">=</span><span class="default_value">44100</span></em>, <em class="sig-param"><span class="n">max_amplitude</span><span class="o">=</span><span class="default_value">30000</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/lite_sample_sounds.html#square_tone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hum.lite_sample_sounds.square_tone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a square tone using given arguments
+&gt;&gt;&gt; np.random.seed(1)
+&gt;&gt;&gt; assert all(square_tone(5) == [30000, 30000, 30000, 30000, 30000])</p>
+</dd></dl>
+
 <dl class="py function">
 <dt id="hum.lite_sample_sounds.tag_wf_gen">
 <code class="sig-prename descclassname">hum.lite_sample_sounds.</code><code class="sig-name descname">tag_wf_gen</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tag_wfgen_map</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Mapping<span class="p">[</span>object<span class="p">, </span>Callable<span class="p">[</span><span class="p">]</span><span class="p">, </span>Sequence<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tag_sequence</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/lite_sample_sounds.html#tag_wf_gen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hum.lite_sample_sounds.tag_wf_gen" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate (tag, wf) pairs.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>tag_wfgen_map</strong> – A {tag: wfgen, …} map where wfgen is a callable taking no arguments and returning a sequence</p></li>
-<li><p><strong>tag_sequence</strong> – A sequence of tags (that should all be keys of tag_wfgen_map)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-</dl>
+<dd><p>Generate (tag, wf) pairs.
+:param tag_wfgen_map: A {tag: wfgen, …} map where wfgen is a callable taking no arguments and returning a sequence
+:param tag_sequence: A sequence of tags (that should all be keys of tag_wfgen_map)
+:return:</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="hum.lite_sample_sounds.triangular_tone">
+<code class="sig-prename descclassname">hum.lite_sample_sounds.</code><code class="sig-name descname">triangular_tone</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chk_size_frm</span><span class="o">=</span><span class="default_value">43008</span></em>, <em class="sig-param"><span class="n">freq</span><span class="o">=</span><span class="default_value">440</span></em>, <em class="sig-param"><span class="n">sr</span><span class="o">=</span><span class="default_value">44100</span></em>, <em class="sig-param"><span class="n">max_amplitude</span><span class="o">=</span><span class="default_value">30000</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/lite_sample_sounds.html#triangular_tone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hum.lite_sample_sounds.triangular_tone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a triangular tone using given arguments
+&gt;&gt;&gt; np.random.seed(1)
+&gt;&gt;&gt; assert all(triangular_tone(5) == [-30000, -29900, -29800, -29700, -29600])</p>
 </dd></dl>
 
 </section>

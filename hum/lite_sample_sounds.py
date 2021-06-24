@@ -30,7 +30,9 @@ def chk_from_pattern(chk_size_frm=DFLT_CHK_SIZE_FRM, pattern=None):
     ].astype(np.int16)
 
 
-def random_samples(chk_size_frm=DFLT_CHK_SIZE_FRM, max_amplitude=DFLT_MAX_AMPLITUDE, **kwargs):
+def random_samples(
+    chk_size_frm=DFLT_CHK_SIZE_FRM, max_amplitude=DFLT_MAX_AMPLITUDE, **kwargs
+):
     """
     Returns a random sample of integers of length chk_size_frm in the range [-max_amplitude, max_amplitude]
     >>> np.random.seed(1)
@@ -111,6 +113,7 @@ class AnnotatedWaveform(object):
     [3003, -17828, -24808, 2511, 0, 1902, 3797, 5677, -30000, -29900, -29800, -29700, 30000, 30000, 30000, 30000]
     >>> assert list(next(chk_tag_gen)[0]) == [20057, 13723, -22187, 22047]
     """
+
     def __init__(
         self,
         chk_size_frm=DFLT_CHK_SIZE_FRM,

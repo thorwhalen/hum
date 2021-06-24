@@ -46,5 +46,6 @@ class InfiniteWaveform(object):
     def __getitem__(self, idx):
         random.seed(a=idx)
         return (
-            self.reconstituted_wf[idx % self.win_size] + random.random() * self.noise_amp
+            self.reconstituted_wf[idx % self.win_size]
+            + random.random() * self.noise_amp
         )
