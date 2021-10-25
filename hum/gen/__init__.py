@@ -15,7 +15,11 @@ with suppress(ModuleNotFoundError, ImportError):
     )
 
 with suppress(ModuleNotFoundError, ImportError):
-    from hum.gen.sine_mix import mk_sine_wf, freq_based_stationary_wf
+    from hum.gen.sine_mix import (
+        mk_sine_wf,
+        freq_based_stationary_wf,
+        NumAnnotsAndWaveformChunks,
+    )
 
 with suppress(ModuleNotFoundError, ImportError):
     from hum.gen.voiced_time import Voicer, tell_time_continuously

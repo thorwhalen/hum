@@ -34,7 +34,8 @@ def freq_based_stationary_wf(
     sr: int = DFLT_SR,
 ) -> ndarray:
     """
-    Makes a stationary waveform by mixing a number of freqs together, possibly with different weights.
+    Makes a stationary waveform by mixing a number of freqs together,
+    possibly with different weights.
 
     :param freqs: List(-like) of frequencies (in Hz)
     :param weights: The weights these frequencies should have (all weights will be normalized
@@ -54,3 +55,122 @@ def freq_based_stationary_wf(
     _mk_sine_wf = partial(mk_sine_wf, n_samples=n_samples, sr=sr)
     wf = sum(_mk_sine_wf(freq) * weights[i] for i, freq in enumerate(freqs))
     return wf / sum(weights)
+
+
+import random
+from typing import Callable, Union, Tuple, Optional, Iterable
+from functools import partial
+from dataclasses import dataclass
+from numbers import Number
+from itertools import islice
+
+
+@dataclass
+class MinMaxRand:
+    """Like a partial, but meant for bounded rand functions.
+    Could have just done:
+
+    ```
+    r = partial(random.uniform, min, max)
+    r()
+    ```
+
+    But we need to be able to have access to r.min and r.max
+    """
+
+    min: Number = 0
+    max: Number = 1
+    rand_func: Callable[[Number, Number], Number] = random.uniform
+
+    def __call__(self):
+        return self.rand_func(self.min, self.max)
+
+
+@dataclass
+class MinMaxRandDict:
+    """
+    >>> from hum.gen.sine_mix import MinMaxRandDict, MinMaxRand
+    >>>
+    >>> rand_gen = MinMaxRandDict((
+    ...     ('rpm', MinMaxRand(100, 1000)),
+    ...     ('temperature', MinMaxRand(10, 25)),
+    ...     ('pressure', MinMaxRand(50, 500)),
+    ... ))
+    >>> t = list(rand_gen.read(4))
+    >>> assert len(t) == 4
+    >>> assert list(t[0]) == ['rpm', 'temperature', 'pressure']
+    >>> t  # doctest: +SKIP
+    [{'rpm': 577.8533852127333,
+      'temperature': 18.306495707512724,
+      'pressure': 357.72481026748113},
+     {'rpm': 457.0605450014562,
+      'temperature': 23.94969543436332,
+      'pressure': 483.1119334545017},
+     {'rpm': 489.8445225473431,
+      'temperature': 17.176275589569695,
+      'pressure': 415.8337855923849},
+     {'rpm': 120.84000962564362,
+      'temperature': 21.153044572476936,
+      'pressure': 449.5124385844328}]
+    """
+
+    iid_seed_gen: Union[dict, Tuple[Tuple[str, MinMaxRand]]] = (
+        ('rpm', MinMaxRand(100, 1000)),
+        ('temperature', MinMaxRand(10, 25)),
+        ('pressure', MinMaxRand(50, 500)),
+    )
+
+    def __post_init__(self):
+        self.iid_seed_gen = dict(self.iid_seed_gen)
+
+    def __call__(self):
+        return {k: v() for k, v in self.iid_seed_gen.items()}
+
+    def __iter__(self):
+        while True:
+            yield self()
+
+    def read(self, n=1):
+        return islice(self, n)
+
+
+def dflt_parametrized_wf_gen(
+    weights, freqs=None, n_samples: int = DFLT_N_SAMPLES, sr: int = DFLT_SR,
+):
+    if freqs is None:
+        freqs = tuple(range(200, (len(weights) + 1) * 200, 200))
+    return freq_based_stationary_wf(freqs, weights, n_samples, sr)
+
+
+def dflt_annot_to_params(annot):
+    # TODO: Need to include the possibility of normalization
+    params = tuple(annot.values())
+    return params
+
+
+# def numerical_annotations_and_waveform_chunks(
+@dataclass
+class NumAnnotsAndWaveformChunks:
+    seeds: Union[dict, Tuple[Tuple[str, MinMaxRand]]] = (
+        ('rpm', MinMaxRand(100, 1000)),
+        ('temperature', MinMaxRand(10, 25)),
+        ('pressure', MinMaxRand(50, 500)),
+    )
+    annot_to_wf_params: Callable = dflt_annot_to_params
+    wf_params_to_wf: Callable = dflt_parametrized_wf_gen
+
+    def __post_init__(self):
+        self.rand_dicts = MinMaxRandDict(self.seeds)
+
+    def __call__(self, *args, **kwargs):
+        annot = self.rand_dicts()
+        params = self.annot_to_wf_params(annot)
+        wf = self.wf_params_to_wf(params)
+        return annot, wf
+
+    def __iter__(self):
+        while True:
+            yield self()
+
+    def read(self, n=1):
+        return islice(self, n)
