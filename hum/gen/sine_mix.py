@@ -151,6 +151,7 @@ def dflt_annot_to_params(annot):
 def asis(x):
     return x
 
+
 # def numerical_annotations_and_waveform_chunks(
 @dataclass
 class NumAnnotsAndWaveformChunks:
