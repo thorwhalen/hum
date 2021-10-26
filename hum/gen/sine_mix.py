@@ -134,7 +134,7 @@ class MinMaxRandDict:
         return islice(self, n)
 
 
-def dflt_parametrized_wf_gen(
+def dflt_wf_params_to_wf(
     weights, freqs=None, n_samples: int = DFLT_N_SAMPLES, sr: int = DFLT_SR,
 ):
     if freqs is None:
@@ -148,6 +148,9 @@ def dflt_annot_to_params(annot):
     return params
 
 
+def asis(x):
+    return x
+
 # def numerical_annotations_and_waveform_chunks(
 @dataclass
 class NumAnnotsAndWaveformChunks:
@@ -156,14 +159,17 @@ class NumAnnotsAndWaveformChunks:
         ('temperature', MinMaxRand(10, 25)),
         ('pressure', MinMaxRand(50, 500)),
     )
+    seed_to_sprout_gen: Callable = MinMaxRandDict
+    sprout_to_annot: Callable = asis
     annot_to_wf_params: Callable = dflt_annot_to_params
-    wf_params_to_wf: Callable = dflt_parametrized_wf_gen
+    wf_params_to_wf: Callable = dflt_wf_params_to_wf
 
     def __post_init__(self):
-        self.rand_dicts = MinMaxRandDict(self.seeds)
+        self.sprout_gen = self.seed_to_sprout_gen(self.seeds)
 
     def __call__(self, *args, **kwargs):
-        annot = self.rand_dicts()
+        sprout = self.sprout_gen()
+        annot = self.sprout_to_annot(sprout)
         params = self.annot_to_wf_params(annot)
         wf = self.wf_params_to_wf(params)
         return annot, wf
