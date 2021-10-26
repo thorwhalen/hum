@@ -142,7 +142,7 @@ def dflt_wf_params_to_wf(
     return freq_based_stationary_wf(freqs, weights, n_samples, sr)
 
 
-def dflt_annot_to_params(annot):
+def dflt_sprout_to_wf_params(annot):
     # TODO: Need to include the possibility of normalization
     params = tuple(annot.values())
     return params
@@ -151,7 +151,10 @@ def dflt_annot_to_params(annot):
 def asis(x):
     return x
 
+
 # def numerical_annotations_and_waveform_chunks(
+
+# TODO: Replicate in slink
 @dataclass
 class NumAnnotsAndWaveformChunks:
     seeds: Union[dict, Tuple[Tuple[str, MinMaxRand]]] = (
@@ -161,7 +164,7 @@ class NumAnnotsAndWaveformChunks:
     )
     seed_to_sprout_gen: Callable = MinMaxRandDict
     sprout_to_annot: Callable = asis
-    annot_to_wf_params: Callable = dflt_annot_to_params
+    sprout_to_wf_params: Callable = dflt_sprout_to_wf_params
     wf_params_to_wf: Callable = dflt_wf_params_to_wf
 
     def __post_init__(self):
@@ -170,7 +173,7 @@ class NumAnnotsAndWaveformChunks:
     def __call__(self, *args, **kwargs):
         sprout = self.sprout_gen()
         annot = self.sprout_to_annot(sprout)
-        params = self.annot_to_wf_params(annot)
+        params = self.sprout_to_wf_params(annot)
         wf = self.wf_params_to_wf(params)
         return annot, wf
 
