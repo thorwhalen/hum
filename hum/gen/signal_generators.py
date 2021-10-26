@@ -4,10 +4,11 @@ Generating Signals
 import numpy as np
 import random
 from itertools import chain
+from typing import Iterable
 import pandas as pd
 
 DFLT_WORD_LENGTH = 30
-DFLT_ALPHABET = list('abcde')
+DFLT_ALPHABET = 'abcde'
 
 
 def normal_dist(mu, sigma):
@@ -18,12 +19,12 @@ def normal_dist(mu, sigma):
 
 
 def gen_words(
-    N=DFLT_WORD_LENGTH, alphabet=DFLT_ALPHABET, spread_pct=0.01, proba_dist='normal',
+        N=DFLT_WORD_LENGTH, alphabet: Iterable = DFLT_ALPHABET, spread_pct=0.01, proba_dist='normal',
 ):
     """
     Returns a generator of lists, with each consisting of n repetitions of a random word for alphabet, with n being
     determined by a normal distribution with mean N and variance N * spread_pct
-    >>> gen = gen_words(N=3, alphabet=['foo'], spread_pct=0)
+    >>> gen = gen_words(N=3, alphabet=('foo',), spread_pct=0)
     >>> assert next(gen) == ['foo', 'foo', 'foo']
     """
     if proba_dist == 'normal':

@@ -2,10 +2,7 @@
 Utils to mix sine waves
 """
 from numpy import sin, arange, pi, ones, ndarray, random, all
-from functools import partial
-
-DFLT_N_SAMPLES = 21 * 2048
-DFLT_SR = 44100
+from hum.gen.util import DFLT_N_SAMPLES, DFLT_SR
 
 
 def mk_sine_wf(freq=5, n_samples=DFLT_N_SAMPLES, sr=DFLT_SR, phase=0, gain=1):
@@ -123,8 +120,11 @@ class MinMaxRandDict:
     def __post_init__(self):
         self.iid_seed_gen = dict(self.iid_seed_gen)
 
-    def __call__(self):
-        return {k: v() for k, v in self.iid_seed_gen.items()}
+    def __call__(self, n=1):
+        if n == 1:
+            return {k: v() for k, v in self.iid_seed_gen.items()}
+        else:
+            return self.read(n)
 
     def __iter__(self):
         while True:

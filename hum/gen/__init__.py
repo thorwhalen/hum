@@ -3,6 +3,8 @@ Generate Audio
 """
 from contextlib import suppress
 
+from hum.gen.util import DFLT_N_SAMPLES, DFLT_SR
+
 with suppress(ModuleNotFoundError, ImportError):
     from hum.gen.diagnosis_sounds import (
         WfGen,
