@@ -10,7 +10,7 @@ import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 
 from i2 import Pipe
-from slink import dict_generator, GetFromIter, Repeater, mk_monotone_sequence
+from slink import dict_generator, GetFromIter, Repeater
 
 from hum.gen.sine_mix import dflt_wf_params_to_wf
 
@@ -43,7 +43,8 @@ def mk_annots_and_wf(
         #
         # make n_phases_per_session copies of each
         Repeater(n_phases_per_session),
-        # --> {'session': 0}, {'session': 0}, {'session': 0}, {'session': 1}, {'session': 1}, {'session': 1}
+        # --> {'session': 0}, {'session': 0}, {'session': 0}, ...
+        # ... {'session': 1}, {'session': 1}, {'session': 1}
         #
         # for each, make a phase using given (indep) function
         dict(phase=GetFromIter(itertools.cycle(range(n_phases_per_session)))),
