@@ -33,19 +33,22 @@ def mk_annots_and_wf(
 ):
     wf_params_cols = list(wf_params_cols)
     f = dict_generator(
-        Repeater(
-            n_sessions
-        ),  # make n_sessions copies of the dict so far... i.e. empty dict
+        # make n_sessions copies of the dict so far... i.e. empty dict
+        Repeater(n_sessions),
         # --> {}, {}
-        dict(
-            session=GetFromIter(itertools.count())
-        ),  # for each, call function and assign to session key
+        #
+        # for each, call function and assign to session key
+        dict(session=GetFromIter(itertools.count())),
         # --> {'session': 0}, {'session': 1}
-        Repeater(n_phases_per_session),  # make n_phases_per_session copies of each
+        #
+        # make n_phases_per_session copies of each
+        Repeater(n_phases_per_session),
         # --> {'session': 0}, {'session': 0}, {'session': 0}, {'session': 1}, {'session': 1}, {'session': 1}
-        dict(
-            phase=GetFromIter(itertools.cycle(range(n_phases_per_session))),
-        ),  # for each, make a phase using given (indep) function
+        #
+        # for each, make a phase using given (indep) function
+        dict(phase=GetFromIter(itertools.cycle(range(n_phases_per_session)))),
+        #
+        # etc.
         Repeater(n_blocks_per_phase),
         dict(
             rpm=Pipe(partial(random.uniform, 200, 800), int),  # make a randome rpm
