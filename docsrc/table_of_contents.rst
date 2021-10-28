@@ -7,6 +7,7 @@
    module_docs/hum/gen/diagnosis_sounds
    module_docs/hum/gen/signal_generators
    module_docs/hum/gen/sine_mix
+   module_docs/hum/gen/util
    module_docs/hum/gen/voiced_time
    module_docs/hum/lite_sample_sounds
    module_docs/hum/sound
