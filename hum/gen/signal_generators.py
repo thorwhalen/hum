@@ -19,7 +19,10 @@ def normal_dist(mu, sigma):
 
 
 def gen_words(
-        N=DFLT_WORD_LENGTH, alphabet: Iterable = DFLT_ALPHABET, spread_pct=0.01, proba_dist='normal',
+    N=DFLT_WORD_LENGTH,
+    alphabet: Iterable = DFLT_ALPHABET,
+    spread_pct=0.01,
+    proba_dist='normal',
 ):
     """
     Returns a generator of lists, with each consisting of n repetitions of a random word for alphabet, with n being
