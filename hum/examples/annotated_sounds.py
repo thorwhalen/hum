@@ -15,7 +15,7 @@ from slink import dict_generator, GetFromIter, Repeater
 from hum.gen.sine_mix import dflt_wf_params_to_wf
 
 
-def mk_annots_and_wf(
+def session_phase_rpm_temparature(
     n_sessions=2,
     n_phases_per_session=3,
     n_blocks_per_phase=2,
