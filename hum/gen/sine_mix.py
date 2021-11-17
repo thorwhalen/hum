@@ -53,6 +53,7 @@ def freq_based_stationary_wf(
     wf = sum(_mk_sine_wf(freq) * weights[i] for i, freq in enumerate(freqs))
     return wf / sum(weights)
 
+
 #################################################################################
 # Soft marking everything below for deprecation
 import random
@@ -184,7 +185,6 @@ class NumAnnotsAndWaveformChunks:
 
     def read(self, n=1):
         return islice(self, n)
-
 
 
 ##########

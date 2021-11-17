@@ -3,6 +3,7 @@
    :caption: Contents:
 
    module_docs/hum
+   module_docs/hum/examples/annotated_sounds
    module_docs/hum/gen
    module_docs/hum/gen/diagnosis_sounds
    module_docs/hum/gen/signal_generators
