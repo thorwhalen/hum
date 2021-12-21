@@ -70,4 +70,3 @@ def inverted_tiles(motif=(1, 2, 3, 4, 5), cap=20000):
             # and make the next current_chk be
             # the sign-inverted motif_length-incremented version of the current one
             current_chk = [sign * (abs(x) + motif_length) for x in current_chk]
-
