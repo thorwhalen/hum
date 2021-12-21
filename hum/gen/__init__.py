@@ -5,6 +5,8 @@ from contextlib import suppress
 
 from hum.gen.util import DFLT_N_SAMPLES, DFLT_SR
 
+from hum.gen.simple import inverted_tiles_wf, inverted_tiles
+
 with suppress(ModuleNotFoundError, ImportError):
     from hum.gen.diagnosis_sounds import (
         WfGen,
