@@ -2,10 +2,10 @@
 Utils to mix sine waves
 """
 from numpy import sin, arange, pi, ones, ndarray, random, all
-from hum.gen.util import DFLT_N_SAMPLES, DFLT_SR
+from hum.gen.util import DFLT_N_SAMPLES, DFLT_SR, DFLT_FREQ
 
 
-def mk_sine_wf(freq=5, n_samples=DFLT_N_SAMPLES, sr=DFLT_SR, phase=0, gain=1):
+def mk_sine_wf(freq=DFLT_FREQ, n_samples=DFLT_N_SAMPLES, sr=DFLT_SR, phase=0, gain=1):
     """Make a sine waveform
 
     :param freq: Frequency (in Hz)
