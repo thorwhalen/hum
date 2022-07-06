@@ -367,7 +367,7 @@ DFLT_FREQ = 440
 
 
 def mk_some_buzz_wf(
-    sr: float = DFLT_SR, freq: float = DFLT_FREQ, n_samples: Optional[int] = None
+    freq: float = DFLT_FREQ, n_samples: Optional[int] = None, sr: float = DFLT_SR,
 ):
     """Produce a sawtooth waveform with given frequency and n_samples.
     The sample rate ``sr`` serves to interpret the ``freq`` specification in the number
