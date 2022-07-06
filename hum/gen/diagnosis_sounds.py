@@ -23,12 +23,16 @@ from numpy import (
     repeat,
     all,
 )
+import numpy as np
+from typing import Optional
 from numpy.random import randint
 from itertools import islice, count
 from datetime import datetime as dt
 
 second_ms = 1000.0
 epoch = dt.utcfromtimestamp(0)
+
+DFLT_SR = 44100
 
 
 def utcnow_ms():
@@ -140,7 +144,7 @@ class BinarySound(object):
         nbits=50,
         freq=3000,
         chk_size_frm=43008,
-        sr=44100,
+        sr=DFLT_SR,
         header_size_words=1,
         header_pattern=None,
     ):
@@ -259,7 +263,7 @@ class WfGen(object):
     array([0.        , 0.293316  , 0.47508605, 0.47618432, 0.29619315])
     """
 
-    def __init__(self, sr=44100, buf_size_frm=2048, amplitude=0.5):
+    def __init__(self, sr=DFLT_SR, buf_size_frm=2048, amplitude=0.5):
         self.sr = sr
         self.buf_size_frm = buf_size_frm
         self.buf_size_s = buf_size_frm / float(self.sr)
@@ -311,7 +315,7 @@ class WfGen(object):
 
 
 class TimeSound(WfGen):
-    def __init__(self, sr=44100, buf_size_frm=2048, amplitude=0.5, n_ums_bits=30):
+    def __init__(self, sr=DFLT_SR, buf_size_frm=2048, amplitude=0.5, n_ums_bits=30):
         super(TimeSound, self).__init__(
             sr=sr, buf_size_frm=buf_size_frm, amplitude=amplitude
         )
@@ -357,29 +361,51 @@ class TimeSound(WfGen):
 
 import soundfile as sf
 
-DFLT_SR = 44100
 DFLT_BLEEP_LOC = 400
 DFLT_BLEEP_SPEC = 100
+DFLT_FREQ = 440
 
 
-def mk_some_buzz_wf(sr=44100, n_samples=44100 * 5):
+def mk_some_buzz_wf(
+    sr: float = DFLT_SR, freq: float = DFLT_FREQ, n_samples: Optional[int] = None
+):
+    """Produce a sawtooth waveform with given frequency and n_samples.
+    The sample rate ``sr`` serves to interpret the ``freq`` specification in the number
+    of samples unit.
+
+    .. seealso:: right_triangles
+
     """
-    >>> sr = 10
-    >>> wf = mk_some_buzz_wf(sr=sr)
-    >>> assert len(wf) == 5 * sr
-    """
-    from scipy import signal  # pip install scipy
+    samples_per_period = sr / freq
+    if n_samples is None:
+        n_samples = int(3 * samples_per_period)
+    return right_triangles(samples_per_period=samples_per_period, n_samples=n_samples)
 
-    bleep_wf = signal.sawtooth(pi * (sr / 10) * linspace(0, 1, int(n_samples)))
-    bleep_wf += randint(-1, 1, len(bleep_wf))
-    return ((bleep_wf / 2) * iinfo(int16).max).astype(int16)
+
+def right_triangles(samples_per_period: float = 3, n_samples: int = 7):
+    """Simplified sawtooth waveform.
+
+    >>> import numpy as np
+    >>> assert np.all(
+    ... right_triangles(samples_per_period=3, n_samples=7)
+    ... == np.array(
+    ...     [-32767, -10922,  10922, -32767, -10922,  10922, -32767],
+    ...     dtype=int16
+    ... ))
+    """
+    #     samples_per_period = sr / freq
+    wf = np.linspace(0, n_samples - 1, n_samples)
+    wf = np.mod(wf, samples_per_period)
+    wf = 2 * (wf / samples_per_period) - 1
+
+    return (wf * iinfo(int16).max).astype(int16)
 
 
 def wf_with_timed_bleeps(
-    n_samples=DFLT_SR * 2,
+    n_samples: int = DFLT_SR * 2,
     bleep_loc=DFLT_BLEEP_LOC,
     bleep_spec=DFLT_BLEEP_SPEC,
-    sr=DFLT_SR,
+    sr: float = DFLT_SR,
 ):
     """Not sure this works as expected. Docs needed."""
     if isinstance(bleep_spec, (int, float)):
