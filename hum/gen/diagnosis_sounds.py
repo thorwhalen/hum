@@ -29,10 +29,10 @@ from numpy.random import randint
 from itertools import islice, count
 from datetime import datetime as dt
 
+from hum.gen.util import DFLT_N_SAMPLES, DFLT_SR, DFLT_FREQ
+
 second_ms = 1000.0
 epoch = dt.utcfromtimestamp(0)
-
-DFLT_SR = 44100
 
 
 def utcnow_ms():
@@ -363,11 +363,10 @@ import soundfile as sf
 
 DFLT_BLEEP_LOC = 400
 DFLT_BLEEP_SPEC = 100
-DFLT_FREQ = 440
 
 
 def mk_some_buzz_wf(
-    freq: float = DFLT_FREQ, n_samples: Optional[int] = None, sr: float = DFLT_SR,
+    freq: float = DFLT_FREQ, n_samples: int = DFLT_N_SAMPLES, sr: float = DFLT_SR,
 ):
     """Produce a sawtooth waveform with given frequency and n_samples.
     The sample rate ``sr`` serves to interpret the ``freq`` specification in the number
@@ -376,10 +375,7 @@ def mk_some_buzz_wf(
     .. seealso:: right_triangles
 
     """
-    samples_per_period = sr / freq
-    if n_samples is None:
-        n_samples = int(3 * samples_per_period)
-    return right_triangles(samples_per_period=samples_per_period, n_samples=n_samples)
+    return right_triangles(samples_per_period=sr / freq, n_samples=n_samples)
 
 
 def right_triangles(samples_per_period: float = 3, n_samples: int = 7):
