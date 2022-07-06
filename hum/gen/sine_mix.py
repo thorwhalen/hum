@@ -19,7 +19,8 @@ def mk_sine_wf(freq=DFLT_FREQ, n_samples=DFLT_N_SAMPLES, sr=DFLT_SR, phase=0, ga
     >>> wf = mk_sine_wf(n_samples=n_samples)
     >>> assert len(wf) == n_samples
     >>> wf = mk_sine_wf(n_samples=3)
-    >>> assert all(wf == [0.0, 0.000712379226274755, 0.0014247580910282892])
+    >>> import numpy as np
+    >>> assert np.allclose(wf, [0.        , 0.06264832, 0.12505052], rtol=1e-3)
     """
     return gain * sin(phase + arange(n_samples) * 2 * pi * freq / sr)
 
@@ -44,7 +45,8 @@ def freq_based_stationary_wf(
     >>> wf = freq_based_stationary_wf(n_samples=n_samples)
     >>> assert len(wf) == n_samples
     >>> wf = freq_based_stationary_wf(n_samples = 3, weights = [1,2,3,4])
-    >>> assert all(wf == [0.0, 0.08534908048813569, 0.16988139234280178])
+    >>> import numpy as np
+    >>> assert np.allclose(wf, [0.        , 0.08534908, 0.16988139], rtol=1e-3)
     """
     if weights is None:
         weights = ones(len(freqs))

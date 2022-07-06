@@ -362,15 +362,15 @@ DFLT_BLEEP_LOC = 400
 DFLT_BLEEP_SPEC = 100
 
 
-def mk_some_buzz_wf(sr=44100):
+def mk_some_buzz_wf(sr=44100, n_samples=44100 * 5):
     """
     >>> sr = 10
-    >>> wf = mk_some_buzz_wf(sr = sr)
-    >>> assert len(wf) == 5*sr
+    >>> wf = mk_some_buzz_wf(sr=sr)
+    >>> assert len(wf) == 5 * sr
     """
     from scipy import signal  # pip install scipy
 
-    bleep_wf = signal.sawtooth(pi * (sr / 10) * linspace(0, 1, int(5 * sr)))
+    bleep_wf = signal.sawtooth(pi * (sr / 10) * linspace(0, 1, int(n_samples)))
     bleep_wf += randint(-1, 1, len(bleep_wf))
     return ((bleep_wf / 2) * iinfo(int16).max).astype(int16)
 
