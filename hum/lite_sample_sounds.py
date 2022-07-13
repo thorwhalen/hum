@@ -4,20 +4,19 @@ Generate simple waveforms
 import numpy as np
 import random
 import itertools
-from typing import Mapping, Callable, Sequence, Optional
+from typing import Mapping, Callable, Sequence, Any
 from collections import defaultdict
 
-
 DFLT_SR = 44100
-DFLT_CHK_SIZE_FRM = 21 * 2048
+DFLT_CHK_SIZE = 21 * 2048
 DFLT_MAX_AMPLITUDE = 30000
 DFLT_PATTERN_LEN = 100
 DFLT_PATTERN = [DFLT_MAX_AMPLITUDE] * 10 + [-DFLT_MAX_AMPLITUDE] * 10
 
 
-def chk_from_pattern(chk_size_frm=DFLT_CHK_SIZE_FRM, pattern=None):
+def chk_from_pattern(chk_size=DFLT_CHK_SIZE, pattern=None):
     """
-    Returns a chk with length chk_size_frm that repeats pattern if given, or creates a random pattern of length 100
+    Returns a chk with length chk_size that repeats pattern if given, or creates a random pattern of length 100
     >>> np.random.seed(1)
     >>> assert all(chk_from_pattern(5) == [3003, -17828, -24808, 2511, 20057])
     >>> chk = chk_from_pattern(6, [1,2,3])
@@ -25,26 +24,26 @@ def chk_from_pattern(chk_size_frm=DFLT_CHK_SIZE_FRM, pattern=None):
     """
     if pattern is None:
         pattern = random_samples(DFLT_PATTERN_LEN, DFLT_MAX_AMPLITUDE)
-    return np.tile(pattern, reps=int(np.ceil(chk_size_frm / float(len(pattern)))))[
-        :chk_size_frm
+    return np.tile(pattern, reps=int(np.ceil(chk_size / float(len(pattern)))))[
+        :chk_size
     ].astype(np.int16)
 
 
 def random_samples(
-    chk_size_frm=DFLT_CHK_SIZE_FRM, max_amplitude=DFLT_MAX_AMPLITUDE, **kwargs
+    chk_size=DFLT_CHK_SIZE, max_amplitude=DFLT_MAX_AMPLITUDE, **kwargs
 ):
     """
-    Returns a random sample of integers of length chk_size_frm in the range [-max_amplitude, max_amplitude]
+    Returns a random sample of integers of length chk_size in the range [-max_amplitude, max_amplitude]
     >>> np.random.seed(1)
     >>> assert all(random_samples(5) == [3003, -17828, -24808, 2511, 20057])
     """
-    return np.random.randint(-max_amplitude, max_amplitude, chk_size_frm).astype(
+    return np.random.randint(-max_amplitude, max_amplitude, chk_size).astype(
         np.int16
     )
 
 
 def pure_tone(
-    chk_size_frm=DFLT_CHK_SIZE_FRM,
+    chk_size=DFLT_CHK_SIZE,
     freq=440,
     sr=DFLT_SR,
     max_amplitude=DFLT_MAX_AMPLITUDE,
@@ -56,11 +55,11 @@ def pure_tone(
     """
     pattern_length = int(sr / freq)
     pattern = max_amplitude * np.sin(np.linspace(0, 2 * np.pi, pattern_length))
-    return chk_from_pattern(chk_size_frm, pattern)
+    return chk_from_pattern(chk_size, pattern)
 
 
 def triangular_tone(
-    chk_size_frm=DFLT_CHK_SIZE_FRM,
+    chk_size=DFLT_CHK_SIZE,
     freq=440,
     sr=DFLT_SR,
     max_amplitude=DFLT_MAX_AMPLITUDE,
@@ -72,11 +71,11 @@ def triangular_tone(
     """
     pattern_length = int(sr / freq)
     pattern = np.arange(-max_amplitude, max_amplitude, pattern_length)
-    return chk_from_pattern(chk_size_frm, pattern)
+    return chk_from_pattern(chk_size, pattern)
 
 
 def square_tone(
-    chk_size_frm=DFLT_CHK_SIZE_FRM,
+    chk_size=DFLT_CHK_SIZE,
     freq=440,
     sr=DFLT_SR,
     max_amplitude=DFLT_MAX_AMPLITUDE,
@@ -91,7 +90,7 @@ def square_tone(
     pattern = [max_amplitude] * half_pattern_length + [
         -max_amplitude
     ] * half_pattern_length
-    return chk_from_pattern(chk_size_frm, pattern)
+    return chk_from_pattern(chk_size, pattern)
 
 
 tag_to_wf_gen_func = {
@@ -101,12 +100,14 @@ tag_to_wf_gen_func = {
     'square_tone': square_tone,
 }
 
+tag_to_wf_gen_func_items = tuple(tag_to_wf_gen_func.items())
+
 
 class AnnotatedWaveform(object):
     """
     Creates a waveform with chunks corresponding to the tags in tag_to_wf_gen_func.
     >>> np.random.seed(1)
-    >>> annotated_wf = AnnotatedWaveform(chk_size_frm = 4)
+    >>> annotated_wf = AnnotatedWaveform(chk_size = 4)
     >>> chk_tag_gen = annotated_wf.chk_and_tag_gen()
     >>> wf, annots = annotated_wf.get_wf_and_annots()
     >>> list(wf)
@@ -116,17 +117,17 @@ class AnnotatedWaveform(object):
 
     def __init__(
         self,
-        chk_size_frm=DFLT_CHK_SIZE_FRM,
+        chk_size=DFLT_CHK_SIZE,
         freq=440,
         sr=DFLT_SR,
         max_amplitude=DFLT_MAX_AMPLITUDE,
     ):
-        self.chk_size_frm = chk_size_frm
+        self.chk_size = chk_size
         self.sr = sr
         self.freq = freq
         self.max_amplitude = max_amplitude
         self._default_kwargs = {
-            'chk_size_frm': chk_size_frm,
+            'chk_size': chk_size,
             'freq': freq,
             'sr': sr,
             'max_amplitude': max_amplitude,
@@ -156,19 +157,19 @@ class AnnotatedWaveform(object):
             if tag == current_tag:
                 # TODO: Shame!
                 slice_of_tag[tag][-1] = list(slice_of_tag[tag][-1])
-                slice_of_tag[tag][-1][1] += self.chk_size_frm
+                slice_of_tag[tag][-1][1] += self.chk_size
                 slice_of_tag[tag][-1] = tuple(slice_of_tag[tag][-1])
             else:
                 current_tag = tag
-                slice_of_tag[tag].append((bt_cursor, bt_cursor + self.chk_size_frm))
+                slice_of_tag[tag].append((bt_cursor, bt_cursor + self.chk_size))
 
-            bt_cursor += self.chk_size_frm
+            bt_cursor += self.chk_size
 
         return np.array(wf), dict(slice_of_tag)
 
 
 def tag_wf_gen(
-    tag_wfgen_map: Optional[Mapping[object, Callable[[], Sequence]]] = None,
+    tag_wfgen_map: Mapping[Any, Callable[..., Sequence]] = tag_to_wf_gen_func_items,
     tag_sequence=None,
 ):
     """Generate (tag, wf) pairs.
@@ -176,8 +177,7 @@ def tag_wf_gen(
     :param tag_sequence: A sequence of tags (that should all be keys of tag_wfgen_map)
     :return:
     """
-    if tag_wfgen_map is None:
-        tag_wfgen_map = tag_to_wf_gen_func
+    tag_wfgen_map = dict(tag_to_wf_gen_func_items)
     if tag_sequence is None:
         indefinite_random_choice_from_tags = map(
             random.choice, itertools.repeat(list(tag_wfgen_map))

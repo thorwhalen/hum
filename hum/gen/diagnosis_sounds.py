@@ -143,7 +143,7 @@ class BinarySound(object):
         cls,
         nbits=50,
         freq=3000,
-        chk_size_frm=43008,
+        chk_size=43008,
         sr=DFLT_SR,
         header_size_words=1,
         header_pattern=None,
@@ -152,7 +152,7 @@ class BinarySound(object):
         Construct a BinarySound object for a set of audio params
         :param nbits: num of bits of a word of data we want to encode
         :param freq: frequency (num of times per second the bits will be repeated -- with sr, will determine repetition)
-        :param chk_size_frm: chunk size (in frames) of the sounds we'll be using (determines
+        :param chk_size: chunk size (in frames) of the sounds we'll be using (determines
         :param sr: sample rate of the targeted sound
         :param header_size_words: header size (increasing it will decrease error rate, but increase computation time)
         :param header_pattern: specifies the header pattern. This pattern will be repeated (i.e. it's elements
@@ -166,7 +166,7 @@ class BinarySound(object):
         >>>
         >>> nbits=50
         >>> bs = BinarySound.for_audio_params(
-        ...     nbits=nbits, freq=6000, chk_size_frm=43008, sr=44100, header_size_words=1)
+        ...     nbits=nbits, freq=6000, chk_size=43008, sr=44100, header_size_words=1)
         >>> utc = randint(0, 2, nbits)
         >>> wf = bs.mk_phrase(utc)
         >>> print(bs)
@@ -179,7 +179,7 @@ class BinarySound(object):
         # word_size_frm: the size of a word, in frames
         word_size_frm = int(nbits * repetition)
         # redundancy: how many times to repeat a word to make (along with header) a phrase
-        redundancy = int(floor((chk_size_frm / 2) / word_size_frm) - header_size_words)
+        redundancy = int(floor((chk_size / 2) / word_size_frm) - header_size_words)
 
         self = cls(
             nbits=nbits,
@@ -190,7 +190,7 @@ class BinarySound(object):
         )
         self.freq = freq
         self.sr = sr
-        self.chk_size_frm = chk_size_frm
+        self.chk_size = chk_size
         self.redundancy = redundancy
         self.repetition = repetition
         return self
