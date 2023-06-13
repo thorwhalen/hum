@@ -1,9 +1,13 @@
 import random
 from more_itertools import distribute
 from hum.gen.sine_mix import dflt_wf_params_to_wf
-
+from more_itertools import minmax
+import numpy as np
+from i2 import Pipe
+from functools import partial
 
 DFLT_SR = 44100
+DFLT_FACTOR = 100
 DFLT_TAG_MODEL = {
     "normal": lambda last_item: {
         "bt": (last_item["tt"] if last_item else 0)
@@ -16,6 +20,8 @@ DFLT_TAG_MODEL = {
         "duration": 0.05 + abs(random.gauss(mu=0, sigma=0.25)),
     },
 }
+
+rpm = Pipe(partial(random.uniform, 400, 800), int)
 
 
 def frequs_from_cats(cats, num_freq_per_cat=2):
@@ -71,23 +77,63 @@ def tagged_intervals_gen(tag_model=None, n_items=None, start_bt_s=0):
             yield {"tag": tag, "bt": bt, "tt": tt}
 
 
+def intervals_to_wf(intervals, sr=DFLT_SR):
+    _, max_tt = minmax(intervals, key=lambda x: x['tt'])
+    end_wf = int(max_tt['tt'] * sr)
+    wf = np.zeros(end_wf + 1)
+    for interval in intervals:
+        wf_params = tag_model_to_params(tag_model=DFLT_TAG_MODEL)[interval["tag"]]
+        n_samples = int(interval_to_duration(interval))
+        bt = int(interval['bt'] * sr)
+        tt = bt + n_samples
+        wf[bt:tt] = dflt_wf_params_to_wf(wf_params, n_samples=n_samples, sr=sr)
+    return wf
+
+
+def intervals_to_plc(intervals, sr=DFLT_SR, factor=DFLT_FACTOR):
+    _, max_tt = minmax(intervals, key=lambda x: x['tt'])
+    end_wf = int(max_tt['tt'] * sr)
+    wf = np.zeros(end_wf + 1)
+    for interval in intervals:
+        delta = 0
+        n_samples = int(interval_to_duration(interval))
+        bt = int(interval['bt'] * sr)
+        if interval['tag'] == 'normal':
+            delta = 400
+        vals = ([delta + rpm()] * factor for _ in range(n_samples // factor))
+        flattened = [item for sublist in vals for item in sublist]
+        wf[bt : bt + len(flattened)] = flattened
+    return wf
+
+
 def intervals_to_json(intervals):
     import json
 
     result = dict()
     result['data'] = list()
     for interval in intervals:
-        n_samples = interval_to_duration(interval)
-        wf_params = tag_model_to_params(tag_model=DFLT_TAG_MODEL)[interval["tag"]]
-        wf = dflt_wf_params_to_wf(wf_params, n_samples=n_samples, sr=DFLT_SR)
+        wf = intervals_to_wf(intervals)
+        plc = intervals_to_plc(intervals)
         result['data'].append({'channel': 'annot', 'data': interval})
         result['data'].append(
             {'channel': 'wf', 'data': list(wf), 'ts': interval['bt'], 'sr': DFLT_SR}
         )
-    return json.dumps(result)
+        result['data'].append(
+            {
+                'channel': 'plc',
+                'data': list(plc),
+                'ts': interval['bt'],
+                'sr': DFLT_SR // DFLT_FACTOR,
+            }
+        )
+    # return json.dumps(result)
+    return result
 
 
 if __name__ == '__main__':
     # Example usage:
-    intervals = tagged_intervals_gen(tag_model=DFLT_TAG_MODEL, n_items=3, start_bt_s=0)
+    intervals = list(
+        tagged_intervals_gen(tag_model=DFLT_TAG_MODEL, n_items=3, start_bt_s=0)
+    )
     json_str = intervals_to_json(intervals)
+    print(json_str)
