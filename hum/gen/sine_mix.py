@@ -141,6 +141,22 @@ class MinMaxRandDict:
 def dflt_wf_params_to_wf(
     weights, freqs=None, n_samples: int = DFLT_N_SAMPLES, sr: int = DFLT_SR,
 ):
+    """A default for wf_params_to_wf
+
+    :param weights: The weights these frequencies should have (all weights will be normalized
+    :param freqs: List(-like) of frequencies (in Hz)
+    :param n_samples: The number of samples of waveform you want
+    :param sr: Sample rate
+    :return: Waveform. A numpy array of samples of the specified sine wave
+
+    >>> n_samples = random.randint(2,5)
+    >>> wf = dflt_wf_params_to_wf(weights = [1,2,3,4], n_samples=100)
+    >>> len(wf)
+    100
+    >>> wf  # doctest: +SKIP
+    array([ 0.        ,  0.08534908,  0.16988139,  ..., -0.22847099, -0.22552675])
+
+    """
     if freqs is None:
         freqs = tuple(range(200, (len(weights) + 1) * 200, 200))
     return freq_based_stationary_wf(freqs, weights, n_samples, sr)
