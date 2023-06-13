@@ -126,8 +126,7 @@ def intervals_to_json(intervals):
                 'sr': DFLT_SR // DFLT_FACTOR,
             }
         )
-    # return json.dumps(result)
-    return result
+    return json.dumps(result)
 
 
 if __name__ == '__main__':
@@ -136,4 +135,4 @@ if __name__ == '__main__':
         tagged_intervals_gen(tag_model=DFLT_TAG_MODEL, n_items=3, start_bt_s=0)
     )
     json_str = intervals_to_json(intervals)
-    print(json_str)
+    #print(json_str)
