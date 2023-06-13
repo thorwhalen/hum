@@ -71,12 +71,23 @@ def tagged_intervals_gen(tag_model=None, n_items=None, start_bt_s=0):
             yield {"tag": tag, "bt": bt, "tt": tt}
 
 
+def intervals_to_json(intervals):
+    import json
+
+    result = dict()
+    result['data'] = list()
+    for interval in intervals:
+        n_samples = interval_to_duration(interval)
+        wf_params = tag_model_to_params(tag_model=DFLT_TAG_MODEL)[interval["tag"]]
+        wf = dflt_wf_params_to_wf(wf_params, n_samples=n_samples, sr=DFLT_SR)
+        result['data'].append({'channel': 'annot', 'data': interval})
+        result['data'].append(
+            {'channel': 'wf', 'data': list(wf), 'ts': interval['bt'], 'sr': DFLT_SR}
+        )
+    return json.dumps(result)
+
+
 if __name__ == '__main__':
     # Example usage:
     intervals = tagged_intervals_gen(tag_model=DFLT_TAG_MODEL, n_items=3, start_bt_s=0)
-
-    for interval in intervals:
-        duration = interval_to_duration(interval)
-        wf_params = tag_model_to_params(tag_model=DFLT_TAG_MODEL)[interval["tag"]]
-        wf = dflt_wf_params_to_wf(wf_params)
-        print(interval, duration, wf_params, wf)
+    json_str = intervals_to_json(intervals)
