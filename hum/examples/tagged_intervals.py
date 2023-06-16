@@ -111,21 +111,39 @@ def intervals_to_json(intervals):
 
     result = dict()
     result['data'] = list()
+    wf = intervals_to_wf(intervals)
+    plc = intervals_to_plc(intervals)
+    first_ts = intervals[0]['bt']
+    result['data'].append(
+        {'channel': 'wf', 'data': list(wf), 'ts': first_ts, 'sr': DFLT_SR}
+    )
+    result['data'].append(
+        {
+            'channel': 'plc',
+            'data': list(plc),
+            'ts': first_ts,
+            'sr': DFLT_SR // DFLT_FACTOR,
+        }
+    )
+    result['data'].append(
+        {
+            'channel': 'annot',
+            'data': intervals,
+        }
+    )
+    volume_list = list()
+    mixed_list = list()
     for interval in intervals:
-        wf = intervals_to_wf(intervals)
-        plc = intervals_to_plc(intervals)
-        result['data'].append({'channel': 'annot', 'data': interval})
-        result['data'].append(
-            {'channel': 'wf', 'data': list(wf), 'ts': interval['bt'], 'sr': DFLT_SR}
+        wf_chunk = wf[int(interval['bt'] * DFLT_SR) : int(interval['tt'] * DFLT_SR)]
+        volume = np.std(wf_chunk)
+        mean = np.mean(wf_chunk)
+        volume_list.append({'value': volume, 'ts': interval['bt']})
+        mixed_list.append(
+            {'values': {'mean': mean, 'std': volume}, 'ts': interval['bt']}
         )
-        result['data'].append(
-            {
-                'channel': 'plc',
-                'data': list(plc),
-                'ts': interval['bt'],
-                'sr': DFLT_SR // DFLT_FACTOR,
-            }
-        )
+    result['data'].append({'channel': 'volume', 'data': volume_list})
+    result['data'].append({'channel': 'mixed', 'data': mixed_list})
+
     return json.dumps(result)
 
 
@@ -135,4 +153,4 @@ if __name__ == '__main__':
         tagged_intervals_gen(tag_model=DFLT_TAG_MODEL, n_items=3, start_bt_s=0)
     )
     json_str = intervals_to_json(intervals)
-    #print(json_str)
+    print(json_str)
