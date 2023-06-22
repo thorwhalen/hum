@@ -42,6 +42,10 @@ def interval_to_duration(interval, sr=DFLT_SR):
     return (interval["tt"] - interval["bt"]) * sr
 
 
+def identity(x):
+    return x
+
+
 def tagged_intervals_gen(tag_model=None, n_items=None, start_bt_s=0):
     """
     Generates a sequence of tagged intervals in the form of dicts
@@ -77,7 +81,7 @@ def tagged_intervals_gen(tag_model=None, n_items=None, start_bt_s=0):
             yield {"tag": tag, "bt": bt, "tt": tt}
 
 
-def intervals_to_wf(intervals, sr=DFLT_SR):
+def intervals_to_wf(intervals, sr=DFLT_SR, rescaler=identity):
     _, max_tt = minmax(intervals, key=lambda x: x['tt'])
     end_wf = int(max_tt['tt'] * sr)
     wf = np.zeros(end_wf + 1)
@@ -90,7 +94,7 @@ def intervals_to_wf(intervals, sr=DFLT_SR):
     return wf
 
 
-def intervals_to_plc(intervals, sr=DFLT_SR, factor=DFLT_FACTOR):
+def intervals_to_plc(intervals, sr=DFLT_SR, factor=DFLT_FACTOR, rescaler=identity):
     _, max_tt = minmax(intervals, key=lambda x: x['tt'])
     end_wf = int(max_tt['tt'] * sr)
     wf = np.zeros(end_wf + 1)
@@ -106,51 +110,69 @@ def intervals_to_plc(intervals, sr=DFLT_SR, factor=DFLT_FACTOR):
     return wf
 
 
-def intervals_to_json(intervals):
+def mk_channel_data(channel, data, ts, sr):
+    return {'channel': channel, 'data': list(data), 'ts': ts, 'sr': sr}
+
+
+def rescale_intervals(intervals, rescaler):
+    return [
+        {
+            'tag': interval['tag'],
+            'bt': rescaler(interval['bt']),
+            'tt': rescaler(interval['tt']),
+        }
+        for interval in intervals
+    ]
+
+
+def intervals_to_json(intervals, sr=DFLT_SR, factor=DFLT_FACTOR, rescaler=identity):
     import json
 
     result = dict()
     result['data'] = list()
-    wf = intervals_to_wf(intervals)
-    plc = intervals_to_plc(intervals)
-    first_ts = intervals[0]['bt']
-    result['data'].append(
-        {'channel': 'wf', 'data': list(wf), 'ts': first_ts, 'sr': DFLT_SR}
-    )
-    result['data'].append(
-        {
-            'channel': 'plc',
-            'data': list(plc),
-            'ts': first_ts,
-            'sr': DFLT_SR // DFLT_FACTOR,
-        }
-    )
+    wf = intervals_to_wf(intervals, rescaler=rescaler)
+    plc = intervals_to_plc(intervals, rescaler=rescaler)
+    first_ts = rescaler(intervals[0]['bt'])
+    result['data'].append(mk_channel_data('wf', wf, first_ts, sr))
+    result['data'].append(mk_channel_data('plc', plc, first_ts, sr // factor))
     result['data'].append(
         {
             'channel': 'annot',
-            'data': intervals,
+            'data': rescale_intervals(intervals, rescaler),
         }
     )
-    volume_list = list()
-    mixed_list = list()
-    for interval in intervals:
-        wf_chunk = wf[int(interval['bt'] * DFLT_SR) : int(interval['tt'] * DFLT_SR)]
-        volume = np.std(wf_chunk)
-        mean = np.mean(wf_chunk)
-        volume_list.append({'value': volume, 'ts': interval['bt']})
-        mixed_list.append(
-            {'values': {'mean': mean, 'std': volume}, 'ts': interval['bt']}
-        )
+    volume_list, mixed_list = mk_vol_mixed_data(intervals, wf, rescaler)
     result['data'].append({'channel': 'volume', 'data': volume_list})
     result['data'].append({'channel': 'mixed', 'data': mixed_list})
 
     return json.dumps(result)
 
 
+def mk_vol_mixed_data(intervals, wf, rescaler=identity):
+    volume_list = list()
+    mixed_list = list()
+    for interval in intervals:
+        wf_chunk = read_chk(wf, interval)
+        volume = np.std(wf_chunk)
+        mean = np.mean(wf_chunk)
+        volume_list.append({'value': volume, 'ts': rescaler(interval['bt'])})
+        mixed_list.append(
+            {'values': {'mean': mean, 'std': volume}, 'ts': rescaler(interval['bt'])}
+        )
+
+    return volume_list, mixed_list
+
+
+def read_chk(wf, interval, sr=DFLT_SR):
+    wf_chunk = wf[int(interval['bt'] * sr) : int(interval['tt'] * sr)]
+    return wf_chunk
+
+
 if __name__ == '__main__':
-    # Example usage:
     intervals = list(
         tagged_intervals_gen(tag_model=DFLT_TAG_MODEL, n_items=3, start_bt_s=0)
     )
-    json_str = intervals_to_json(intervals)
+    RESCALER = lambda x: int(x * DFLT_SR)
+
+    json_str = intervals_to_json(intervals, rescaler=RESCALER)
     print(json_str)
