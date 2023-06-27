@@ -1,12 +1,15 @@
 import random
-from more_itertools import distribute
+from typing import Callable
+from functools import partial
+
+from more_itertools import distribute, minmax
+import numpy as np
+
+from i2 import Pipe
+
 from hum.gen.sine_mix import dflt_wf_params_to_wf
 from hum.util import simple_chunker
 
-from more_itertools import minmax
-import numpy as np
-from i2 import Pipe
-from functools import partial
 
 DFLT_SR = 44100
 DFLT_FACTOR = 100
@@ -53,7 +56,7 @@ def identity(x):
     return x
 
 
-def tagged_intervals_gen(tag_model=None, n_items=None, start_bt_s=0):
+def tagged_intervals_gen(tag_model=None, items_per_tag=None, start_bt_s=0):
     """
     Generates a sequence of tagged intervals in the form of dicts
     of the form {"tag": str, "bt": numerical, "tt": numerical} where bt is
@@ -69,15 +72,15 @@ def tagged_intervals_gen(tag_model=None, n_items=None, start_bt_s=0):
     if tag_model is None:
         tag_model = DFLT_TAG_MODEL
 
-    if n_items is None:
-        n_items = {tag: 1 for tag in tag_model}
-    elif isinstance(n_items, int):
-        n_items = {tag: n_items for tag in tag_model}
+    if items_per_tag is None:
+        items_per_tag = {tag: 1 for tag in tag_model}
+    elif isinstance(items_per_tag, int):
+        items_per_tag = {tag: items_per_tag for tag in tag_model}
 
     last_items = {tag: None for tag in tag_model}
 
     for tag, generator in tag_model.items():
-        for _ in range(n_items[tag]):
+        for _ in range(items_per_tag[tag]):
             generated = generator(last_items[tag])
             bt = max(
                 generated["bt"],
@@ -182,11 +185,61 @@ def read_chk(wf, interval, sr=DFLT_SR):
     return wf_chunk
 
 
-if __name__ == "__main__":
-    intervals = list(
-        tagged_intervals_gen(tag_model=DFLT_TAG_MODEL, n_items=3, start_bt_s=0)
-    )
-    RESCALER = lambda x: int(x * DFLT_SR)
+def thin_out(array, sample_size: int | float = 0.5):
+    """Thin out an array by randomly selecting a sample of the array."""
+    array_len = len(array)
+    if sample_size < 1:
+        sample_size = array_len * sample_size
+    sample_size = int(sample_size)
+    indices = sorted(np.random.choice(array_len, sample_size, replace=False))
+    return np.array(array)[indices]
 
-    json_str = intervals_to_json(intervals, rescaler=RESCALER)
-    print(json_str)
+
+sample_offset_with_dflt_sr = lambda x: int(x * DFLT_SR)
+
+_rescalers = dict(
+    identity=identity,
+    sample_offset_with_dflt_sr=sample_offset_with_dflt_sr,
+)
+
+
+# TODO: Emulating the existing code here, but should separate json concern from the rest
+
+def five_channel_json_data(
+    n_generators: float | int = 1.0,
+    *,
+    tag_model=DFLT_TAG_MODEL,
+    items_per_tag: int = 3,
+    start_bt_s: float | int = 0,
+    rescaler: Callable | str = sample_offset_with_dflt_sr,
+):
+    """Generate a json string with 5 channels of data."""
+    print(f"--------------- {rescaler}")
+
+    if isinstance(rescaler, str):
+        if rescaler not in _rescalers:
+            raise ValueError(
+                f"Unknown rescaler: {rescaler}. Valid values: {list(_rescalers)}"
+            )
+        rescaler = _rescalers[rescaler]
+
+    assert callable(rescaler)
+
+    intervals = list(
+        tagged_intervals_gen(
+            tag_model=tag_model,
+            items_per_tag=items_per_tag,
+            start_bt_s=start_bt_s,
+        )
+    )
+
+    intervals = list(thin_out(intervals, sample_size=n_generators))
+
+    json_str = intervals_to_json(intervals, rescaler=rescaler)
+    return json_str
+
+
+if __name__ == "__main__":
+    import argh
+
+    argh.dispatch_command(five_channel_json_data)
