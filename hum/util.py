@@ -5,6 +5,7 @@ from warnings import warn
 from inspect import getmodule
 from typing import Iterable
 
+
 def simple_chunker(a: Iterable, chk_size: int):
     """Generate fixed sized non-overlapping chunks of an iterable ``a``.
 
@@ -12,6 +13,7 @@ def simple_chunker(a: Iterable, chk_size: int):
     [(0, 1, 2), (3, 4, 5)]
     """
     return zip(*([iter(a)] * chk_size))
+
 
 def getmodulename(obj, default=''):
     """Get name of module of object"""
@@ -50,4 +52,3 @@ class ModuleNotFoundIgnore:
         if exc_type is ModuleNotFoundError:
             pass
         return True
-
