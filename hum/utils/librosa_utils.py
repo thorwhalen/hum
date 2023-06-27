@@ -772,7 +772,7 @@ def dtype_r2c(d, default=np.complex64):
     mapping = {
         np.dtype(np.float32): np.complex64,
         np.dtype(np.float64): np.complex128,
-        np.dtype(float): np.complex,
+        np.dtype(float): complex,
     }
 
     # If we're given a complex type already, return it
