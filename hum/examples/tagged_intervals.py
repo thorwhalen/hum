@@ -1,5 +1,5 @@
 import random
-from typing import Callable
+from typing import Callable, Union
 from functools import partial
 
 from more_itertools import distribute, minmax
@@ -182,7 +182,7 @@ def read_chk(wf, interval, sr=DFLT_SR):
     return wf_chunk
 
 
-def thin_out(array, sample_size: int | float = 0.5):
+def thin_out(array, sample_size: Union[int, float] = 0.5):
     """Thin out an array by randomly selecting a sample of the array."""
     array_len = len(array)
     if sample_size < 1:
@@ -203,12 +203,12 @@ _rescalers = dict(
 # TODO: Emulating the existing code here, but should separate json concern from the rest
 
 def five_channel_json_data(
-    n_generators: float | int = 1.0,
+    n_generators: Union[float, int] = 1.0,
     *,
     tag_model=DFLT_TAG_MODEL,
     items_per_tag: int = 3,
-    start_bt_s: float | int = 0,
-    rescaler: Callable | str = sample_offset_with_dflt_sr,
+    start_bt_s: Union[float, int] = 0,
+    rescaler: Union[Callable, str] = sample_offset_with_dflt_sr,
 ):
     """Generate a json string with 5 channels of data."""
     print(f"--------------- {rescaler}")
