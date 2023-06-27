@@ -195,12 +195,12 @@ def thin_out(array, sample_size: Union[int, float] = 0.5):
 sample_offset_with_dflt_sr = lambda x: int(x * DFLT_SR)
 
 _rescalers = dict(
-    identity=identity,
-    sample_offset_with_dflt_sr=sample_offset_with_dflt_sr,
+    identity=identity, sample_offset_with_dflt_sr=sample_offset_with_dflt_sr,
 )
 
 
 # TODO: Emulating the existing code here, but should separate json concern from the rest
+
 
 def five_channel_json_data(
     n_generators: Union[float, int] = 1.0,
@@ -211,12 +211,12 @@ def five_channel_json_data(
     rescaler: Union[Callable, str] = sample_offset_with_dflt_sr,
 ):
     """Generate a json string with 5 channels of data."""
-    print(f"--------------- {rescaler}")
+    print(f'--------------- {rescaler}')
 
     if isinstance(rescaler, str):
         if rescaler not in _rescalers:
             raise ValueError(
-                f"Unknown rescaler: {rescaler}. Valid values: {list(_rescalers)}"
+                f'Unknown rescaler: {rescaler}. Valid values: {list(_rescalers)}'
             )
         rescaler = _rescalers[rescaler]
 
@@ -224,9 +224,7 @@ def five_channel_json_data(
 
     intervals = list(
         tagged_intervals_gen(
-            tag_model=tag_model,
-            items_per_tag=items_per_tag,
-            start_bt_s=start_bt_s,
+            tag_model=tag_model, items_per_tag=items_per_tag, start_bt_s=start_bt_s,
         )
     )
 
@@ -236,7 +234,7 @@ def five_channel_json_data(
     return json_str
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     import argh
 
     argh.dispatch_command(five_channel_json_data)
