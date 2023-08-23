@@ -210,8 +210,11 @@ def tag_wf_gen(
         )
         tag_sequence = indefinite_random_choice_from_tags
     else:
+        if isinstance(tag_sequence, str):
+            tag_sequence = tag_sequence.split()
         if isinstance(tag_sequence, Sequence):
             tag_sequence = list(tag_sequence)
+            # TODO: Make it so that any tags can be mapped to a unique wf generator
             if not all(tag in tag_wfgen_map for tag in tag_sequence):
                 raise ValueError(
                     f'A tag_sequence must only have elements that are keys of '
