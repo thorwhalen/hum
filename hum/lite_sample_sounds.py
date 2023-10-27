@@ -13,6 +13,21 @@ DFLT_MAX_AMPLITUDE = 30000
 DFLT_PATTERN_LEN = 100
 DFLT_PATTERN = [DFLT_MAX_AMPLITUDE] * 10 + [-DFLT_MAX_AMPLITUDE] * 10
 
+def mk_audio_store(chk_size = DFLT_CHK_SIZE):
+    return {
+        'rand_1': random_samples(chk_size, max_amplitude=30000 / 3),
+        'rand_2': random_samples(chk_size, max_amplitude=30000 / 2),
+        'rand_3': random_samples(chk_size, max_amplitude=30000 / 1),
+        'pure_1': pure_tone(chk_size, freq=440),
+        'pure_2': pure_tone(chk_size, freq=440 * 1.4),
+        'pure_3': pure_tone(chk_size, freq=440 * 1.8),
+        'triangle_1': triangular_tone(chk_size, freq=440),
+        'triangle_2': triangular_tone(chk_size, freq=440 * 1.4),
+        'triangle_3': triangular_tone(chk_size, freq=440 * 1.8),
+        'square_1': square_tone(chk_size, freq=440),
+        'square_2': square_tone(chk_size, freq=440 * 1.4),
+        'square_3': square_tone(chk_size, freq=440 * 1.4),
+    }
 
 def chk_from_pattern(chk_size=DFLT_CHK_SIZE, pattern=None):
     """
