@@ -215,7 +215,8 @@ class Sound(object):
 
     def crop_with_seconds(self, first_second, last_second):
         return self.crop_with_idx(
-            int(round(first_second * self.sr)), int(round(last_second * self.sr)),
+            int(round(first_second * self.sr)),
+            int(round(last_second * self.sr)),
         )
 
     def melspectr_matrix(self, **mel_kwargs):
@@ -271,3 +272,6 @@ class Sound(object):
         if plot_it:
             plot_melspectrogram(log_S, sr=self.sr, hop_length=mel_kwargs['hop_length'])
         return log_S
+
+    def _repr_html_(self):
+        return self.display()
