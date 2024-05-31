@@ -1,6 +1,7 @@
 """
 Utils to view, hear, and manipulate audio
 """
+
 from numpy import array, max, log10, ceil, int16, hstack, zeros, argmin, ndim
 from numpy.random import randint
 import soundfile as sf
@@ -83,11 +84,17 @@ def wf_and_sr(*args, **kwargs):
         args_0 = args[0]
         if isinstance(args_0, str):
             kwargs['filepath'] = args_0
-        elif isinstance(args_0, tuple):
+        elif isinstance(args_0, tuple) and len(args_0) == 2:
             kwargs['wf'], kwargs['sr'] = args_0
+        elif hasattr(args_0, 'wf') and hasattr(args_0, 'sr'):
+            kwargs['wf'], kwargs['sr'] = args_0.wf, args_0.sr
     kwargs_keys = list(kwargs.keys())
     if 'wf' in kwargs_keys:
         return kwargs['wf'], kwargs['sr']
+    else:
+        raise ValueError(
+            f'Could not result waveform from the arguments provided: {args}, {kwargs}'
+        )
 
 
 class Sound(object):
@@ -208,7 +215,8 @@ class Sound(object):
 
     def crop_with_seconds(self, first_second, last_second):
         return self.crop_with_idx(
-            int(round(first_second * self.sr)), int(round(last_second * self.sr)),
+            int(round(first_second * self.sr)),
+            int(round(last_second * self.sr)),
         )
 
     def melspectr_matrix(self, **mel_kwargs):
