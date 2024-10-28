@@ -1,6 +1,7 @@
 """
 Plot utils
 """
+
 from inspect import getmodule
 import matplotlib.pylab as plt
 from numpy import linspace
@@ -10,9 +11,9 @@ DFLT_FIGSIZE_FOR_WF_PLOTS = (22, 5)
 DFLT_SR = 44100
 
 
-def getmodulename(obj, default=''):
+def getmodulename(obj, default=""):
     """Get name of module of object"""
-    return getattr(getmodule(obj), '__name__', default)
+    return getattr(getmodule(obj), "__name__", default)
 
 
 # def plot_wf(wf, sr=None, figsize=(20, 6), **kwargs):
@@ -54,7 +55,7 @@ def plot_wf(
 
 def disp_wf(wf, sr=DFLT_SR, autoplay=False, wf_plot_func=plt.specgram):
     if wf_plot_func is not None:
-        if getmodulename(wf_plot_func, '').startswith('matplotlib'):
+        if getmodulename(wf_plot_func, "").startswith("matplotlib"):
             plt.figure(figsize=DFLT_FIGSIZE_FOR_WF_PLOTS)
         wf_plot_func(wf)
     try:

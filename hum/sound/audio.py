@@ -20,9 +20,9 @@ default_wf_type = int16
 def subtype_of_wf(wf):
     if len(wf) > 0:
         if isinstance(wf[0], (int, int16)):
-            return 'PCM_16'
+            return "PCM_16"
         else:
-            return 'FLOAT'
+            return "FLOAT"
     else:
         return None
 
@@ -54,7 +54,7 @@ def ensure_mono(wf):
 
 
 def is_wav_file(filepath):
-    return os.path.splitext(filepath)[1] == '.wav'
+    return os.path.splitext(filepath)[1] == ".wav"
 
 
 def plot_melspectrogram(spect_mat, sr=default_sr, hop_length=512, name=None):
@@ -62,14 +62,14 @@ def plot_melspectrogram(spect_mat, sr=default_sr, hop_length=512, name=None):
     plt.figure(figsize=(12, 4))
     # Display the spectrogram on a mel scale
     # sample rate and hop length parameters are used to render the time axis
-    specshow(spect_mat, sr=sr, hop_length=hop_length, x_axis='time', y_axis='mel')
+    specshow(spect_mat, sr=sr, hop_length=hop_length, x_axis="time", y_axis="mel")
     # Put a descriptive title on the plot
     if name is not None:
         plt.title('mel power spectrogram of "{}"'.format(name))
     else:
-        plt.title('mel power spectrogram')
+        plt.title("mel power spectrogram")
     # draw a color bar
-    plt.colorbar(format='%+02.0f dB')
+    plt.colorbar(format="%+02.0f dB")
     # Make the figure layout compact
     plt.tight_layout()
 
@@ -83,17 +83,17 @@ def wf_and_sr(*args, **kwargs):
     if len(args) > 0:
         args_0 = args[0]
         if isinstance(args_0, str):
-            kwargs['filepath'] = args_0
+            kwargs["filepath"] = args_0
         elif isinstance(args_0, tuple) and len(args_0) == 2:
-            kwargs['wf'], kwargs['sr'] = args_0
-        elif hasattr(args_0, 'wf') and hasattr(args_0, 'sr'):
-            kwargs['wf'], kwargs['sr'] = args_0.wf, args_0.sr
+            kwargs["wf"], kwargs["sr"] = args_0
+        elif hasattr(args_0, "wf") and hasattr(args_0, "sr"):
+            kwargs["wf"], kwargs["sr"] = args_0.wf, args_0.sr
     kwargs_keys = list(kwargs.keys())
-    if 'wf' in kwargs_keys:
-        return kwargs['wf'], kwargs['sr']
+    if "wf" in kwargs_keys:
+        return kwargs["wf"], kwargs["sr"]
     else:
         raise ValueError(
-            f'Could not result waveform from the arguments provided: {args}, {kwargs}'
+            f"Could not result waveform from the arguments provided: {args}, {kwargs}"
         )
 
 
@@ -173,11 +173,11 @@ class Sound(object):
         elif isinstance(sound, str) and os.path.isfile(sound):
             return cls.from_file(sound)
         elif isinstance(sound, dict):
-            if 'wf' in sound and 'sr' in sound:
-                return cls(sound['wf'], sound['sr'])
+            if "wf" in sound and "sr" in sound:
+                return cls(sound["wf"], sound["sr"])
             else:
                 return cls.from_sref(sound)
-        elif hasattr(sound, 'wf') and hasattr(sound, 'sr'):
+        elif hasattr(sound, "wf") and hasattr(sound, "sr"):
             return cls(sound.wf, sound.sr)
         else:
             raise TypeError("Couldn't figure out how that format represents sound")
@@ -192,14 +192,14 @@ class Sound(object):
         return cls(sr=sr, wf=zeros(int(round(seconds * sr)), wf_type))
 
     def save_to_wav(self, filepath=None, samplerate=None, **kwargs):
-        subtype = kwargs.get('subtype', subtype_of_wf(self.wf))
+        subtype = kwargs.get("subtype", subtype_of_wf(self.wf))
         samplerate = samplerate or self.sr
         if isinstance(filepath, int):
             rand_range = filepath
-            template = 'sound_save_{:0' + str(int(ceil(log10(rand_range)))) + '.0}.wav'
+            template = "sound_save_{:0" + str(int(ceil(log10(rand_range)))) + ".0}.wav"
             filepath = template.format(randint(0, rand_range))
         else:
-            filepath = filepath or 'sound_save.wav'
+            filepath = filepath or "sound_save.wav"
         sf.write(filepath, self.wf, samplerate=samplerate, subtype=subtype, **kwargs)
 
     ####################################################################################################################
@@ -215,7 +215,8 @@ class Sound(object):
 
     def crop_with_seconds(self, first_second, last_second):
         return self.crop_with_idx(
-            int(round(first_second * self.sr)), int(round(last_second * self.sr)),
+            int(round(first_second * self.sr)),
+            int(round(last_second * self.sr)),
         )
 
     def melspectr_matrix(self, **mel_kwargs):
@@ -223,7 +224,7 @@ class Sound(object):
         Returns a melspectrogram matrix to be used to display a melspectrogram
         """
         mel_kwargs = dict(
-            {'n_fft': 2048, 'hop_length': 512, 'n_mels': 128}, **mel_kwargs
+            {"n_fft": 2048, "hop_length": 512, "n_mels": 128}, **mel_kwargs
         )
         S = melspectrogram(array(self.wf).astype(float), sr=self.sr, **mel_kwargs)
         # Convert to log scale (dB). We'll use the peak power as reference.
@@ -232,7 +233,7 @@ class Sound(object):
     def __add__(self, append_sound):
         assert (
             self.sr == append_sound.sr
-        ), 'Sounds need to have the same sample rate to be appended'
+        ), "Sounds need to have the same sample rate to be appended"
         return Sound(sr=self.sr, wf=hstack(self.wf, append_sound.wf))
 
     ####################################################################################################################
@@ -265,11 +266,11 @@ class Sound(object):
         Returns a melsepectrogram matrix and plots a melspectrogram if plot_it is True
         """
         mel_kwargs = dict(
-            {'n_fft': 2048, 'hop_length': 512, 'n_mels': 128}, **mel_kwargs
+            {"n_fft": 2048, "hop_length": 512, "n_mels": 128}, **mel_kwargs
         )
         log_S = self.melspectr_matrix(**mel_kwargs)
         if plot_it:
-            plot_melspectrogram(log_S, sr=self.sr, hop_length=mel_kwargs['hop_length'])
+            plot_melspectrogram(log_S, sr=self.sr, hop_length=mel_kwargs["hop_length"])
         return log_S
 
     def _repr_html_(self):

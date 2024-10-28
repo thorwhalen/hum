@@ -21,10 +21,10 @@ def session_phase_rpm_temparature(
     n_blocks_per_phase=2,
     average_block_duration=21 * 2048,
     wf_params_cols=(
-        'session',
-        'phase',
-        'rpm',
-        'temperature',
+        "session",
+        "phase",
+        "rpm",
+        "temperature",
     ),  # TODO: perhaps an exclusion list is more general
     annots_df_to_wf_params=MinMaxScaler().fit_transform,
     params_and_duration_to_wf=lambda p, duration: dflt_wf_params_to_wf(
@@ -60,11 +60,11 @@ def session_phase_rpm_temparature(
         ),
     )
     annots_df = pd.DataFrame(f())
-    annots_df['timestamp'] = list(itertools.accumulate(annots_df['duration']))
+    annots_df["timestamp"] = list(itertools.accumulate(annots_df["duration"]))
     wf_params = annots_df_to_wf_params(annots_df[wf_params_cols])
 
     wf = np.hstack(
-        list(starmap(params_and_duration_to_wf, zip(wf_params, annots_df['duration'])))
+        list(starmap(params_and_duration_to_wf, zip(wf_params, annots_df["duration"])))
     )
 
-    return annots_df.to_dict(orient='records'), wf
+    return annots_df.to_dict(orient="records"), wf

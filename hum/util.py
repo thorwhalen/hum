@@ -1,6 +1,7 @@
 """
 A few general utils
 """
+
 from warnings import warn
 from inspect import getmodule
 from typing import Iterable
@@ -15,9 +16,9 @@ def simple_chunker(a: Iterable, chk_size: int):
     return zip(*([iter(a)] * chk_size))
 
 
-def getmodulename(obj, default=''):
+def getmodulename(obj, default=""):
     """Get name of module of object"""
-    return getattr(getmodule(obj), '__name__', default)
+    return getattr(getmodule(obj), "__name__", default)
 
 
 class ModuleNotFoundErrorNiceMessage:
@@ -31,7 +32,7 @@ class ModuleNotFoundErrorNiceMessage:
         if exc_type is ModuleNotFoundError:
             msg = (
                 self.msg
-                or f'''
+                or f"""
 It seems you don't have required `{exc_val.name}` package for this Store.
 Try installing it by running:
 
@@ -39,7 +40,7 @@ Try installing it by running:
 
 in your terminal.
 For more information: https://pypi.org/project/{exc_val.name}
-            '''
+            """
             )
             warn(msg)
 

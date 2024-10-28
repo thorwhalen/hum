@@ -1,6 +1,7 @@
 """
 Generate Audio
 """
+
 from contextlib import suppress
 
 from hum.gen.util import DFLT_N_SAMPLES, DFLT_SR

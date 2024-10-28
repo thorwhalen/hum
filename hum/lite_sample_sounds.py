@@ -17,18 +17,18 @@ DFLT_PATTERN = [DFLT_MAX_AMPLITUDE] * 10 + [-DFLT_MAX_AMPLITUDE] * 10
 
 def mk_audio_store(chk_size=DFLT_CHK_SIZE):
     return {
-        'rand_1': random_samples(chk_size, max_amplitude=30000 / 3),
-        'rand_2': random_samples(chk_size, max_amplitude=30000 / 2),
-        'rand_3': random_samples(chk_size, max_amplitude=30000 / 1),
-        'pure_1': pure_tone(chk_size, freq=440),
-        'pure_2': pure_tone(chk_size, freq=440 * 1.4),
-        'pure_3': pure_tone(chk_size, freq=440 * 1.8),
-        'triangle_1': triangular_tone(chk_size, freq=440),
-        'triangle_2': triangular_tone(chk_size, freq=440 * 1.4),
-        'triangle_3': triangular_tone(chk_size, freq=440 * 1.8),
-        'square_1': square_tone(chk_size, freq=440),
-        'square_2': square_tone(chk_size, freq=440 * 1.4),
-        'square_3': square_tone(chk_size, freq=440 * 1.4),
+        "rand_1": random_samples(chk_size, max_amplitude=30000 / 3),
+        "rand_2": random_samples(chk_size, max_amplitude=30000 / 2),
+        "rand_3": random_samples(chk_size, max_amplitude=30000 / 1),
+        "pure_1": pure_tone(chk_size, freq=440),
+        "pure_2": pure_tone(chk_size, freq=440 * 1.4),
+        "pure_3": pure_tone(chk_size, freq=440 * 1.8),
+        "triangle_1": triangular_tone(chk_size, freq=440),
+        "triangle_2": triangular_tone(chk_size, freq=440 * 1.4),
+        "triangle_3": triangular_tone(chk_size, freq=440 * 1.8),
+        "square_1": square_tone(chk_size, freq=440),
+        "square_2": square_tone(chk_size, freq=440 * 1.4),
+        "square_3": square_tone(chk_size, freq=440 * 1.4),
     }
 
 
@@ -108,10 +108,10 @@ def square_tone(
 
 
 tag_to_wf_gen_func = {
-    'random': random_samples,
-    'pure_tone': pure_tone,
-    'triangular_tone': triangular_tone,
-    'square_tone': square_tone,
+    "random": random_samples,
+    "pure_tone": pure_tone,
+    "triangular_tone": triangular_tone,
+    "square_tone": square_tone,
 }
 
 tag_to_wf_gen_func_items = tuple(tag_to_wf_gen_func.items())
@@ -143,15 +143,15 @@ class AnnotatedWaveform(object):
         self.freq = freq
         self.max_amplitude = max_amplitude
         self._default_kwargs = {
-            'chk_size': chk_size,
-            'freq': freq,
-            'sr': sr,
-            'max_amplitude': max_amplitude,
+            "chk_size": chk_size,
+            "freq": freq,
+            "sr": sr,
+            "max_amplitude": max_amplitude,
         }
 
     def chk_and_tag_gen(
         self,
-        chk_tags=('random', 'pure_tone', 'triangular_tone', 'square_tone'),
+        chk_tags=("random", "pure_tone", "triangular_tone", "square_tone"),
     ):
         """
         Yields (chk, tag) pairs for each tag given in chk_tags
@@ -161,7 +161,7 @@ class AnnotatedWaveform(object):
 
     def get_wf_and_annots(
         self,
-        chk_tags=('random', 'pure_tone', 'triangular_tone', 'square_tone'),
+        chk_tags=("random", "pure_tone", "triangular_tone", "square_tone"),
     ):
         """
         Yields (wf, annots) tuple where annots is a dictionary mapping tag to chunk indices
@@ -186,7 +186,7 @@ class AnnotatedWaveform(object):
         return np.array(wf), dict(slice_of_tag)
 
 
-Tag = TypeVar('Tag')  # TODO: Use generic for better typing
+Tag = TypeVar("Tag")  # TODO: Use generic for better typing
 
 
 def tag_wf_gen(
@@ -250,8 +250,8 @@ def tag_wf_gen(
             # TODO: Make it so that any tags can be mapped to a unique wf generator
             if not all(tag in tag_wfgen_map for tag in tag_sequence):
                 raise ValueError(
-                    f'A tag_sequence must only have elements that are keys of '
-                    f'tag_wfgen_map, i.e. from {list(tag_wfgen_map)}'
+                    f"A tag_sequence must only have elements that are keys of "
+                    f"tag_wfgen_map, i.e. from {list(tag_wfgen_map)}"
                 )
 
     for tag in tag_sequence:

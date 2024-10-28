@@ -7,6 +7,7 @@ Useful to diagnose timestamping problems.
 Note: You'll need to pip install pyttsx3 to use this module.
 
 """
+
 from datetime import datetime as dt
 import time
 from contextlib import suppress
@@ -14,7 +15,7 @@ from contextlib import suppress
 with suppress(ModuleNotFoundError, ImportError):
     import pyttsx3
 
-    DFLT_TIME_FORMAT = '%H %M %S'
+    DFLT_TIME_FORMAT = "%H %M %S"
 
     class Voicer:
         def __init__(
@@ -31,8 +32,8 @@ with suppress(ModuleNotFoundError, ImportError):
 
             if voice is None:
                 for voice_dict in self.voices:
-                    if 'en_US' in voice_dict['languages']:
-                        voice = voice_dict['id']
+                    if "en_US" in voice_dict["languages"]:
+                        voice = voice_dict["id"]
                         break
                 else:
                     print("Didn't find a voice!!")
@@ -57,28 +58,28 @@ with suppress(ModuleNotFoundError, ImportError):
             import pandas as pd
 
             df = pd.DataFrame(self.voices)
-            df = df.set_index('name')
-            df['language'] = [x[0] for x in df['languages']]
-            df['gender'] = [
-                'male' if x == 'VoiceGenderMale' else 'female' for x in df['gender']
+            df = df.set_index("name")
+            df["language"] = [x[0] for x in df["languages"]]
+            df["gender"] = [
+                "male" if x == "VoiceGenderMale" else "female" for x in df["gender"]
             ]
-            del df['languages']
+            del df["languages"]
             return df
 
         def __getattribute__(self, attr):
-            if attr in {'volume', 'rate', 'voice'}:
+            if attr in {"volume", "rate", "voice"}:
                 return self.engine.getProperty(attr)
             else:
                 return super().__getattribute__(attr)
 
         @property
         def voices(self):
-            return [x.__dict__ for x in self.engine.getProperty('voices')]
+            return [x.__dict__ for x in self.engine.getProperty("voices")]
 
         def voice_id_for_name(self, name):
             for voice in self.voices:
-                if voice['name'] == name:
-                    return voice['id']
+                if voice["name"] == name:
+                    return voice["id"]
 
         def say_the_time(self, verbose=False):
             s = dt.utcnow().strftime(self.time_format)
@@ -94,7 +95,7 @@ with suppress(ModuleNotFoundError, ImportError):
                     elapsed = time.time() - tic
                     time.sleep(max(0, every_secs - elapsed))
             except KeyboardInterrupt:
-                print('KeyboardInterrupt!!!')
+                print("KeyboardInterrupt!!!")
                 self.engine.stop()
 
     def tell_time_continuously(
@@ -122,7 +123,7 @@ with suppress(ModuleNotFoundError, ImportError):
         Returns:
             Nothing, just loops and says the time regularly
         """
-        if voice == 'help':
+        if voice == "help":
             print(Voicer().voices_df)
         else:
             voicer = Voicer(
@@ -134,7 +135,7 @@ with suppress(ModuleNotFoundError, ImportError):
             )
             voicer.tell_time_continuously(every_secs, verbose=verbose)
 
-    if __name__ == '__main__':
+    if __name__ == "__main__":
         import argh
 
         argh.dispatch_command(tell_time_continuously)

@@ -1,6 +1,7 @@
 """
 Simple infinite waveform
 """
+
 import random
 import numpy as np
 

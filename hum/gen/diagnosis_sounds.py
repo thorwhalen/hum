@@ -62,8 +62,8 @@ def ums_to_01_array(ums, n_ums_bits):
     Converts ums to an array with length n_ums_bits equivalent to a binary representation of ums
     assert all(ums_to_01_array(100,1) == [1, 1, 0, 0, 1, 0, 0])
     """
-    ums_bits_str_format = '{:0' + str(n_ums_bits) + 'b}'
-    return array([int(x == '1') for x in ums_bits_str_format.format(ums)])
+    ums_bits_str_format = "{:0" + str(n_ums_bits) + "b}"
+    return array([int(x == "1") for x in ums_bits_str_format.format(ums)])
 
 
 class BinarySound(object):
@@ -114,24 +114,24 @@ class BinarySound(object):
         if header_pattern is None:
             header_pattern = randint(0, 2, nbits)
         elif isinstance(header_pattern, str):
-            if header_pattern == 'halfhalf':
+            if header_pattern == "halfhalf":
                 header_pattern = hstack(
                     (ones(int(ceil(nbits / 2))), zeros(int(floor(nbits / 2))))
                 ).astype(int)
-            elif header_pattern == 'alternating':
+            elif header_pattern == "alternating":
                 header_pattern = array([1, 0] * int(ceil(nbits / 2)))[:nbits]
             else:
                 raise ValueError(
-                    'header_pattern not recognized: {}'.format(header_pattern)
+                    "header_pattern not recognized: {}".format(header_pattern)
                 )
         else:
             assert (
                 len(header_pattern) == nbits
-            ), 'header_pattern must have nbits={}'.format(nbits)
+            ), "header_pattern must have nbits={}".format(nbits)
             assert set(unique(header_pattern).astype(int)) == {
                 0,
                 1,
-            }, 'header_pattern must be an array of 0s and 1s'
+            }, "header_pattern must be an array of 0s and 1s"
         self.header_pattern = header_pattern
         self.header_word = tile(
             repeat(self.header_pattern, self.repetition),
@@ -234,10 +234,10 @@ class BinarySound(object):
     def __repr__(self):
         return str(
             {
-                'repetition': self.repetition,
-                'word_size_frm': self.word_size_frm,
-                'redundancy': self.redundancy,
-                'phrase_data_frm': self.phrase_data_frm,
+                "repetition": self.repetition,
+                "word_size_frm": self.word_size_frm,
+                "redundancy": self.redundancy,
+                "phrase_data_frm": self.phrase_data_frm,
             }
         )
 
@@ -322,13 +322,13 @@ class TimeSound(WfGen):
             sr=sr, buf_size_frm=buf_size_frm, amplitude=amplitude
         )
         self.n_ums_bits = n_ums_bits
-        self.ums_bits_str_format = '{:0' + str(n_ums_bits) + 'b}'
+        self.ums_bits_str_format = "{:0" + str(n_ums_bits) + "b}"
         self.n_freqs_per_ums_bit = len(self.lookup_tables) // self.n_ums_bits
         self.n_freqs_for_ums = self.n_freqs_per_ums_bit * self.n_ums_bits
         self.buf_size_ms = self.buf_size_s * 1000
 
     def ums_to_01_array(self, ums):
-        return array([int(x == '1') for x in self.ums_bits_str_format.format(ums)])
+        return array([int(x == "1") for x in self.ums_bits_str_format.format(ums)])
 
     def freq_weight_array_for_ums(self, ums):
         return tile(self.ums_to_01_array(ums), self.n_freqs_per_ums_bit)
@@ -431,9 +431,9 @@ def mk_sounds_with_timed_bleeps(
     bleep_loc=DFLT_BLEEP_LOC,
     bleep_spec=DFLT_BLEEP_SPEC,
     sr=DFLT_SR,
-    save_filepath='bleeps.wav',
+    save_filepath="bleeps.wav",
 ):
     wf = wf_with_timed_bleeps(
         n_samples=n_samples, bleep_loc=bleep_loc, bleep_spec=bleep_spec, sr=sr
     )
-    sf.write(save_filepath, data=wf, samplerate=sr, format='WAV')
+    sf.write(save_filepath, data=wf, samplerate=sr, format="WAV")

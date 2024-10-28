@@ -1,6 +1,7 @@
 """
 Generating Signals
 """
+
 import numpy as np
 import random
 from itertools import chain
@@ -8,7 +9,7 @@ from typing import Iterable
 import pandas as pd
 
 DFLT_WORD_LENGTH = 30
-DFLT_ALPHABET = 'abcde'
+DFLT_ALPHABET = "abcde"
 
 
 def normal_dist(mu, sigma):
@@ -22,7 +23,7 @@ def gen_words(
     N=DFLT_WORD_LENGTH,
     alphabet: Iterable = DFLT_ALPHABET,
     spread_pct=0.01,
-    proba_dist='normal',
+    proba_dist="normal",
 ):
     """
     Returns a generator of lists, with each consisting of n repetitions of a random word for alphabet, with n being
@@ -30,13 +31,13 @@ def gen_words(
     >>> gen = gen_words(N=3, alphabet=('foo',), spread_pct=0)
     >>> assert next(gen) == ['foo', 'foo', 'foo']
     """
-    if proba_dist == 'normal':
+    if proba_dist == "normal":
         sigma = N * spread_pct
         mu = N
         dist = normal_dist(mu, sigma)
     else:
         raise NotImplementedError(
-            f'Probability distribution {proba_dist} not implemented'
+            f"Probability distribution {proba_dist} not implemented"
         )
     while True:
         length = dist
@@ -52,7 +53,7 @@ def alphabet_to_bins(alphabet=DFLT_ALPHABET):
     """
     Returns a dictionary matching each word in alphabet to bins of size 10.0 ranging from 0 to 10 * len(alphabet)
     >>> assert alphabet_to_bins() == {
-    ...     'a': (0.0, 10.0), 'b': (10.0, 20.0), 'c': (20.0, 30.0), 
+    ...     'a': (0.0, 10.0), 'b': (10.0, 20.0), 'c': (20.0, 30.0),
     ...     'd': (30.0, 40.0), 'e': (40.0, 50.0)
     ... }
     """
@@ -76,7 +77,7 @@ def call_repeatedly(func, *args, **kwargs):
     >>> gen = call_repeatedly(alphabet_to_bins)
     >>> assert next(gen) == {'a': (0.0, 10.0), 'b': (10.0, 20.0), 'c': (20.0, 30.0), 'd': (30.0, 40.0), 'e': (40.0, 50.0)}
     >>> assert next(gen) == {
-    ...     'a': (0.0, 10.0), 'b': (10.0, 20.0), 'c': (20.0, 30.0), 
+    ...     'a': (0.0, 10.0), 'b': (10.0, 20.0), 'c': (20.0, 30.0),
     ...     'd': (30.0, 40.0), 'e': (40.0, 50.0)
     ... }
 
@@ -155,7 +156,7 @@ def string_to_num(word):
 def session_to_df(session):
     symbs, outliers, sigs = session
     df = pd.DataFrame()
-    df['symbols'] = string_to_num(''.join(symbs))
-    df['outliers'] = outliers
-    df['signal'] = sigs
+    df["symbols"] = string_to_num("".join(symbs))
+    df["outliers"] = outliers
+    df["signal"] = sigs
     return df

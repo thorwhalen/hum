@@ -23,6 +23,7 @@ DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS 
 ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 """
+
 import warnings
 import numpy as np
 from matplotlib.cm import get_cmap
@@ -37,7 +38,7 @@ import scipy.signal
 from numpy.lib.stride_tricks import as_strided
 import re
 
-MAX_MEM_BLOCK = 2 ** 8 * 2 ** 10
+MAX_MEM_BLOCK = 2**8 * 2**10
 
 # specshow
 
@@ -54,7 +55,7 @@ def specshow(
     fmax=None,
     tuning=0.0,
     bins_per_octave=12,
-    key='C:maj',
+    key="C:maj",
     Sa=None,
     mela=None,
     thaat=None,
@@ -65,14 +66,14 @@ def specshow(
 ):
     if np.issubdtype(data.dtype, np.complexfloating):
         warnings.warn(
-            'Trying to display complex-valued input. ' 'Showing magnitude instead.'
+            "Trying to display complex-valued input. " "Showing magnitude instead."
         )
         data = np.abs(data)
 
-    kwargs.setdefault('cmap', cmap(data))
-    kwargs.setdefault('rasterized', True)
-    kwargs.setdefault('edgecolors', 'None')
-    kwargs.setdefault('shading', 'flat')
+    kwargs.setdefault("cmap", cmap(data))
+    kwargs.setdefault("rasterized", True)
+    kwargs.setdefault("edgecolors", "None")
+    kwargs.setdefault("shading", "flat")
 
     all_params = dict(
         kwargs=kwargs,
@@ -99,8 +100,8 @@ def specshow(
     axes.set_ylim(y_coords.min(), y_coords.max())
 
     # Set up axis scaling
-    __scale_axes(axes, x_axis, 'x')
-    __scale_axes(axes, y_axis, 'y')
+    __scale_axes(axes, x_axis, "x")
+    __scale_axes(axes, y_axis, "y")
 
     # Construct tickers and locators
     __decorate_axis(axes.xaxis, x_axis, key=key, Sa=Sa, mela=mela, thaat=thaat)
@@ -108,14 +109,14 @@ def specshow(
 
     # If the plot is a self-similarity/covariance etc. plot, square it
     if __same_axes(x_axis, y_axis, axes.get_xlim(), axes.get_ylim()) and auto_aspect:
-        axes.set_aspect('equal')
+        axes.set_aspect("equal")
     return out
 
 
-def cmap(data, robust=True, cmap_seq='magma', cmap_bool='gray_r', cmap_div='coolwarm'):
+def cmap(data, robust=True, cmap_seq="magma", cmap_bool="gray_r", cmap_div="coolwarm"):
     data = np.atleast_1d(data)
 
-    if data.dtype == 'bool':
+    if data.dtype == "bool":
         return get_cmap(cmap_bool, lut=2)
 
     data = data[np.isfinite(data)]
@@ -139,41 +140,41 @@ def __mesh_coords(ax_type, coords, n, **kwargs):
     if coords is not None:
         if len(coords) < n:
             raise Exception(
-                'Coordinate shape mismatch: ' '{}<{}'.format(len(coords), n)
+                "Coordinate shape mismatch: " "{}<{}".format(len(coords), n)
             )
         return coords
 
     coord_map = {
-        'linear': __coord_fft_hz,
-        'fft': __coord_fft_hz,
-        'fft_note': __coord_fft_hz,
-        'fft_svara': __coord_fft_hz,
-        'hz': __coord_fft_hz,
-        'log': __coord_fft_hz,
-        'mel': __coord_mel_hz,
-        'cqt': __coord_cqt_hz,
-        'cqt_hz': __coord_cqt_hz,
-        'cqt_note': __coord_cqt_hz,
-        'cqt_svara': __coord_cqt_hz,
-        'chroma': __coord_chroma,
-        'chroma_c': __coord_chroma,
-        'chroma_h': __coord_chroma,
-        'time': __coord_time,
-        's': __coord_time,
-        'ms': __coord_time,
-        'lag': __coord_time,
-        'lag_s': __coord_time,
-        'lag_ms': __coord_time,
-        'tonnetz': __coord_n,
-        'off': __coord_n,
-        'tempo': __coord_tempo,
-        'fourier_tempo': __coord_fourier_tempo,
-        'frames': __coord_n,
+        "linear": __coord_fft_hz,
+        "fft": __coord_fft_hz,
+        "fft_note": __coord_fft_hz,
+        "fft_svara": __coord_fft_hz,
+        "hz": __coord_fft_hz,
+        "log": __coord_fft_hz,
+        "mel": __coord_mel_hz,
+        "cqt": __coord_cqt_hz,
+        "cqt_hz": __coord_cqt_hz,
+        "cqt_note": __coord_cqt_hz,
+        "cqt_svara": __coord_cqt_hz,
+        "chroma": __coord_chroma,
+        "chroma_c": __coord_chroma,
+        "chroma_h": __coord_chroma,
+        "time": __coord_time,
+        "s": __coord_time,
+        "ms": __coord_time,
+        "lag": __coord_time,
+        "lag_s": __coord_time,
+        "lag_ms": __coord_time,
+        "tonnetz": __coord_n,
+        "off": __coord_n,
+        "tempo": __coord_tempo,
+        "fourier_tempo": __coord_fourier_tempo,
+        "frames": __coord_n,
         None: __coord_n,
     }
 
     if ax_type not in coord_map:
-        raise Exception('Unknown axis type: {}'.format(ax_type))
+        raise Exception("Unknown axis type: {}".format(ax_type))
     return coord_map[ax_type](n, **kwargs)
 
 
@@ -243,10 +244,10 @@ def __coord_tempo(n, sr=22050, hop_length=512, **_kwargs):
 def __coord_cqt_hz(n, fmin=None, bins_per_octave=12, sr=22050, **_kwargs):
     """Get CQT bin frequencies"""
     if fmin is None:
-        fmin = note_to_hz('C1')
+        fmin = note_to_hz("C1")
 
     # Apply tuning correction
-    fmin = fmin * 2.0 ** (_kwargs.get('tuning', 0.0) / bins_per_octave)
+    fmin = fmin * 2.0 ** (_kwargs.get("tuning", 0.0) / bins_per_octave)
 
     # we drop by half a bin so that CQT bins are centered vertically
     freqs = cqt_frequencies(
@@ -257,8 +258,8 @@ def __coord_cqt_hz(n, fmin=None, bins_per_octave=12, sr=22050, **_kwargs):
 
     if np.any(freqs > 0.5 * sr):
         warnings.warn(
-            'Frequency axis exceeds Nyquist. '
-            'Did you remember to set all spectrogram parameters in specshow?'
+            "Frequency axis exceeds Nyquist. "
+            "Did you remember to set all spectrogram parameters in specshow?"
         )
 
     return freqs
@@ -283,33 +284,33 @@ def note_to_midi(note, round_midi=True):
     if not isinstance(note, str):
         return np.array([note_to_midi(n, round_midi=round_midi) for n in note])
 
-    pitch_map = {'C': 0, 'D': 2, 'E': 4, 'F': 5, 'G': 7, 'A': 9, 'B': 11}
+    pitch_map = {"C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11}
     acc_map = {
-        '#': 1,
-        '': 0,
-        'b': -1,
-        '!': -1,
-        '♯': 1,
-        '𝄪': 2,
-        '♭': -1,
-        '𝄫': -2,
-        '♮': 0,
+        "#": 1,
+        "": 0,
+        "b": -1,
+        "!": -1,
+        "♯": 1,
+        "𝄪": 2,
+        "♭": -1,
+        "𝄫": -2,
+        "♮": 0,
     }
 
     match = re.match(
-        r'^(?P<note>[A-Ga-g])'
-        r'(?P<accidental>[#♯𝄪b!♭𝄫♮]*)'
-        r'(?P<octave>[+-]?\d+)?'
-        r'(?P<cents>[+-]\d+)?$',
+        r"^(?P<note>[A-Ga-g])"
+        r"(?P<accidental>[#♯𝄪b!♭𝄫♮]*)"
+        r"(?P<octave>[+-]?\d+)?"
+        r"(?P<cents>[+-]\d+)?$",
         note,
     )
     if not match:
-        raise Exception('Improper note format: {:s}'.format(note))
+        raise Exception("Improper note format: {:s}".format(note))
 
-    pitch = match.group('note').upper()
-    offset = np.sum([acc_map[o] for o in match.group('accidental')])
-    octave = match.group('octave')
-    cents = match.group('cents')
+    pitch = match.group("note").upper()
+    offset = np.sum([acc_map[o] for o in match.group("accidental")])
+    octave = match.group("octave")
+    cents = match.group("cents")
 
     if not octave:
         octave = 0
@@ -368,8 +369,8 @@ def __check_axes(axes):
         axes = plt.gca()
     elif not isinstance(axes, Axes):
         raise Exception(
-            '`axes` must be an instance of matplotlib.axes.Axes. '
-            'Found type(axes)={}'.format(type(axes))
+            "`axes` must be an instance of matplotlib.axes.Axes. "
+            "Found type(axes)={}".format(type(axes))
         )
     return axes
 
@@ -390,51 +391,51 @@ def __scale_axes(axes, ax_type, which):
     """Set the axis scaling"""
 
     kwargs = dict()
-    if which == 'x':
-        if version_parse(matplotlib.__version__) < version_parse('3.3.0'):
-            thresh = 'linthreshx'
-            base = 'basex'
-            scale = 'linscalex'
+    if which == "x":
+        if version_parse(matplotlib.__version__) < version_parse("3.3.0"):
+            thresh = "linthreshx"
+            base = "basex"
+            scale = "linscalex"
         else:
-            thresh = 'linthresh'
-            base = 'base'
-            scale = 'linscale'
+            thresh = "linthresh"
+            base = "base"
+            scale = "linscale"
 
         scaler = axes.set_xscale
         limit = axes.set_xlim
     else:
-        if version_parse(matplotlib.__version__) < version_parse('3.3.0'):
-            thresh = 'linthreshy'
-            base = 'basey'
-            scale = 'linscaley'
+        if version_parse(matplotlib.__version__) < version_parse("3.3.0"):
+            thresh = "linthreshy"
+            base = "basey"
+            scale = "linscaley"
         else:
-            thresh = 'linthresh'
-            base = 'base'
-            scale = 'linscale'
+            thresh = "linthresh"
+            base = "base"
+            scale = "linscale"
 
         scaler = axes.set_yscale
         limit = axes.set_ylim
 
     # Map ticker scales
-    if ax_type == 'mel':
-        mode = 'symlog'
+    if ax_type == "mel":
+        mode = "symlog"
         kwargs[thresh] = 1000.0
         kwargs[base] = 2
 
-    elif ax_type in ['cqt', 'cqt_hz', 'cqt_note', 'cqt_svara']:
-        mode = 'log'
+    elif ax_type in ["cqt", "cqt_hz", "cqt_note", "cqt_svara"]:
+        mode = "log"
         kwargs[base] = 2
 
-    elif ax_type in ['log', 'fft_note', 'fft_svara']:
-        mode = 'symlog'
+    elif ax_type in ["log", "fft_note", "fft_svara"]:
+        mode = "symlog"
         kwargs[base] = 2
         # kwargs[thresh] = core.note_to_hz(
         #    'C2'
         # )  # in librosa/core.py but I don't think it is needed
         kwargs[scale] = 0.5
 
-    elif ax_type in ['tempo', 'fourier_tempo']:
-        mode = 'log'
+    elif ax_type in ["tempo", "fourier_tempo"]:
+        mode = "log"
         kwargs[base] = 2
         limit(16, 480)
     else:
@@ -443,23 +444,23 @@ def __scale_axes(axes, ax_type, which):
     scaler(mode, **kwargs)
 
 
-def __decorate_axis(axis, ax_type, key='C:maj', Sa=None, mela=None, thaat=None):
+def __decorate_axis(axis, ax_type, key="C:maj", Sa=None, mela=None, thaat=None):
     """Configure axis tickers, locators, and labels"""
-    if ax_type == 'time':
+    if ax_type == "time":
         axis.set_major_formatter(TimeFormatter(unit=None, lag=False))
         axis.set_major_locator(MaxNLocator(prune=None, steps=[1, 1.5, 5, 6, 10]))
-        axis.set_label_text('Time')
-    elif ax_type in ['mel', 'log']:
+        axis.set_label_text("Time")
+    elif ax_type in ["mel", "log"]:
         axis.set_major_formatter(ScalarFormatter())
         axis.set_major_locator(SymmetricalLogLocator(axis.get_transform()))
-        axis.set_label_text('Hz')
+        axis.set_label_text("Hz")
 
 
 class TimeFormatter(Formatter):
     def __init__(self, lag=False, unit=None):
 
-        if unit not in ['s', 'ms', None]:
-            raise Exception('Unknown time unit: {}'.format(unit))
+        if unit not in ["s", "ms", None]:
+            raise Exception("Unknown time unit: {}".format(unit))
 
         self.unit = unit
         self.lag = lag
@@ -474,37 +475,37 @@ class TimeFormatter(Formatter):
         if self.lag and x >= dmax * 0.5:
             # In lag mode, don't tick past the limits of the data
             if x > dmax:
-                return ''
+                return ""
             value = np.abs(x - dmax)
             # Do we need to tweak vmin/vmax here?
-            sign = '-'
+            sign = "-"
         else:
             value = x
-            sign = ''
+            sign = ""
 
-        if self.unit == 's':
-            s = '{:.3g}'.format(value)
-        elif self.unit == 'ms':
-            s = '{:.3g}'.format(value * 1000)
+        if self.unit == "s":
+            s = "{:.3g}".format(value)
+        elif self.unit == "ms":
+            s = "{:.3g}".format(value * 1000)
         else:
             if vmax - vmin > 3600:
                 # Hours viz
-                s = '{:d}:{:02d}:{:02d}'.format(
+                s = "{:d}:{:02d}:{:02d}".format(
                     int(value / 3600.0),
                     int(np.mod(value / 60.0, 60)),
                     int(np.mod(value, 60)),
                 )
             elif vmax - vmin > 60:
                 # Minutes viz
-                s = '{:d}:{:02d}'.format(int(value / 60.0), int(np.mod(value, 60)))
+                s = "{:d}:{:02d}".format(int(value / 60.0), int(np.mod(value, 60)))
             elif vmax - vmin >= 1:
                 # Seconds viz
-                s = '{:.2g}'.format(value)
+                s = "{:.2g}".format(value)
             else:
                 # Milliseconds viz
-                s = '{:.3f}'.format(value)
+                s = "{:.3f}".format(value)
 
-        return '{:s}{:s}'.format(sign, s)
+        return "{:s}{:s}".format(sign, s)
 
 
 def __same_axes(x_axis, y_axis, xlim, ylim):
@@ -524,9 +525,9 @@ def melspectrogram(
     n_fft=2048,
     hop_length=512,
     win_length=None,
-    window='hann',
+    window="hann",
     center=True,
-    pad_mode='reflect',
+    pad_mode="reflect",
     power=2.0,
     **kwargs,
 ):
@@ -555,9 +556,9 @@ def _spectrogram(
     hop_length=512,
     power=1,
     win_length=None,
-    window='hann',
+    window="hann",
     center=True,
-    pad_mode='reflect',
+    pad_mode="reflect",
 ):
     if S is not None:
         # Infer n_fft from spectrogram shape
@@ -587,10 +588,10 @@ def stft(
     n_fft=2048,
     hop_length=None,
     win_length=None,
-    window='hann',
+    window="hann",
     center=True,
     dtype=None,
-    pad_mode='reflect',
+    pad_mode="reflect",
 ):
     # By default, use the entire frame
     if win_length is None:
@@ -615,7 +616,7 @@ def stft(
     if center:
         if n_fft > y.shape[-1]:
             warnings.warn(
-                'n_fft={} is too small for input signal of length={}'.format(
+                "n_fft={} is too small for input signal of length={}".format(
                     n_fft, y.shape[-1]
                 )
             )
@@ -624,7 +625,7 @@ def stft(
 
     elif n_fft > y.shape[-1]:
         raise Exception(
-            'n_fft={} is too large for input signal of length={}'.format(
+            "n_fft={} is too large for input signal of length={}".format(
                 n_fft, y.shape[-1]
             )
         )
@@ -637,7 +638,7 @@ def stft(
 
     # Pre-allocate the STFT matrix
     stft_matrix = np.empty(
-        (int(1 + n_fft // 2), y_frames.shape[1]), dtype=dtype, order='F'
+        (int(1 + n_fft // 2), y_frames.shape[1]), dtype=dtype, order="F"
     )
 
     fft = get_fftlib()
@@ -668,13 +669,13 @@ def get_window(window, Nx, fftbins=True):
         if len(window) == Nx:
             return np.asarray(window)
 
-        raise Exception('Window size mismatch: ' '{:d} != {:d}'.format(len(window), Nx))
+        raise Exception("Window size mismatch: " "{:d} != {:d}".format(len(window), Nx))
     else:
-        raise Exception('Invalid window specification: {}'.format(window))
+        raise Exception("Invalid window specification: {}".format(window))
 
 
 def pad_center(data, size, axis=-1, **kwargs):
-    kwargs.setdefault('mode', 'constant')
+    kwargs.setdefault("mode", "constant")
 
     n = data.shape[axis]
 
@@ -685,7 +686,7 @@ def pad_center(data, size, axis=-1, **kwargs):
 
     if lpad < 0:
         raise Exception(
-            ('Target size ({:d}) must be ' 'at least input size ({:d})').format(size, n)
+            ("Target size ({:d}) must be " "at least input size ({:d})").format(size, n)
         )
 
     return np.pad(data, lengths, **kwargs)
@@ -693,30 +694,30 @@ def pad_center(data, size, axis=-1, **kwargs):
 
 def valid_audio(y, mono=True):
     if not isinstance(y, np.ndarray):
-        raise Exception('Audio data must be of type numpy.ndarray')
+        raise Exception("Audio data must be of type numpy.ndarray")
 
     if not np.issubdtype(y.dtype, np.floating):
-        raise Exception('Audio data must be floating-point')
+        raise Exception("Audio data must be floating-point")
 
     if mono and y.ndim != 1:
         raise Exception(
-            'Invalid shape for monophonic audio: '
-            'ndim={:d}, shape={}'.format(y.ndim, y.shape)
+            "Invalid shape for monophonic audio: "
+            "ndim={:d}, shape={}".format(y.ndim, y.shape)
         )
 
     elif y.ndim > 2 or y.ndim == 0:
         raise Exception(
-            'Audio data must have shape (samples,) or (channels, samples). '
-            'Received shape={}'.format(y.shape)
+            "Audio data must have shape (samples,) or (channels, samples). "
+            "Received shape={}".format(y.shape)
         )
 
     elif y.ndim == 2 and y.shape[0] < 2:
         raise Exception(
-            'Mono data must have shape (samples,). ' 'Received shape={}'.format(y.shape)
+            "Mono data must have shape (samples,). " "Received shape={}".format(y.shape)
         )
 
     if not np.isfinite(y).all():
-        raise Exception('Audio buffer is not finite everywhere')
+        raise Exception("Audio buffer is not finite everywhere")
 
     return True
 
@@ -724,28 +725,28 @@ def valid_audio(y, mono=True):
 def frame(x, frame_length, hop_length, axis=-1):
     if not isinstance(x, np.ndarray):
         raise Exception(
-            'Input must be of type numpy.ndarray, ' 'given type(x)={}'.format(type(x))
+            "Input must be of type numpy.ndarray, " "given type(x)={}".format(type(x))
         )
 
     if x.shape[axis] < frame_length:
         raise Exception(
-            'Input is too short (n={:d})'
-            ' for frame_length={:d}'.format(x.shape[axis], frame_length)
+            "Input is too short (n={:d})"
+            " for frame_length={:d}".format(x.shape[axis], frame_length)
         )
 
     if hop_length < 1:
-        raise Exception('Invalid hop_length: {:d}'.format(hop_length))
+        raise Exception("Invalid hop_length: {:d}".format(hop_length))
 
-    if axis == -1 and not x.flags['F_CONTIGUOUS']:
+    if axis == -1 and not x.flags["F_CONTIGUOUS"]:
         warnings.warn(
-            'librosa.util.frame called with axis={} '
-            'on a non-contiguous input. This will result in a copy.'.format(axis)
+            "librosa.util.frame called with axis={} "
+            "on a non-contiguous input. This will result in a copy.".format(axis)
         )
         x = np.asfortranarray(x)
-    elif axis == 0 and not x.flags['C_CONTIGUOUS']:
+    elif axis == 0 and not x.flags["C_CONTIGUOUS"]:
         warnings.warn(
-            'librosa.util.frame called with axis={} '
-            'on a non-contiguous input. This will result in a copy.'.format(axis)
+            "librosa.util.frame called with axis={} "
+            "on a non-contiguous input. This will result in a copy.".format(axis)
         )
         x = np.ascontiguousarray(x)
 
@@ -763,7 +764,7 @@ def frame(x, frame_length, hop_length, axis=-1):
         strides = [hop_length * new_stride] + list(strides)
 
     else:
-        raise Exception('Frame axis={} must be either 0 or -1'.format(axis))
+        raise Exception("Frame axis={} must be either 0 or -1".format(axis))
 
     return as_strided(x, shape=shape, strides=strides)
 
@@ -777,7 +778,7 @@ def dtype_r2c(d, default=np.complex64):
 
     # If we're given a complex type already, return it
     dt = np.dtype(d)
-    if dt.kind == 'c':
+    if dt.kind == "c":
         return dt
 
     # Otherwise, try to map the dtype.
@@ -810,7 +811,7 @@ def mel(
     fmin=0.0,
     fmax=None,
     htk=False,
-    norm='slaney',
+    norm="slaney",
     dtype=np.float32,
 ):
     if fmax is None:
@@ -837,7 +838,7 @@ def mel(
         # .. then intersect them with each other and zero
         weights[i] = np.maximum(0, np.minimum(lower, upper))
 
-    if norm == 'slaney':
+    if norm == "slaney":
         # Slaney-style mel is scaled to be approx constant energy per channel
         enorm = 2.0 / (mel_f[2 : n_mels + 2] - mel_f[:n_mels])
         weights *= enorm[:, np.newaxis]
@@ -848,10 +849,10 @@ def mel(
     if not np.all((mel_f[:-2] == 0) | (weights.max(axis=1) > 0)):
         # This means we have an empty channel somewhere
         warnings.warn(
-            'Empty filters detected in mel frequency basis. '
-            'Some channels will produce empty responses. '
-            'Try increasing your sampling rate (and fmax) or '
-            'reducing n_mels.'
+            "Empty filters detected in mel frequency basis. "
+            "Some channels will produce empty responses. "
+            "Try increasing your sampling rate (and fmax) or "
+            "reducing n_mels."
         )
 
     return weights
@@ -933,13 +934,13 @@ def normalize(S, norm=np.inf, axis=0, threshold=None, fill=None):
         threshold = tiny(S)
 
     elif threshold <= 0:
-        raise Exception('threshold={} must be strictly ' 'positive'.format(threshold))
+        raise Exception("threshold={} must be strictly " "positive".format(threshold))
 
     if fill not in [None, False, True]:
-        raise Exception('fill={} must be None or boolean'.format(fill))
+        raise Exception("fill={} must be None or boolean".format(fill))
 
     if not np.all(np.isfinite(S)):
-        raise Exception('Input must be finite')
+        raise Exception("Input must be finite")
 
     # All norms only depend on magnitude, let's do that first
     mag = np.abs(S).astype(np.float)
@@ -955,12 +956,12 @@ def normalize(S, norm=np.inf, axis=0, threshold=None, fill=None):
 
     elif norm == 0:
         if fill is True:
-            raise Exception('Cannot normalize with norm=0 and fill=True')
+            raise Exception("Cannot normalize with norm=0 and fill=True")
 
         length = np.sum(mag > 0, axis=axis, keepdims=True, dtype=mag.dtype)
 
     elif np.issubdtype(type(norm), np.number) and norm > 0:
-        length = np.sum(mag ** norm, axis=axis, keepdims=True) ** (1.0 / norm)
+        length = np.sum(mag**norm, axis=axis, keepdims=True) ** (1.0 / norm)
 
         if axis is None:
             fill_norm = mag.size ** (-1.0 / norm)
@@ -971,7 +972,7 @@ def normalize(S, norm=np.inf, axis=0, threshold=None, fill=None):
         return S
 
     else:
-        raise Exception('Unsupported norm: {}'.format(repr(norm)))
+        raise Exception("Unsupported norm: {}".format(repr(norm)))
 
     # indices where norm is below the threshold
     small_idx = length < threshold
@@ -1021,9 +1022,9 @@ def amplitude_to_db(S, ref=1.0, amin=1e-5, top_db=80.0):
 
     if np.issubdtype(S.dtype, np.complexfloating):
         warnings.warn(
-            'amplitude_to_db was called on complex input so phase '
-            'information will be discarded. To suppress this warning, '
-            'call amplitude_to_db(np.abs(S)) instead.'
+            "amplitude_to_db was called on complex input so phase "
+            "information will be discarded. To suppress this warning, "
+            "call amplitude_to_db(np.abs(S)) instead."
         )
 
     magnitude = np.abs(S)
@@ -1036,20 +1037,20 @@ def amplitude_to_db(S, ref=1.0, amin=1e-5, top_db=80.0):
 
     power = np.square(magnitude, out=magnitude)
 
-    return power_to_db(power, ref=ref_value ** 2, amin=amin ** 2, top_db=top_db)
+    return power_to_db(power, ref=ref_value**2, amin=amin**2, top_db=top_db)
 
 
 def power_to_db(S, ref=1.0, amin=1e-10, top_db=80.0):
     S = np.asarray(S)
 
     if amin <= 0:
-        raise Exception('amin must be strictly positive')
+        raise Exception("amin must be strictly positive")
 
     if np.issubdtype(S.dtype, np.complexfloating):
         warnings.warn(
-            'power_to_db was called on complex input so phase '
-            'information will be discarded. To suppress this warning, '
-            'call power_to_db(np.abs(D)**2) instead.'
+            "power_to_db was called on complex input so phase "
+            "information will be discarded. To suppress this warning, "
+            "call power_to_db(np.abs(D)**2) instead."
         )
         magnitude = np.abs(S)
     else:
@@ -1066,7 +1067,7 @@ def power_to_db(S, ref=1.0, amin=1e-10, top_db=80.0):
 
     if top_db is not None:
         if top_db < 0:
-            raise Exception('top_db must be non-negative')
+            raise Exception("top_db must be non-negative")
         log_spec = np.maximum(log_spec, log_spec.max() - top_db)
 
     return log_spec
@@ -1090,7 +1091,7 @@ def onset_strength(
 ):
     if aggregate is False:
         raise Exception(
-            'aggregate={} cannot be False when computing full-spectrum onset strength.'
+            "aggregate={} cannot be False when computing full-spectrum onset strength."
         )
 
     odf_all = onset_strength_multi(
@@ -1129,16 +1130,16 @@ def onset_strength_multi(
 ):
     if feature is None:
         feature = melspectrogram
-        kwargs.setdefault('fmax', 11025.0)
+        kwargs.setdefault("fmax", 11025.0)
 
     if aggregate is None:
         aggregate = np.mean
 
     if lag < 1 or not isinstance(lag, (int, np.integer)):
-        raise Exception('lag must be a positive integer')
+        raise Exception("lag must be a positive integer")
 
     if max_size < 1 or not isinstance(max_size, (int, np.integer)):
-        raise Exception('max_size must be a positive integer')
+        raise Exception("max_size must be a positive integer")
 
     # First, compute mel spectrogram
     if S is None:
@@ -1160,7 +1161,7 @@ def onset_strength_multi(
             ref = scipy.ndimage.maximum_filter1d(S, max_size, axis=0)
     elif ref.shape != S.shape:
         raise Exception(
-            'Reference spectrum shape {} must match input spectrum {}'.format(
+            "Reference spectrum shape {} must match input spectrum {}".format(
                 ref.shape, S.shape
             )
         )
@@ -1187,7 +1188,7 @@ def onset_strength_multi(
         # Counter-act framing effects. Shift the onsets by n_fft / hop_length
         pad_width += n_fft // (2 * hop_length)
 
-    onset_env = np.pad(onset_env, ([0, 0], [int(pad_width), 0]), mode='constant')
+    onset_env = np.pad(onset_env, ([0, 0], [int(pad_width), 0]), mode="constant")
 
     # remove the DC component
     if detrend:
@@ -1211,19 +1212,19 @@ def sync(data, idx, aggregate=None, pad=True, axis=-1):
     elif np.all([np.issubdtype(type(_), np.integer) for _ in idx]):
         slices = index_to_slice(np.asarray(idx), 0, shape[axis], pad=pad)
     else:
-        raise Exception('Invalid index set: {}'.format(idx))
+        raise Exception("Invalid index set: {}".format(idx))
 
     agg_shape = list(shape)
     agg_shape[axis] = len(slices)
 
     data_agg = np.empty(
-        agg_shape, order='F' if np.isfortran(data) else 'C', dtype=data.dtype
+        agg_shape, order="F" if np.isfortran(data) else "C", dtype=data.dtype
     )
 
     idx_in = [slice(None)] * data.ndim
     idx_agg = [slice(None)] * data_agg.ndim
 
-    for (i, segment) in enumerate(slices):
+    for i, segment in enumerate(slices):
         idx_in[axis] = segment
         idx_agg[axis] = i
         data_agg[tuple(idx_agg)] = aggregate(data[tuple(idx_in)], axis=axis)
@@ -1243,7 +1244,7 @@ def fix_frames(frames, x_min=0, x_max=None, pad=True):
     frames = np.asarray(frames)
 
     if np.any(frames < 0):
-        raise Exception('Negative frame index detected')
+        raise Exception("Negative frame index detected")
 
     if pad and (x_min is not None or x_max is not None):
         frames = np.clip(frames, x_min, x_max)
@@ -1272,9 +1273,9 @@ def spectral_contrast(
     n_fft=2048,
     hop_length=512,
     win_length=None,
-    window='hann',
+    window="hann",
     center=True,
-    pad_mode='reflect',
+    pad_mode="reflect",
     freq=None,
     fmin=200.0,
     n_bands=6,
@@ -1299,23 +1300,23 @@ def spectral_contrast(
     freq = np.atleast_1d(freq)
 
     if freq.ndim != 1 or len(freq) != S.shape[0]:
-        raise Exception('freq.shape mismatch: expected ' '({:d},)'.format(S.shape[0]))
+        raise Exception("freq.shape mismatch: expected " "({:d},)".format(S.shape[0]))
 
     if n_bands < 1 or not isinstance(n_bands, int):
-        raise Exception('n_bands must be a positive integer')
+        raise Exception("n_bands must be a positive integer")
 
     if not 0.0 < quantile < 1.0:
-        raise Exception('quantile must lie in the range (0, 1)')
+        raise Exception("quantile must lie in the range (0, 1)")
 
     if fmin <= 0:
-        raise Exception('fmin must be a positive number')
+        raise Exception("fmin must be a positive number")
 
     octa = np.zeros(n_bands + 2)
     octa[1:] = fmin * (2.0 ** np.arange(0, n_bands + 1))
 
     if np.any(octa[:-1] >= 0.5 * sr):
         raise Exception(
-            'Frequency band exceeds Nyquist. ' 'Reduce either fmin or n_bands.'
+            "Frequency band exceeds Nyquist. " "Reduce either fmin or n_bands."
         )
 
     valley = np.zeros((n_bands + 1, S.shape[1]))
@@ -1356,7 +1357,7 @@ def spectral_contrast(
 
 
 def db_to_amplitude(S_db, ref=1.0):
-    return db_to_power(S_db, ref=ref ** 2) ** 0.5
+    return db_to_power(S_db, ref=ref**2) ** 0.5
 
 
 def db_to_power(S_db, ref=1.0):
@@ -1374,9 +1375,9 @@ def spectral_centroid(
     hop_length=512,
     freq=None,
     win_length=None,
-    window='hann',
+    window="hann",
     center=True,
-    pad_mode='reflect',
+    pad_mode="reflect",
 ):
     S, n_fft = _spectrogram(
         y=y,
@@ -1390,10 +1391,10 @@ def spectral_centroid(
     )
 
     if not np.isrealobj(S):
-        raise Exception('Spectral centroid is only defined ' 'with real-valued input')
+        raise Exception("Spectral centroid is only defined " "with real-valued input")
     elif np.any(S < 0):
         raise Exception(
-            'Spectral centroid is only defined ' 'with non-negative energies'
+            "Spectral centroid is only defined " "with non-negative energies"
         )
 
     # Compute the center frequencies of each bin

@@ -1,6 +1,7 @@
 """
 Utils to mix sine waves
 """
+
 from numpy import sin, arange, pi, ones, ndarray, random, all
 from hum.gen.util import DFLT_N_SAMPLES, DFLT_SR, DFLT_FREQ
 
@@ -116,9 +117,9 @@ class MinMaxRandDict:
     """
 
     iid_seed_gen: Union[dict, Tuple[Tuple[str, MinMaxRand]]] = (
-        ('rpm', MinMaxRand(100, 1000)),
-        ('temperature', MinMaxRand(10, 25)),
-        ('pressure', MinMaxRand(50, 500)),
+        ("rpm", MinMaxRand(100, 1000)),
+        ("temperature", MinMaxRand(10, 25)),
+        ("pressure", MinMaxRand(50, 500)),
     )
 
     def __post_init__(self):
@@ -139,7 +140,10 @@ class MinMaxRandDict:
 
 
 def dflt_wf_params_to_wf(
-    weights, freqs=None, n_samples: int = DFLT_N_SAMPLES, sr: int = DFLT_SR,
+    weights,
+    freqs=None,
+    n_samples: int = DFLT_N_SAMPLES,
+    sr: int = DFLT_SR,
 ):
     """A default for wf_params_to_wf
 
@@ -174,13 +178,14 @@ def asis(x):
 
 # def numerical_annotations_and_waveform_chunks(
 
+
 # TODO: Replicate in slink
 @dataclass
 class NumAnnotsAndWaveformChunks:
     seeds: Union[dict, Tuple[Tuple[str, MinMaxRand]]] = (
-        ('rpm', MinMaxRand(100, 1000)),
-        ('temperature', MinMaxRand(10, 25)),
-        ('pressure', MinMaxRand(50, 500)),
+        ("rpm", MinMaxRand(100, 1000)),
+        ("temperature", MinMaxRand(10, 25)),
+        ("pressure", MinMaxRand(50, 500)),
     )
     seed_to_sprout_gen: Callable = MinMaxRandDict
     sprout_to_annot: Callable = asis
