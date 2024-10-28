@@ -1,20 +1,8 @@
 """
 Utils to view, hear, and manipulate audio
 """
-from numpy import (
-    array,
-    mean,
-    shape,
-    linspace,
-    max,
-    log10,
-    ceil,
-    int16,
-    hstack,
-    zeros,
-    argmin,
-    ndim,
-)
+
+from numpy import array, max, log10, ceil, int16, hstack, zeros, argmin, ndim
 from numpy.random import randint
 import soundfile as sf
 import os
@@ -22,26 +10,7 @@ import matplotlib.pylab as plt
 from IPython.display import Audio
 
 from hum.utils.plotting import plot_wf
-
-try:
-    import librosa
-    import librosa.display
-
-    WITH_LIBROSA = True
-except ImportError:
-    WITH_LIBROSA = False
-    import warnings
-
-    warnings.warn(
-        "Couldn't import librosa. You can install is, but know that you "
-        "don't NEED it unless you want to compute melspectrograms."
-    )
-
-    class librosa:
-        def __getattr__(self, a):
-            raise ModuleNotFoundError(
-                f"You don't actually have {self.__class__.__name__}"
-            )
+from hum.utils.librosa_utils import specshow, melspectrogram, amplitude_to_db
 
 
 default_sr = 44100
@@ -93,9 +62,7 @@ def plot_melspectrogram(spect_mat, sr=default_sr, hop_length=512, name=None):
     plt.figure(figsize=(12, 4))
     # Display the spectrogram on a mel scale
     # sample rate and hop length parameters are used to render the time axis
-    librosa.display.specshow(
-        spect_mat, sr=sr, hop_length=hop_length, x_axis='time', y_axis='mel'
-    )
+    specshow(spect_mat, sr=sr, hop_length=hop_length, x_axis='time', y_axis='mel')
     # Put a descriptive title on the plot
     if name is not None:
         plt.title('mel power spectrogram of "{}"'.format(name))
@@ -108,15 +75,26 @@ def plot_melspectrogram(spect_mat, sr=default_sr, hop_length=512, name=None):
 
 
 def wf_and_sr(*args, **kwargs):
+    """
+    :param args: Either the file path to a sound or a tuple of (wf, sr)
+    :param kwargs: wf = wf, sr = sr
+    :return: wf, sr
+    """
     if len(args) > 0:
         args_0 = args[0]
         if isinstance(args_0, str):
             kwargs['filepath'] = args_0
-        elif isinstance(args_0, tuple):
+        elif isinstance(args_0, tuple) and len(args_0) == 2:
             kwargs['wf'], kwargs['sr'] = args_0
+        elif hasattr(args_0, 'wf') and hasattr(args_0, 'sr'):
+            kwargs['wf'], kwargs['sr'] = args_0.wf, args_0.sr
     kwargs_keys = list(kwargs.keys())
     if 'wf' in kwargs_keys:
         return kwargs['wf'], kwargs['sr']
+    else:
+        raise ValueError(
+            f'Could not result waveform from the arguments provided: {args}, {kwargs}'
+        )
 
 
 class Sound(object):
@@ -187,6 +165,9 @@ class Sound(object):
 
     @classmethod
     def from_(cls, sound):
+        """
+        Construct sound object from another sound object
+        """
         if isinstance(sound, tuple) and len(sound) == 2:  # then it's a (wf, sr) tuple
             return cls(sound[0], sound[1])
         elif isinstance(sound, str) and os.path.isfile(sound):
@@ -203,6 +184,11 @@ class Sound(object):
 
     @classmethod
     def silence(cls, seconds=0.0, sr=default_sr, wf_type=default_wf_type):
+        """
+        Construct silent sound object with length seconds
+
+        >>> assert sum(sum(Sound.silence(seconds = 1).melspectr_matrix())) == 0.0  # doctest: +SKIP
+        """
         return cls(sr=sr, wf=zeros(int(round(seconds * sr)), wf_type))
 
     def save_to_wav(self, filepath=None, samplerate=None, **kwargs):
@@ -233,14 +219,15 @@ class Sound(object):
         )
 
     def melspectr_matrix(self, **mel_kwargs):
+        """
+        Returns a melspectrogram matrix to be used to display a melspectrogram
+        """
         mel_kwargs = dict(
             {'n_fft': 2048, 'hop_length': 512, 'n_mels': 128}, **mel_kwargs
         )
-        S = librosa.feature.melspectrogram(
-            array(self.wf).astype(float), sr=self.sr, **mel_kwargs
-        )
+        S = melspectrogram(array(self.wf).astype(float), sr=self.sr, **mel_kwargs)
         # Convert to log scale (dB). We'll use the peak power as reference.
-        return librosa.amplitude_to_db(S, ref=max)
+        return amplitude_to_db(S, ref=max)
 
     def __add__(self, append_sound):
         assert (
@@ -252,6 +239,9 @@ class Sound(object):
     # DISPLAY FUNCTIONS
 
     def hear(self, autoplay=False, **kwargs):
+        """
+        Display UI to play sound
+        """
         wf = array(ensure_mono(self.wf)).astype(float)
         wf[
             randint(len(wf))
@@ -264,34 +254,23 @@ class Sound(object):
 
     def display(self, autoplay=False, **kwargs):
         """
-
-        :param sound_plot: 'mel' (default) to plot melspectrogram, 'wf' to plot wave form, and None to plot nothing at all
-        :param kwargs:
-        :return:
+        Display a melspectrogram of sound and UI to play sound
         """
-        if WITH_LIBROSA:
-            self.melspectrogram(plot_it=True, **kwargs)
-        else:
-            self.plot_wf()
+        self.melspectrogram(plot_it=True, **kwargs)
 
         return self.hear(autoplay=autoplay)
 
-    if WITH_LIBROSA:
+    def melspectrogram(self, plot_it=False, **mel_kwargs):
+        """
+        Returns a melsepectrogram matrix and plots a melspectrogram if plot_it is True
+        """
+        mel_kwargs = dict(
+            {'n_fft': 2048, 'hop_length': 512, 'n_mels': 128}, **mel_kwargs
+        )
+        log_S = self.melspectr_matrix(**mel_kwargs)
+        if plot_it:
+            plot_melspectrogram(log_S, sr=self.sr, hop_length=mel_kwargs['hop_length'])
+        return log_S
 
-        def melspectrogram(self, plot_it=False, **mel_kwargs):
-            mel_kwargs = dict(
-                {'n_fft': 2048, 'hop_length': 512, 'n_mels': 128}, **mel_kwargs
-            )
-            log_S = self.melspectr_matrix(**mel_kwargs)
-            if plot_it:
-                plot_melspectrogram(
-                    log_S, sr=self.sr, hop_length=mel_kwargs['hop_length']
-                )
-            return log_S
-
-    else:
-
-        def melspectrogram(self, plot_it=False, **mel_kwargs):
-            if plot_it:
-                plt.figure(figsize=(16, 5))
-                plt.plot(self.wf)
+    def _repr_html_(self):
+        return self.display()

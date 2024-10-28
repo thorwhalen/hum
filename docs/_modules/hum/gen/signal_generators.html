@@ -1,0 +1,270 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>hum.gen.signal_generators &#8212; hum 0.1.12 documentation</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for hum.gen.signal_generators</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Generating Signals</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">DFLT_WORD_LENGTH</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">DFLT_ALPHABET</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="s1">&#39;abcde&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="normal_dist"><a class="viewcode-back" href="../../../module_docs/hum/gen/signal_generators.html#hum.gen.signal_generators.normal_dist">[docs]</a><span class="k">def</span> <span class="nf">normal_dist</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a random sample from a normal distribution with mean mu and variance sigma</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">()</span> <span class="o">+</span> <span class="n">mu</span></div>
+
+
+<div class="viewcode-block" id="gen_words"><a class="viewcode-back" href="../../../module_docs/hum/gen/signal_generators.html#hum.gen.signal_generators.gen_words">[docs]</a><span class="k">def</span> <span class="nf">gen_words</span><span class="p">(</span>
+    <span class="n">N</span><span class="o">=</span><span class="n">DFLT_WORD_LENGTH</span><span class="p">,</span> <span class="n">alphabet</span><span class="o">=</span><span class="n">DFLT_ALPHABET</span><span class="p">,</span> <span class="n">spread_pct</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">proba_dist</span><span class="o">=</span><span class="s1">&#39;normal&#39;</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a generator of lists, with each consisting of n repetitions of a random word for alphabet, with n being</span>
+<span class="sd">    determined by a normal distribution with mean N and variance N * spread_pct</span>
+<span class="sd">    &gt;&gt;&gt; gen = gen_words(N=3, alphabet=[&#39;foo&#39;], spread_pct=0)</span>
+<span class="sd">    &gt;&gt;&gt; assert next(gen) == [&#39;foo&#39;, &#39;foo&#39;, &#39;foo&#39;]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">proba_dist</span> <span class="o">==</span> <span class="s1">&#39;normal&#39;</span><span class="p">:</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">N</span> <span class="o">*</span> <span class="n">spread_pct</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">N</span>
+        <span class="n">dist</span> <span class="o">=</span> <span class="n">normal_dist</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;Probability distribution </span><span class="si">{</span><span class="n">proba_dist</span><span class="si">}</span><span class="s1"> not implemented&#39;</span>
+        <span class="p">)</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="n">dist</span>
+        <span class="n">word</span> <span class="o">=</span> <span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">alphabet</span><span class="p">)]</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">length</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="n">word</span></div>
+
+
+<span class="k">def</span> <span class="nf">categorical_gen</span><span class="p">(</span><span class="n">gen_it</span><span class="p">):</span>
+    <span class="k">yield from</span> <span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">gen_it</span><span class="p">())</span>
+
+
+<div class="viewcode-block" id="alphabet_to_bins"><a class="viewcode-back" href="../../../module_docs/hum/gen/signal_generators.html#hum.gen.signal_generators.alphabet_to_bins">[docs]</a><span class="k">def</span> <span class="nf">alphabet_to_bins</span><span class="p">(</span><span class="n">alphabet</span><span class="o">=</span><span class="n">DFLT_ALPHABET</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a dictionary matching each word in alphabet to bins of size 10.0 ranging from 0 to 10 * len(alphabet)</span>
+<span class="sd">    &gt;&gt;&gt; alphabet_to_bins()</span>
+<span class="sd">    {&#39;a&#39;: (0.0, 10.0), &#39;b&#39;: (10.0, 20.0), &#39;c&#39;: (20.0, 30.0), &#39;d&#39;: (30.0, 40.0), &#39;e&#39;: (40.0, 50.0)}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">alphabet</span><span class="p">)</span>
+    <span class="n">low</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">high</span> <span class="o">=</span> <span class="mf">10.0</span> <span class="o">*</span> <span class="n">length</span>
+    <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># print(bins)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">letter</span><span class="p">:</span> <span class="p">(</span><span class="n">bins</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">bins</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">letter</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">alphabet</span><span class="p">)}</span></div>
+
+
+<span class="c1"># def context_to_signal(cat_gen, dict_symbol_to_interval)</span>
+<span class="c1">#   symbol = next(cat_gen)</span>
+<span class="c1">#   low, hi = dict_symbol_to_interval[symbol]</span>
+<span class="c1">#   res = np.random.uniform(low=0.0, high=1.0)</span>
+
+
+<div class="viewcode-block" id="call_repeatedly"><a class="viewcode-back" href="../../../module_docs/hum/gen/signal_generators.html#hum.gen.signal_generators.call_repeatedly">[docs]</a><span class="k">def</span> <span class="nf">call_repeatedly</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a generator that calls func repeatedly with the given args and kwargs</span>
+<span class="sd">    &gt;&gt;&gt; gen = call_repeatedly(alphabet_to_bins)</span>
+<span class="sd">    &gt;&gt;&gt; assert next(gen) == {&#39;a&#39;: (0.0, 10.0), &#39;b&#39;: (10.0, 20.0), &#39;c&#39;: (20.0, 30.0), &#39;d&#39;: (30.0, 40.0), &#39;e&#39;: (40.0, 50.0)}</span>
+<span class="sd">    &gt;&gt;&gt; next(gen)</span>
+<span class="sd">    {&#39;a&#39;: (0.0, 10.0), &#39;b&#39;: (10.0, 20.0), &#39;c&#39;: (20.0, 30.0), &#39;d&#39;: (30.0, 40.0), &#39;e&#39;: (40.0, 50.0)}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="bernoulli"><a class="viewcode-back" href="../../../module_docs/hum/gen/signal_generators.html#hum.gen.signal_generators.bernoulli">[docs]</a><span class="k">def</span> <span class="nf">bernoulli</span><span class="p">(</span><span class="n">p_out</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a random sample of a bernoulli distribution with probability p_out</span>
+<span class="sd">    &gt;&gt;&gt; assert bernoulli(0) == 0</span>
+<span class="sd">    &gt;&gt;&gt; assert bernoulli(1) == 1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">p_out</span><span class="p">,</span> <span class="n">p_out</span><span class="p">]</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="bernoulli_gen"><a class="viewcode-back" href="../../../module_docs/hum/gen/signal_generators.html#hum.gen.signal_generators.bernoulli_gen">[docs]</a><span class="k">def</span> <span class="nf">bernoulli_gen</span><span class="p">(</span><span class="n">p_out</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a generator that returns random samples of a bernoulli distribution with probability p_out</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">call_repeatedly</span><span class="p">(</span><span class="n">bernoulli</span><span class="p">,</span> <span class="n">p_out</span><span class="o">=</span><span class="n">p_out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="inlier_outlier"><a class="viewcode-back" href="../../../module_docs/hum/gen/signal_generators.html#hum.gen.signal_generators.inlier_outlier">[docs]</a><span class="k">def</span> <span class="nf">inlier_outlier</span><span class="p">(</span><span class="n">segment</span><span class="p">,</span> <span class="n">interval_size</span><span class="p">,</span> <span class="n">outlier_status</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &gt;&gt;&gt; assert inlier_outlier([0,1], 10, 0) &lt; 1</span>
+<span class="sd">    &gt;&gt;&gt; low = np.random.randint(5, 10)</span>
+<span class="sd">    &gt;&gt;&gt; high = np.random.randint(low, 20)</span>
+<span class="sd">    &gt;&gt;&gt; assert inlier_outlier([low, high], low*high, 1) &lt; low + low*high</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">low</span><span class="p">,</span> <span class="n">high</span> <span class="o">=</span> <span class="n">segment</span>
+    <span class="k">if</span> <span class="n">outlier_status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">low</span><span class="p">,</span> <span class="n">high</span> <span class="o">=</span> <span class="n">high</span><span class="p">,</span> <span class="n">low</span> <span class="o">+</span> <span class="n">interval_size</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">)</span> <span class="o">%</span> <span class="n">interval_size</span></div>
+
+
+<span class="k">def</span> <span class="nf">signal</span><span class="p">(</span><span class="n">symbol_gen</span><span class="p">,</span> <span class="n">outlier_gen</span><span class="p">,</span> <span class="n">alphabet</span><span class="p">):</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">symb</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">symbol_gen</span><span class="p">)</span>
+        <span class="n">outlier</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">outlier_gen</span><span class="p">)</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">alphabet</span><span class="p">)</span>
+        <span class="n">low</span><span class="p">,</span> <span class="n">high</span> <span class="o">=</span> <span class="n">alphabet_to_bins</span><span class="p">(</span><span class="n">alphabet</span><span class="p">)[</span><span class="n">symb</span><span class="p">]</span>
+        <span class="k">yield</span> <span class="n">inlier_outlier</span><span class="p">((</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">),</span> <span class="n">length</span> <span class="o">*</span> <span class="mi">10</span><span class="p">,</span> <span class="n">outlier</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">create_session</span><span class="p">(</span><span class="n">symbol_gen</span><span class="p">,</span> <span class="n">outlier_gen</span><span class="p">,</span> <span class="n">alphabet</span><span class="p">,</span> <span class="n">session_length</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
+    <span class="n">symbs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">outliers</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">sigs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">session_length</span><span class="p">):</span>
+        <span class="n">symb</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">symbol_gen</span><span class="p">)</span>
+        <span class="n">symbs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">symb</span><span class="p">)</span>
+        <span class="n">outlier</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">outlier_gen</span><span class="p">)</span>
+        <span class="n">outliers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outlier</span><span class="p">)</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">alphabet</span><span class="p">)</span>
+        <span class="n">low</span><span class="p">,</span> <span class="n">high</span> <span class="o">=</span> <span class="n">alphabet_to_bins</span><span class="p">(</span><span class="n">alphabet</span><span class="p">)[</span><span class="n">symb</span><span class="p">]</span>
+        <span class="n">sigs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inlier_outlier</span><span class="p">((</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">),</span> <span class="n">length</span> <span class="o">*</span> <span class="mi">10</span><span class="p">,</span> <span class="n">outlier</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">symbs</span><span class="p">,</span> <span class="n">outliers</span><span class="p">,</span> <span class="n">sigs</span>
+
+
+<div class="viewcode-block" id="string_to_num"><a class="viewcode-back" href="../../../module_docs/hum/gen/signal_generators.html#hum.gen.signal_generators.string_to_num">[docs]</a><span class="k">def</span> <span class="nf">string_to_num</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts a string to a list of numbers corresponding to the alphabetical order of the characters in the string</span>
+<span class="sd">    &gt;&gt;&gt; assert string_to_num(&#39;abc&#39;) == [0, 1, 2]</span>
+<span class="sd">    &gt;&gt;&gt; assert string_to_num(&#39;generator&#39;) == [2, 1, 3, 1, 5, 0, 6, 4, 5]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">all_letters</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">word</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">all_letters</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">letter</span><span class="p">)</span> <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">word</span><span class="p">]</span></div>
+
+
+<span class="k">def</span> <span class="nf">session_to_df</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
+    <span class="n">symbs</span><span class="p">,</span> <span class="n">outliers</span><span class="p">,</span> <span class="n">sigs</span> <span class="o">=</span> <span class="n">session</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;symbols&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">string_to_num</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">symbs</span><span class="p">))</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;outliers&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">outliers</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;signal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigs</span>
+    <span class="k">return</span> <span class="n">df</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">hum</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum.html">hum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/gen.html">hum.gen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/gen/diagnosis_sounds.html">hum.gen.diagnosis_sounds</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/gen/signal_generators.html">hum.gen.signal_generators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/gen/sine_mix.html">hum.gen.sine_mix</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/gen/voiced_time.html">hum.gen.voiced_time</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/lite_sample_sounds.html">hum.lite_sample_sounds</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/sound.html">hum.sound</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/sound/audio.html">hum.sound.audio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/sound/audio_librosa.html">hum.sound.audio_librosa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/util.html">hum.util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/utils.html">hum.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/utils/date_ticks.html">hum.utils.date_ticks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/utils/infinite_waveform.html">hum.utils.infinite_waveform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/utils/librosa_utils.html">hum.utils.librosa_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/utils/plotting.html">hum.utils.plotting</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;NO COPYRIGHT.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

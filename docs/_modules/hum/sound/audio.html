@@ -1,0 +1,383 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>hum.sound.audio &#8212; hum 0.1.12 documentation</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for hum.sound.audio</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Utils to view, hear, and manipulate audio</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">array</span><span class="p">,</span> <span class="nb">max</span><span class="p">,</span> <span class="n">log10</span><span class="p">,</span> <span class="n">ceil</span><span class="p">,</span> <span class="n">int16</span><span class="p">,</span> <span class="n">hstack</span><span class="p">,</span> <span class="n">zeros</span><span class="p">,</span> <span class="n">argmin</span><span class="p">,</span> <span class="n">ndim</span>
+<span class="kn">from</span> <span class="nn">numpy.random</span> <span class="kn">import</span> <span class="n">randint</span>
+<span class="kn">import</span> <span class="nn">soundfile</span> <span class="k">as</span> <span class="nn">sf</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pylab</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Audio</span>
+
+<span class="kn">from</span> <span class="nn">hum.utils.plotting</span> <span class="kn">import</span> <span class="n">plot_wf</span>
+<span class="kn">from</span> <span class="nn">hum.utils.librosa_utils</span> <span class="kn">import</span> <span class="n">specshow</span><span class="p">,</span> <span class="n">melspectrogram</span><span class="p">,</span> <span class="n">amplitude_to_db</span>
+
+
+<span class="n">default_sr</span> <span class="o">=</span> <span class="mi">44100</span>
+<span class="n">default_wf_type</span> <span class="o">=</span> <span class="n">int16</span>
+
+
+<span class="k">def</span> <span class="nf">subtype_of_wf</span><span class="p">(</span><span class="n">wf</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">wf</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">wf</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">int16</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="s1">&#39;PCM_16&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;FLOAT&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">def</span> <span class="nf">stereo_to_mono_by_taking_first_channel</span><span class="p">(</span><span class="n">wf</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">ndim</span><span class="p">(</span><span class="n">wf</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">wf</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">likely_channel_dim</span> <span class="o">=</span> <span class="n">argmin</span><span class="p">(</span><span class="n">wf</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">likely_channel_dim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">wf</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">wf</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">ensure_channels_in_columns</span><span class="p">(</span><span class="n">wf</span><span class="p">):</span>
+    <span class="n">likely_channel_dim</span> <span class="o">=</span> <span class="n">argmin</span><span class="p">(</span><span class="n">wf</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">likely_channel_dim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">wf</span><span class="o">.</span><span class="n">T</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">wf</span>
+
+
+<span class="k">def</span> <span class="nf">ensure_mono</span><span class="p">(</span><span class="n">wf</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">ndim</span><span class="p">(</span><span class="n">wf</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">wf</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">stereo_to_mono_by_taking_first_channel</span><span class="p">(</span><span class="n">wf</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">is_wav_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filepath</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;.wav&#39;</span>
+
+
+<span class="k">def</span> <span class="nf">plot_melspectrogram</span><span class="p">(</span><span class="n">spect_mat</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">default_sr</span><span class="p">,</span> <span class="n">hop_length</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># Make a new figure</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+    <span class="c1"># Display the spectrogram on a mel scale</span>
+    <span class="c1"># sample rate and hop length parameters are used to render the time axis</span>
+    <span class="n">specshow</span><span class="p">(</span><span class="n">spect_mat</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">hop_length</span><span class="o">=</span><span class="n">hop_length</span><span class="p">,</span> <span class="n">x_axis</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">y_axis</span><span class="o">=</span><span class="s1">&#39;mel&#39;</span><span class="p">)</span>
+    <span class="c1"># Put a descriptive title on the plot</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;mel power spectrogram of &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;mel power spectrogram&#39;</span><span class="p">)</span>
+    <span class="c1"># draw a color bar</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%+02.0f</span><span class="s1"> dB&#39;</span><span class="p">)</span>
+    <span class="c1"># Make the figure layout compact</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="wf_and_sr"><a class="viewcode-back" href="../../../module_docs/hum/sound/audio.html#hum.sound.audio.wf_and_sr">[docs]</a><span class="k">def</span> <span class="nf">wf_and_sr</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param args: Either the file path to a sound or a tuple of (wf, sr)</span>
+<span class="sd">    :param kwargs: wf = wf, sr = sr</span>
+<span class="sd">    :return: wf, sr</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">args_0</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args_0</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;filepath&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args_0</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args_0</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;wf&#39;</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;sr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args_0</span>
+    <span class="n">kwargs_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">if</span> <span class="s1">&#39;wf&#39;</span> <span class="ow">in</span> <span class="n">kwargs_keys</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;wf&#39;</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;sr&#39;</span><span class="p">]</span></div>
+
+
+<span class="k">class</span> <span class="nc">Sound</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">default_sr</span><span class="p">,</span> <span class="n">wf_type</span><span class="o">=</span><span class="n">default_wf_type</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">wf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">wf</span> <span class="o">=</span> <span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wf_type</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wf</span> <span class="o">=</span> <span class="n">wf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sr</span> <span class="o">=</span> <span class="n">sr</span>
+
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">wf</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wf</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">sr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sr</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wf</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">convert_interval_to_samples_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">interval</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="o">*</span><span class="n">interval</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">interval</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interval</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interval</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">if</span> <span class="n">interval</span><span class="o">.</span><span class="n">start</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">_start</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">interval</span><span class="o">.</span><span class="n">start</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sr</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_start</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">interval</span><span class="o">.</span><span class="n">stop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">_stop</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">interval</span><span class="o">.</span><span class="n">stop</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sr</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_stop</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">interval</span><span class="o">.</span><span class="n">step</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">_step</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">interval</span><span class="o">.</span><span class="n">step</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sr</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_step</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">interval</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">_start</span><span class="p">,</span> <span class="n">_stop</span><span class="p">,</span> <span class="n">_step</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">interval</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_interval_to_samples_unit</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wf</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">item</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">sr</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">duration_s</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deprecated: Use chk_size_ms instead. Just included here for back-compatibility.</span>
+<span class="sd">        :return: duration, in seconds, of the sound</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wf</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">sr</span>
+
+    <span class="c1">####################################################################################################################</span>
+    <span class="c1"># CREATION</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">wf_type</span><span class="o">=</span><span class="n">default_wf_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct sound object from a wav audio file</span>
+<span class="sd">        :param filepath: filepath of the sound file</span>
+<span class="sd">        :param wf_type: type of the wf numbers</span>
+<span class="sd">        :return: a Sound object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># kwargs = dict({&#39;always_2d&#39;: False, &#39;ensure_mono&#39;: True}, **kwargs)</span>
+
+        <span class="n">wf</span><span class="p">,</span> <span class="n">sr</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wf_type</span><span class="p">)</span>
+        <span class="n">wf</span> <span class="o">=</span> <span class="n">ensure_mono</span><span class="p">(</span><span class="n">wf</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">wf</span><span class="o">=</span><span class="n">wf</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">sound</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct sound object from another sound object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sound</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">sound</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># then it&#39;s a (wf, sr) tuple</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">sound</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sound</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sound</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">sound</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">sound</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sound</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s1">&#39;wf&#39;</span> <span class="ow">in</span> <span class="n">sound</span> <span class="ow">and</span> <span class="s1">&#39;sr&#39;</span> <span class="ow">in</span> <span class="n">sound</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">sound</span><span class="p">[</span><span class="s1">&#39;wf&#39;</span><span class="p">],</span> <span class="n">sound</span><span class="p">[</span><span class="s1">&#39;sr&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_sref</span><span class="p">(</span><span class="n">sound</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sound</span><span class="p">,</span> <span class="s1">&#39;wf&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sound</span><span class="p">,</span> <span class="s1">&#39;sr&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">sound</span><span class="o">.</span><span class="n">wf</span><span class="p">,</span> <span class="n">sound</span><span class="o">.</span><span class="n">sr</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Couldn&#39;t figure out how that format represents sound&quot;</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">silence</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">seconds</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">default_sr</span><span class="p">,</span> <span class="n">wf_type</span><span class="o">=</span><span class="n">default_wf_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct silent sound object with length seconds</span>
+<span class="sd">        &gt;&gt;&gt; assert sum(sum(Sound.silence(seconds = 1).melspectr_matrix())) == 0.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">wf</span><span class="o">=</span><span class="n">zeros</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">seconds</span> <span class="o">*</span> <span class="n">sr</span><span class="p">)),</span> <span class="n">wf_type</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">save_to_wav</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">samplerate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">subtype</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;subtype&#39;</span><span class="p">,</span> <span class="n">subtype_of_wf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wf</span><span class="p">))</span>
+        <span class="n">samplerate</span> <span class="o">=</span> <span class="n">samplerate</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">sr</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">rand_range</span> <span class="o">=</span> <span class="n">filepath</span>
+            <span class="n">template</span> <span class="o">=</span> <span class="s1">&#39;sound_save_{:0&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ceil</span><span class="p">(</span><span class="n">log10</span><span class="p">(</span><span class="n">rand_range</span><span class="p">))))</span> <span class="o">+</span> <span class="s1">&#39;.0}.wav&#39;</span>
+            <span class="n">filepath</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">rand_range</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">filepath</span> <span class="o">=</span> <span class="n">filepath</span> <span class="ow">or</span> <span class="s1">&#39;sound_save.wav&#39;</span>
+        <span class="n">sf</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wf</span><span class="p">,</span> <span class="n">samplerate</span><span class="o">=</span><span class="n">samplerate</span><span class="p">,</span> <span class="n">subtype</span><span class="o">=</span><span class="n">subtype</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="c1">####################################################################################################################</span>
+    <span class="c1"># TRANSFORMATIONS</span>
+
+    <span class="k">def</span> <span class="nf">ensure_mono</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wf</span> <span class="o">=</span> <span class="n">ensure_mono</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wf</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">crop_with_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first_idx</span><span class="p">,</span> <span class="n">last_idx</span><span class="p">):</span>
+        <span class="n">cropped_sound</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">cropped_sound</span><span class="o">.</span><span class="n">wf</span> <span class="o">=</span> <span class="n">cropped_sound</span><span class="o">.</span><span class="n">wf</span><span class="p">[</span><span class="n">first_idx</span> <span class="p">:</span> <span class="p">(</span><span class="n">last_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">cropped_sound</span>
+
+    <span class="k">def</span> <span class="nf">crop_with_seconds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first_second</span><span class="p">,</span> <span class="n">last_second</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">crop_with_idx</span><span class="p">(</span>
+            <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">first_second</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sr</span><span class="p">)),</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">last_second</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sr</span><span class="p">)),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">melspectr_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">mel_kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a melspectrogram matrix to be used to display a melspectrogram</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mel_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="p">{</span><span class="s1">&#39;n_fft&#39;</span><span class="p">:</span> <span class="mi">2048</span><span class="p">,</span> <span class="s1">&#39;hop_length&#39;</span><span class="p">:</span> <span class="mi">512</span><span class="p">,</span> <span class="s1">&#39;n_mels&#39;</span><span class="p">:</span> <span class="mi">128</span><span class="p">},</span> <span class="o">**</span><span class="n">mel_kwargs</span>
+        <span class="p">)</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="n">melspectrogram</span><span class="p">(</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wf</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">),</span> <span class="n">sr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sr</span><span class="p">,</span> <span class="o">**</span><span class="n">mel_kwargs</span><span class="p">)</span>
+        <span class="c1"># Convert to log scale (dB). We&#39;ll use the peak power as reference.</span>
+        <span class="k">return</span> <span class="n">amplitude_to_db</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="nb">max</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">append_sound</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sr</span> <span class="o">==</span> <span class="n">append_sound</span><span class="o">.</span><span class="n">sr</span>
+        <span class="p">),</span> <span class="s1">&#39;Sounds need to have the same sample rate to be appended&#39;</span>
+        <span class="k">return</span> <span class="n">Sound</span><span class="p">(</span><span class="n">sr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sr</span><span class="p">,</span> <span class="n">wf</span><span class="o">=</span><span class="n">hstack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wf</span><span class="p">,</span> <span class="n">append_sound</span><span class="o">.</span><span class="n">wf</span><span class="p">))</span>
+
+    <span class="c1">####################################################################################################################</span>
+    <span class="c1"># DISPLAY FUNCTIONS</span>
+
+    <span class="k">def</span> <span class="nf">hear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">autoplay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Display UI to play sound</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">wf</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">ensure_mono</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wf</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">wf</span><span class="p">[</span>
+            <span class="n">randint</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">wf</span><span class="p">))</span>
+        <span class="p">]</span> <span class="o">*=</span> <span class="mf">1.001</span>  <span class="c1"># hack to avoid having exactly the same sound twice (creates an Audio bug)</span>
+        <span class="k">return</span> <span class="n">Audio</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">wf</span><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sr</span><span class="p">,</span> <span class="n">autoplay</span><span class="o">=</span><span class="n">autoplay</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">plot_wf</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">wf</span><span class="p">,</span> <span class="n">sr</span> <span class="o">=</span> <span class="n">wf_and_sr</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">plot_wf</span><span class="p">(</span><span class="n">wf</span><span class="p">,</span> <span class="n">sr</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">autoplay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Display a melspectrogram of sound and UI to play sound</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">melspectrogram</span><span class="p">(</span><span class="n">plot_it</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hear</span><span class="p">(</span><span class="n">autoplay</span><span class="o">=</span><span class="n">autoplay</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">melspectrogram</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_it</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">mel_kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a melsepectrogram matrix and plots a melspectrogram if plot_it is True</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mel_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="p">{</span><span class="s1">&#39;n_fft&#39;</span><span class="p">:</span> <span class="mi">2048</span><span class="p">,</span> <span class="s1">&#39;hop_length&#39;</span><span class="p">:</span> <span class="mi">512</span><span class="p">,</span> <span class="s1">&#39;n_mels&#39;</span><span class="p">:</span> <span class="mi">128</span><span class="p">},</span> <span class="o">**</span><span class="n">mel_kwargs</span>
+        <span class="p">)</span>
+        <span class="n">log_S</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">melspectr_matrix</span><span class="p">(</span><span class="o">**</span><span class="n">mel_kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">plot_it</span><span class="p">:</span>
+            <span class="n">plot_melspectrogram</span><span class="p">(</span><span class="n">log_S</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sr</span><span class="p">,</span> <span class="n">hop_length</span><span class="o">=</span><span class="n">mel_kwargs</span><span class="p">[</span><span class="s1">&#39;hop_length&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">log_S</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">hum</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum.html">hum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/gen.html">hum.gen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/gen/diagnosis_sounds.html">hum.gen.diagnosis_sounds</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/gen/signal_generators.html">hum.gen.signal_generators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/gen/sine_mix.html">hum.gen.sine_mix</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/gen/voiced_time.html">hum.gen.voiced_time</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/lite_sample_sounds.html">hum.lite_sample_sounds</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/sound.html">hum.sound</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/sound/audio.html">hum.sound.audio</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/sound/audio_librosa.html">hum.sound.audio_librosa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/util.html">hum.util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/utils.html">hum.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/utils/date_ticks.html">hum.utils.date_ticks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/utils/infinite_waveform.html">hum.utils.infinite_waveform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/utils/librosa_utils.html">hum.utils.librosa_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/utils/plotting.html">hum.utils.plotting</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;NO COPYRIGHT.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
