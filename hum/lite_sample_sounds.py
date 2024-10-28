@@ -1,6 +1,7 @@
 """
 Generate simple waveforms
 """
+
 import numpy as np
 import random
 import itertools
@@ -56,7 +57,10 @@ def random_samples(chk_size=DFLT_CHK_SIZE, max_amplitude=DFLT_MAX_AMPLITUDE, **k
 
 
 def pure_tone(
-    chk_size=DFLT_CHK_SIZE, freq=440, sr=DFLT_SR, max_amplitude=DFLT_MAX_AMPLITUDE,
+    chk_size=DFLT_CHK_SIZE,
+    freq=440,
+    sr=DFLT_SR,
+    max_amplitude=DFLT_MAX_AMPLITUDE,
 ):
     """
     Generates a pure tone using given arguments
@@ -69,7 +73,10 @@ def pure_tone(
 
 
 def triangular_tone(
-    chk_size=DFLT_CHK_SIZE, freq=440, sr=DFLT_SR, max_amplitude=DFLT_MAX_AMPLITUDE,
+    chk_size=DFLT_CHK_SIZE,
+    freq=440,
+    sr=DFLT_SR,
+    max_amplitude=DFLT_MAX_AMPLITUDE,
 ):
     """
     Generates a triangular tone using given arguments
@@ -82,7 +89,10 @@ def triangular_tone(
 
 
 def square_tone(
-    chk_size=DFLT_CHK_SIZE, freq=440, sr=DFLT_SR, max_amplitude=DFLT_MAX_AMPLITUDE,
+    chk_size=DFLT_CHK_SIZE,
+    freq=440,
+    sr=DFLT_SR,
+    max_amplitude=DFLT_MAX_AMPLITUDE,
 ):
     """
     Generates a square tone using given arguments
@@ -114,8 +124,10 @@ class AnnotatedWaveform(object):
     >>> annotated_wf = AnnotatedWaveform(chk_size = 4)
     >>> chk_tag_gen = annotated_wf.chk_and_tag_gen()
     >>> wf, annots = annotated_wf.get_wf_and_annots()
-    >>> list(wf)
-    [3003, -17828, -24808, 2511, 0, 1902, 3797, 5677, -30000, -29900, -29800, -29700, 30000, 30000, 30000, 30000]
+    >>> assert list(wf) == [
+    ...     3003, -17828, -24808, 2511, 0, 1902, 3797, 5677, -30000,
+    ...     -29900, -29800, -29700, 30000, 30000, 30000, 30000
+    ... ]
     >>> assert list(next(chk_tag_gen)[0]) == [20057, 13723, -22187, 22047]
     """
 
@@ -138,7 +150,8 @@ class AnnotatedWaveform(object):
         }
 
     def chk_and_tag_gen(
-        self, chk_tags=('random', 'pure_tone', 'triangular_tone', 'square_tone'),
+        self,
+        chk_tags=('random', 'pure_tone', 'triangular_tone', 'square_tone'),
     ):
         """
         Yields (chk, tag) pairs for each tag given in chk_tags
@@ -147,7 +160,8 @@ class AnnotatedWaveform(object):
             yield tag_to_wf_gen_func[tag](**self._default_kwargs), tag
 
     def get_wf_and_annots(
-        self, chk_tags=('random', 'pure_tone', 'triangular_tone', 'square_tone'),
+        self,
+        chk_tags=('random', 'pure_tone', 'triangular_tone', 'square_tone'),
     ):
         """
         Yields (wf, annots) tuple where annots is a dictionary mapping tag to chunk indices
@@ -215,8 +229,10 @@ def tag_wf_gen(
     >>> tag_and_wf_seq = list(gen)  # consume the whole gen
     >>> [x[0] for x in tag_and_wf_seq]
     ['random', 'pure_tone', 'triangular_tone', 'square_tone']
-    >>> list(tag_and_wf_seq[2][1][:5])  # the first 5 numbers of the triangular tone
-    [-30000, -29900, -29800, -29700, -29600]
+
+    The first 5 numbers of the triangular tone
+
+    >>> assert list(tag_and_wf_seq[2][1][:5]) == [-30000, -29900, -29800, -29700, -29600]
 
     """
     tag_wfgen_map = dict(tag_wfgen_map)
