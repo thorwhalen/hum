@@ -51,8 +51,10 @@ def categorical_gen(gen_it):
 def alphabet_to_bins(alphabet=DFLT_ALPHABET):
     """
     Returns a dictionary matching each word in alphabet to bins of size 10.0 ranging from 0 to 10 * len(alphabet)
-    >>> alphabet_to_bins()
-    {'a': (0.0, 10.0), 'b': (10.0, 20.0), 'c': (20.0, 30.0), 'd': (30.0, 40.0), 'e': (40.0, 50.0)}
+    >>> assert alphabet_to_bins() == {
+    ...     'a': (0.0, 10.0), 'b': (10.0, 20.0), 'c': (20.0, 30.0), 
+    ...     'd': (30.0, 40.0), 'e': (40.0, 50.0)
+    ... }
     """
     length = len(alphabet)
     low = 0.0
@@ -73,8 +75,11 @@ def call_repeatedly(func, *args, **kwargs):
     Returns a generator that calls func repeatedly with the given args and kwargs
     >>> gen = call_repeatedly(alphabet_to_bins)
     >>> assert next(gen) == {'a': (0.0, 10.0), 'b': (10.0, 20.0), 'c': (20.0, 30.0), 'd': (30.0, 40.0), 'e': (40.0, 50.0)}
-    >>> next(gen)
-    {'a': (0.0, 10.0), 'b': (10.0, 20.0), 'c': (20.0, 30.0), 'd': (30.0, 40.0), 'e': (40.0, 50.0)}
+    >>> assert next(gen) == {
+    ...     'a': (0.0, 10.0), 'b': (10.0, 20.0), 'c': (20.0, 30.0), 
+    ...     'd': (30.0, 40.0), 'e': (40.0, 50.0)
+    ... }
+
     """
     while True:
         yield func(*args, **kwargs)
