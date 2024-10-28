@@ -99,8 +99,8 @@ class BinarySound(object):
         >>> wf = bs.mk_phrase(utc)
         >>> print(bs)
         {'repetition': 3, 'word_size_frm': 150, 'redundancy': 142, 'phrase_data_frm': 21300}
-        >>> all(utc == bs.decode(wf))
-        True
+        >>> assert all(utc == bs.decode(wf))
+
         """
         self.nbits = nbits
 
@@ -173,8 +173,8 @@ class BinarySound(object):
         >>> wf = bs.mk_phrase(utc)
         >>> print(bs)
         {'repetition': 3, 'word_size_frm': 150, 'redundancy': 142, 'phrase_data_frm': 21300}
-        >>> all(utc == bs.decode(wf))
-        True
+        >>> assert all(utc == bs.decode(wf))
+
         """
         # repetition: how many times to repeat each bit to make a word
         repetition = int(floor(sr / (2 * freq)))

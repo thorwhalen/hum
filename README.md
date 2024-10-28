@@ -67,7 +67,7 @@ plt.plot(wf);
 
 
     
-![png](notebooks/hum_demo_files/hum_demo_6_0.png)
+![png](https://github.com/thorwhalen/hum/raw/main/notebooks/hum_demo_files/hum_demo_6_0.png)
     
 
 
@@ -79,7 +79,7 @@ plt.plot(wf);
 
 
     
-![png](notebooks/hum_demo_files/hum_demo_7_0.png)
+![png](https://github.com/thorwhalen/hum/raw/main/notebooks/hum_demo_files/hum_demo_7_0.png)
     
 
 
@@ -94,7 +94,7 @@ plt.plot(wf_mix);
 
 
     
-![png](notebooks/hum_demo_files/hum_demo_9_0.png)
+![png](https://github.com/thorwhalen/hum/raw/main/notebooks/hum_demo_files/hum_demo_9_0.png)
     
 
 
@@ -107,7 +107,7 @@ plt.plot(wf_mix);
 
 
     
-![png](notebooks/hum_demo_files/hum_demo_10_0.png)
+![png](https://github.com/thorwhalen/hum/raw/main/notebooks/hum_demo_files/hum_demo_10_0.png)
     
 
 
@@ -148,7 +148,7 @@ plt.plot(wf);
 
 
     
-![png](notebooks/hum_demo_files/hum_demo_14_0.png)
+![png](https://github.com/thorwhalen/hum/raw/main/notebooks/hum_demo_files/hum_demo_14_0.png)
     
 
 
@@ -160,7 +160,7 @@ plt.plot(wf_weight);
 
 
     
-![png](notebooks/hum_demo_files/hum_demo_15_0.png)
+![png](https://github.com/thorwhalen/hum/raw/main/notebooks/hum_demo_files/hum_demo_15_0.png)
     
 
 
@@ -187,7 +187,7 @@ all(bs.decode(wf) == utc)
 
 
     
-![png](notebooks/hum_demo_files/hum_demo_18_1.png)
+![png](https://github.com/thorwhalen/hum/raw/main/notebooks/hum_demo_files/hum_demo_18_1.png)
     
 
 
@@ -210,7 +210,7 @@ all(bs.decode(wf) == utc)
 
 
     
-![png](notebooks/hum_demo_files/hum_demo_20_1.png)
+![png](https://github.com/thorwhalen/hum/raw/main/notebooks/hum_demo_files/hum_demo_20_1.png)
     
 
 
@@ -223,7 +223,7 @@ plt.plot(bs.mk_utc_phrases()[:200]);
 
 
     
-![png](notebooks/hum_demo_files/hum_demo_22_0.png)
+![png](https://github.com/thorwhalen/hum/raw/main/notebooks/hum_demo_files/hum_demo_22_0.png)
     
 
 
@@ -238,7 +238,7 @@ plt.plot(wf[2000:2300]);
 
 
     
-![png](notebooks/hum_demo_files/hum_demo_24_0.png)
+![png](https://github.com/thorwhalen/hum/raw/main/notebooks/hum_demo_files/hum_demo_24_0.png)
     
 
 
@@ -252,7 +252,7 @@ plt.plot(wf[:500]);
 
 
     
-![png](notebooks/hum_demo_files/hum_demo_26_0.png)
+![png](https://github.com/thorwhalen/hum/raw/main/notebooks/hum_demo_files/hum_demo_26_0.png)
     
 
 
@@ -264,7 +264,7 @@ plt.plot(wf[:150]);
 
 
     
-![png](notebooks/hum_demo_files/hum_demo_27_0.png)
+![png](https://github.com/thorwhalen/hum/raw/main/notebooks/hum_demo_files/hum_demo_27_0.png)
     
 
 
@@ -282,7 +282,7 @@ df.plot(subplots=True, figsize=(20,7));
 
 
     
-![png](notebooks/hum_demo_files/hum_demo_30_0.png)
+![png](https://github.com/thorwhalen/hum/raw/main/notebooks/hum_demo_files/hum_demo_30_0.png)
     
 
 
@@ -308,7 +308,7 @@ plot_wf(wf[:20000], sr)
 
 
     
-![png](notebooks/hum_demo_files/hum_demo_34_0.png)
+![png](https://github.com/thorwhalen/hum/raw/main/notebooks/hum_demo_files/hum_demo_34_0.png)
     
 
 
@@ -321,7 +321,7 @@ disp_wf(wf, sr)
 
 
     
-![png](notebooks/hum_demo_files/hum_demo_36_0.png)
+![png](https://github.com/thorwhalen/hum/raw/main/notebooks/hum_demo_files/hum_demo_36_0.png)
     
 
 
@@ -339,7 +339,7 @@ snd.plot_wf(wf=wf[:20000], sr=sr)
 
 
     
-![png](notebooks/hum_demo_files/hum_demo_39_0.png)
+![png](https://github.com/thorwhalen/hum/raw/main/notebooks/hum_demo_files/hum_demo_39_0.png)
     
 
 
@@ -374,7 +374,7 @@ snd.display()
 
 
     
-![png](notebooks/hum_demo_files/hum_demo_41_0.png)
+![png](https://github.com/thorwhalen/hum/raw/main/notebooks/hum_demo_files/hum_demo_41_0.png)
     
 
 
@@ -398,7 +398,7 @@ disp_wf(wf)
 
 
     
-![png](notebooks/hum_demo_files/hum_demo_45_0.png)
+![png](https://github.com/thorwhalen/hum/raw/main/notebooks/hum_demo_files/hum_demo_45_0.png)
     
 
 
@@ -409,7 +409,7 @@ Sound(wf=wf).display()
 
 
     
-![png](notebooks/hum_demo_files/hum_demo_46_0.png)
+![png](https://github.com/thorwhalen/hum/raw/main/notebooks/hum_demo_files/hum_demo_46_0.png)
     
 
 
@@ -427,13 +427,13 @@ Sound(wf=wf).display()
 
 
     
-![png](notebooks/hum_demo_files/hum_demo_49_0.png)
+![png](https://github.com/thorwhalen/hum/raw/main/notebooks/hum_demo_files/hum_demo_49_0.png)
     
 
 
 
     
-![png](notebooks/hum_demo_files/hum_demo_49_1.png)
+![png](https://github.com/thorwhalen/hum/raw/main/notebooks/hum_demo_files/hum_demo_49_1.png)
     
 
 
@@ -452,13 +452,13 @@ Sound(wf=wf).display()
 
 
     
-![png](notebooks/hum_demo_files/hum_demo_51_1.png)
+![png](https://github.com/thorwhalen/hum/raw/main/notebooks/hum_demo_files/hum_demo_51_1.png)
     
 
 
 
     
-![png](notebooks/hum_demo_files/hum_demo_51_2.png)
+![png](https://github.com/thorwhalen/hum/raw/main/notebooks/hum_demo_files/hum_demo_51_2.png)
     
 
 
@@ -473,13 +473,13 @@ Sound(wf=wf).display()
 
 
     
-![png](notebooks/hum_demo_files/hum_demo_53_0.png)
+![png](https://github.com/thorwhalen/hum/raw/main/notebooks/hum_demo_files/hum_demo_53_0.png)
     
 
 
 
     
-![png](notebooks/hum_demo_files/hum_demo_53_1.png)
+![png](https://github.com/thorwhalen/hum/raw/main/notebooks/hum_demo_files/hum_demo_53_1.png)
     
 
 
@@ -494,13 +494,13 @@ Sound(wf=wf).display()
 
 
     
-![png](notebooks/hum_demo_files/hum_demo_55_0.png)
+![png](https://github.com/thorwhalen/hum/raw/main/notebooks/hum_demo_files/hum_demo_55_0.png)
     
 
 
 
     
-![png](notebooks/hum_demo_files/hum_demo_55_1.png)
+![png](https://github.com/thorwhalen/hum/raw/main/notebooks/hum_demo_files/hum_demo_55_1.png)
     
 
 
