@@ -1,6 +1,7 @@
 """
 Sounds that are meant to diagnose audio pipelines
 """
+
 from numpy import (
     array,
     hstack,
@@ -12,7 +13,6 @@ from numpy import (
     diff,
     where,
     reshape,
-    math,
     arange,
     iinfo,
     int16,
@@ -24,6 +24,7 @@ from numpy import (
     all,
 )
 import numpy as np
+import math
 from typing import Optional
 from numpy.random import randint
 from itertools import islice, count
@@ -32,7 +33,7 @@ from datetime import datetime as dt
 from hum.gen.util import DFLT_N_SAMPLES, DFLT_SR, DFLT_FREQ
 
 second_ms = 1000.0
-epoch = dt.utcfromtimestamp(0)
+epoch = dt.fromtimestamp(0)
 
 
 def utcnow_ms():
@@ -133,7 +134,8 @@ class BinarySound(object):
             }, 'header_pattern must be an array of 0s and 1s'
         self.header_pattern = header_pattern
         self.header_word = tile(
-            repeat(self.header_pattern, self.repetition), self.header_size_words,
+            repeat(self.header_pattern, self.repetition),
+            self.header_size_words,
         )
 
         self.phrase_data_frm = self.redundancy * self.word_size_frm
@@ -355,7 +357,10 @@ class TimeSound(WfGen):
             ums = int(ums + n_bufs_per_tick * self.buf_size_ms)
         wf = array(wf)
         return hstack(
-            (wf, zeros((wf.shape[0], int(self.buf_size_frm / 2 - wf.shape[1]))),)
+            (
+                wf,
+                zeros((wf.shape[0], int(self.buf_size_frm / 2 - wf.shape[1]))),
+            )
         )
 
 
@@ -366,7 +371,9 @@ DFLT_BLEEP_SPEC = 100
 
 
 def mk_some_buzz_wf(
-    freq: float = DFLT_FREQ, n_samples: int = DFLT_N_SAMPLES, sr: float = DFLT_SR,
+    freq: float = DFLT_FREQ,
+    n_samples: int = DFLT_N_SAMPLES,
+    sr: float = DFLT_SR,
 ):
     """Produce a sawtooth waveform with given frequency and n_samples.
     The sample rate ``sr`` serves to interpret the ``freq`` specification in the number

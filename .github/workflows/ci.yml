@@ -26,6 +26,12 @@ jobs:
           dependency-files: setup.cfg
           # ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # Uncomment this if you need to install private dependencies from source
 
+      - name: Install Extra dependencies
+        run: |
+            sudo apt-get -qq update
+            sudo apt-get install -y gcc libsndfile-dev
+            pip install librosa
+
       - name: Format Source Code
         uses: i2mint/isee/actions/format-source-code@master
 
