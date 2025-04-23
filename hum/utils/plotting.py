@@ -53,11 +53,26 @@ def plot_wf(
         plt.margins(x=0)
 
 
-def disp_wf(wf, sr=DFLT_SR, autoplay=False, wf_plot_func=plt.specgram):
+def disp_wf(wf, sr=DFLT_SR, autoplay=False, wf_plot_func=plot_wf):
+    """
+    Display waveform in Jupyter notebook
+    
+    Parameters
+    ----------
+    wf : array-like
+        Waveform to display
+    sr : int, optional
+        Sample rate of waveform, by default 44100
+    autoplay : bool, optional
+        Whether to autoplay the audio, by default False
+    wf_plot_func : function, optional
+        Function to plot the waveform, by default plot_wf (other example: plt.specgram)
+
+    """
     if wf_plot_func is not None:
         if getmodulename(wf_plot_func, "").startswith("matplotlib"):
             plt.figure(figsize=DFLT_FIGSIZE_FOR_WF_PLOTS)
-        wf_plot_func(wf)
+        wf_plot_func(wf, sr)
     try:
         from IPython.display import Audio
 
