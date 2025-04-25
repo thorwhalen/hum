@@ -3,6 +3,7 @@
 import os
 import tempfile
 import inspect
+from inspect import Signature, Parameter
 from typing import Callable, Optional, Union, Dict, Protocol, TypeVar, runtime_checkable
 from collections.abc import MutableMapping
 import time
@@ -51,49 +52,15 @@ class PyoServer(Server):
         self.shutdown()
 
 
-class Sigs(MutableMapping):
-    def __init__(self, **sigto_params):
-        self._sigs = {k: self._wrap(v) for k, v in sigto_params.items()}
-
-    def _wrap(self, spec):
-        if isinstance(spec, SigTo):
-            return spec
-        return make_sigto_from_spec(spec)
-
-    def update(self, updates):
-        for k, v in updates.items():
-            if k not in self._sigs:
-                raise KeyError(f"{k} is not a known parameter.")
-            self._sigs[k].value = v if not isinstance(v, dict) else v.get('value', v)
-
-    def __getitem__(self, key):
-        return self._sigs[key]
-
-    def __setitem__(self, key, value):
-        self.update({key: value})
-
-    def __delitem__(self, key):
-        del self._sigs[key]
-
-    def __iter__(self):
-        return iter(self._sigs)
-
-    def __len__(self):
-        return len(self._sigs)
-
-    def __repr__(self):
-        return f"<Sigs {list(self._sigs.keys())}>"
-
-
 class Knobs(MutableMapping):
     """
-    A class for managing the parameters of a synthesizer.
+    A class for managing signal parameters (as SigTo) with optional recording.
 
-    The `param_dict` is a dict that specify the value for each knob (i.e. sound parameter).
-
+    Behaves like a MutableMapping (dict-like) and supports automatic recording
+    of parameter updates with timestamps.
     """
 
-    def __init__(self, param_dict, *, record: Optional[Recorder] = False):
+    def __init__(self, param_dict: KnobsDict, *, record: Recorder = None):
         """
         Parameters
         ----------
@@ -105,10 +72,16 @@ class Knobs(MutableMapping):
             This function will be called whenever the parameters are updated.
             Default is None, which means no recording will be done.
         """
-        self._params = Sigs(**param_dict)
+        self._params = {
+            k: v if isinstance(v, SigTo) else dict_to_sigto(v)
+            for k, v in param_dict.items()
+        }
         self._record = record
 
-    def update(self, updates):
+    def __call__(self, **updates_kwargs):
+        self.update(updates_kwargs)
+
+    def update(self, updates: KnobsDict = (), /, **kwargs):
         """
         Update the parameters of the synthesizer.
 
@@ -128,10 +101,44 @@ class Knobs(MutableMapping):
         Essentially, you can specify a `pyo.SigTo` object as the value of a knob.
 
         """
-        self._params.update(updates)
+        if isinstance(updates, dict):
+            combined = updates.copy()
+        elif hasattr(updates, "__iter__"):
+            combined = dict(updates)
+        else:
+            raise TypeError("Knobs.update() requires a mapping or iterable of pairs")
+
+        combined.update(kwargs)
+        self._fast_update(combined)
+
+    def _fast_update(self, updates: KnobsDict):
+        """
+        The fast update method is used for real-time updates, where speed is critical.
+        """
+        for k, v in updates.items():
+            sig = self._params[k]
+            if isinstance(v, dict):
+                # Note: No validation of the v keys. If you pass keys that are not
+                # valid SigTo parameters, (i.e. other than value, time, mul or add)
+                # it will simply add them to the SigTo object as attributes, but
+                # that won't have any (audible) effect.
+                # The reason we're not validating is that this update is in a real-time
+                # context, and we don't want to slow it down with validation.
+                for attr_name, attr_value in v.items():
+                    setattr(sig, attr_name, attr_value)
+            else:
+                sig.value = v
+
         if self._record:
-            now = time.time()
-            self._record(now, updates)
+            self._record(time.time(), updates)
+
+    @property
+    def __signature__(self):
+        return Signature(
+            parameters=[
+                Parameter(name, kind=Parameter.KEYWORD_ONLY) for name in self._params
+            ]
+        )
 
     def __setitem__(self, key, value):
         self.update({key: value})
@@ -149,7 +156,7 @@ class Knobs(MutableMapping):
         return len(self._params)
 
     def __repr__(self):
-        return f"<Knobs {self._params}>"
+        return f"<Knobs {list(self._params.keys())}>"
 
 
 # TODO: Add validation of values
@@ -167,24 +174,24 @@ def get_pyoobj_params(pyoobj):
     return specs
 
 
-def make_sigto_from_spec(spec):
+def dict_to_sigto(d: Union[float, dict]) -> SigTo:
     """Create a SigTo object from a parameter spec dictionary or a number."""
-    if isinstance(spec, dict):
+    if isinstance(d, dict):
         # TODO: Simplify?
         sigto_kwargs = {
             k: v
-            for k, v in spec.items()
+            for k, v in d.items()
             if k in ['value', 'time', 'init', 'mul', 'add'] and v is not None
         }
     else:
-        sigto_kwargs = {'value': spec}
+        sigto_kwargs = {'value': d}
     return SigTo(**sigto_kwargs)
 
 
 RecordFactory = Callable[[], Appendable]
 
 
-def sig_to_to_dict(sigto):
+def sigto_to_dict(sigto: SigTo) -> Dict[str, float]:
     """
     Convert a SigTo object to a dictionary.
     """
@@ -196,12 +203,12 @@ def sig_to_to_dict(sigto):
     }
 
 
-def _knobs_to_dict(knobs):
+def serialize_knobs(knobs):
     """
     Convert the knobs to a dictionary.
     """
     return {
-        k: sig_to_to_dict(v) if isinstance(v, SigTo) else v for k, v in knobs.items()
+        k: sigto_to_dict(v) if isinstance(v, SigTo) else v for k, v in knobs.items()
     }
 
 
@@ -212,7 +219,7 @@ def _json_friendly_records(records):
 
     def _processed_record(record):
         timestamp, knobs = record
-        return timestamp, _knobs_to_dict(knobs)
+        return timestamp, serialize_knobs(knobs)
 
     return list(map(_processed_record, records))
 
@@ -221,7 +228,7 @@ class Synth:
     """
     A class for creating a real-time synthesizer using pyo.
 
-    The graph_func is a function whose arguments determine the parameters of the synthesizer.
+    The synth_func is a function whose arguments determine the parameters of the synthesizer.
     We call a dictionary of such parameters "knobs":
     These are dicts that specify the value for each knob (i.e. sound parameter) that
     has changed (all other sound parameters remain as they were).
@@ -239,12 +246,12 @@ class Synth:
 
     def __init__(
         self,
-        graph_func,
+        synth_func,
         *,
         sr=DFLT_PYO_SR,
         nchnls=DFLT_PYO_NCHNLS,
         record_on_start: bool = True,
-        record_factory: RecordFactory = list,  # No argument factory that makes an Appendable
+        event_log_factory: RecordFactory = list,  # No argument factory that makes an Appendable
         audio='portaudio',
         verbosity=DFLT_PYO_VERBOSITY,
         **server_kwargs,
@@ -253,7 +260,7 @@ class Synth:
 
         Parameters
         ----------
-        graph_func : callable
+        synth_func : callable
             A function that returns a pyo object. The function should accept keyword arguments
             that are the parameters of the synthesizer.
         sr : int
@@ -262,7 +269,7 @@ class Synth:
             The number of channels of the server. Default is 1.
         record_on_start : bool
             Whether to start recording when the server starts. Default is True.
-        record_factory : callable
+        event_log_factory : callable
             A function that returns an empty list or other Appendable object to store the
             recorded events. Default is list.
         audio : str
@@ -275,31 +282,40 @@ class Synth:
         self._server_kwargs = dict(
             server_kwargs, sr=sr, nchnls=nchnls, verbosity=verbosity, audio=audio
         )
-        self._graph_func = graph_func
+        self._synth_func = synth_func
         self._server = None
         self.output = None
         self.knobs = None
-        self._graph_func_params = get_pyoobj_params(self._graph_func)
+        self._synth_func_params = get_pyoobj_params(self._synth_func)
 
         # Recording
         self._record_on_start = record_on_start
-        self._record_factory = record_factory
+        self._event_log_factory = event_log_factory
         self._recording = False
-        self._recorded_events = self._record_factory()
         self._recording_start_time = None
+        self._recorded_events = None
+
+    def _init_recorded_events(self):
+        self._recorded_events = self._event_log_factory()
+        # The first even shold be the initial state of the synth_func
+        self._recorded_events.append(self._synth_func_params)
 
     def _record_callback(self, t, updates):
-        if self._recording_start_time is None:
-            self._recording_start_time = t
         rel_time = t - self._recording_start_time
         self._recorded_events.append((rel_time, updates))
 
     def start_recording(self):
         self._recording = True
-        self._recorded_events = self._record_factory()
-        self._recording_start_time = None
-        if self.knobs:
-            self.knobs._record = self._record_callback
+        self._recorded_events = self._event_log_factory()
+        self._recording_start_time = time.time()
+        if self.knobs is None:
+            raise RuntimeError(
+                "Cannot start recording without initializing knobs. "
+                "Did you forget to call start() or do a with synth... block?"
+            )
+
+        self.knobs._record = self._record_callback
+        self._record_callback(self._recording_start_time, serialize_knobs(self.knobs))
 
     def stop_recording(self):
         self._recording = False
@@ -320,18 +336,16 @@ class Synth:
             self._server = Server(**self._server_kwargs).boot()
 
         self._initial_knob_params = {
-            name: make_sigto_from_spec(spec)
-            for name, spec in self._graph_func_params.items()
+            name: dict_to_sigto(spec) for name, spec in self._synth_func_params.items()
         }
 
         self.knobs = Knobs(self._initial_knob_params)
+        self.output = self._synth_func(**self._initial_knob_params)
+        self.output.out()
+        self._server.start()
 
         if self._record_on_start:
             self.start_recording()
-
-        self.output = self._graph_func(**self._initial_knob_params)
-        self.output.out()
-        self._server.start()
 
     def stop(self):
         if self.output is not None:
@@ -367,7 +381,7 @@ class Synth:
 
         all_keys = set(k for _, knobs in control_events for k in knobs)
         raw_params = {k: SigTo(value=0, time=0.01) for k in all_keys}
-        synth_output = self._graph_func(**raw_params)
+        synth_output = self._synth_func(**raw_params)
         table_recorder = TableRec(synth_output, table=table).play()
 
         try:
@@ -426,7 +440,7 @@ class Synth:
 
 
 def example_01_basic_dual_osc():
-    from hum.utils.pyo_util import Synth
+    from hum.pyo_util import Synth
     import time
     from pyo import Sine, Mix, ButLP, SigTo
 
@@ -463,7 +477,7 @@ def example_01_basic_dual_osc():
 
 
 def example_02_distortion_and_reverb():
-    from hum.utils.pyo_util import Synth
+    from hum.pyo_util import Synth
     import time
     from pyo import Sine, Atan2, Biquadx, WGVerb, SigTo
 
@@ -484,7 +498,7 @@ def example_02_distortion_and_reverb():
 
 
 def example_03_detuned_polyphonic_feel():
-    from hum.utils.pyo_util import Synth
+    from hum.pyo_util import Synth
     import time
     from pyo import Sine, Mix, MoogLP, SigTo
 
@@ -506,7 +520,7 @@ def example_03_detuned_polyphonic_feel():
 
 
 def example_04_dynamic_tremolo_and_filter_sweep():
-    from hum.utils.pyo_util import Synth
+    from hum.pyo_util import Synth
     import time
     from pyo import Sine, ButLP
 
@@ -530,7 +544,7 @@ def example_04_dynamic_tremolo_and_filter_sweep():
 
 def example_05_offline_rendering():
     import statistics
-    from hum.utils.pyo_util import OfflineSynthRenderer
+    from hum.pyo_util import OfflineSynthRenderer
     from pyo import Sine, ButLP
 
     import recode
@@ -550,7 +564,7 @@ def example_05_offline_rendering():
     ]
 
     renderer = OfflineSynthRenderer(
-        graph_func=my_graph,
+        synth_func=my_graph,
         parameter_frames=frames,
         frame_durations=2.0,
         sr=44100,
@@ -568,7 +582,7 @@ def example_05_offline_rendering():
 
 
 def example_06_knob_recording_playback():
-    from hum.utils.pyo_util import Synth
+    from hum.pyo_util import Synth
     import time
     from pyo import Sine, ButLP, SigTo
 

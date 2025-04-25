@@ -5,7 +5,9 @@ Plot utils
 from inspect import getmodule
 import matplotlib.pylab as plt
 from numpy import linspace
+
 from hum.utils.date_ticks import str_ticks
+from recode import decode_wav_bytes
 
 DFLT_FIGSIZE_FOR_WF_PLOTS = (22, 5)
 DFLT_SR = 44100
@@ -69,6 +71,15 @@ def disp_wf(wf, sr=DFLT_SR, autoplay=False, wf_plot_func=plot_wf):
         Function to plot the waveform, by default plot_wf (other example: plt.specgram)
 
     """
+    if isinstance(wf, bytes):
+        # if it's a RIFF file, decode it as WAV
+        if wf[:4] == b"RIFF":
+            # Decode the WAV bytes
+            wav_bytes = wf
+            wf, sr = decode_wav_bytes(wav_bytes)
+        else:
+            raise ValueError("Unsupported audio format. Only WAV bytes are supported.")
+
     if wf_plot_func is not None:
         if getmodulename(wf_plot_func, "").startswith("matplotlib"):
             plt.figure(figsize=DFLT_FIGSIZE_FOR_WF_PLOTS)
