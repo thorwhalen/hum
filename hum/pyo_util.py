@@ -4,11 +4,21 @@ import os
 import tempfile
 import inspect
 from inspect import Signature, Parameter
-from typing import Callable, Optional, Union, Dict, Protocol, TypeVar, runtime_checkable
+from typing import (
+    Iterator,
+    Callable,
+    Optional,
+    Union,
+    Dict,
+    Protocol,
+    TypeVar,
+    runtime_checkable,
+)
 from collections.abc import MutableMapping
 import time
 
-from pyo import *
+from pyo import PyoObject
+from pyo import *  # TODO: change to be explicit object imports
 
 DFLT_PYO_SR = 44100
 DFLT_PYO_NCHNLS = 1
@@ -19,7 +29,8 @@ DFLT_TIME_TIME = 0.025  # default time of pyo.SigTo, but should we default to 0 
 
 T = TypeVar('T')
 
-KnobsDict = Dict[str, Union[float, SigTo, Dict[str, float]]]
+KnobsValue = Union[float, SigTo, Dict[str, float]]
+KnobsDict = Dict[str, KnobsValue]
 Recorder = Callable[[float, KnobsDict], None]
 
 
@@ -60,7 +71,7 @@ class Knobs(MutableMapping):
     of parameter updates with timestamps.
     """
 
-    def __init__(self, param_dict: KnobsDict, *, record: Recorder = None):
+    def __init__(self, param_dict: KnobsDict, *, record: Recorder = None, live=False):
         """
         Parameters
         ----------
@@ -72,11 +83,20 @@ class Knobs(MutableMapping):
             This function will be called whenever the parameters are updated.
             Default is None, which means no recording will be done.
         """
-        self._params = {
-            k: v if isinstance(v, SigTo) else dict_to_sigto(v)
-            for k, v in param_dict.items()
-        }
+        self.is_live = live
         self._record = record
+        self._params = {}
+
+        if live:
+            self._params = {
+                k: v if isinstance(v, SigTo) else dict_to_sigto(v)
+                for k, v in param_dict.items()
+            }
+            self._fast_update = self._live_update
+        else:
+            self._params = param_dict.copy()
+            self._update_log = []
+            self._fast_update = self._offline_update
 
     def __call__(self, **updates_kwargs):
         self.update(updates_kwargs)
@@ -111,9 +131,9 @@ class Knobs(MutableMapping):
         combined.update(kwargs)
         self._fast_update(combined)
 
-    def _fast_update(self, updates: KnobsDict):
+    def _live_update(self, updates: KnobsDict):
         """
-        The fast update method is used for real-time updates, where speed is critical.
+        The live update method is used for real-time updates, where speed is critical.
         """
         for k, v in updates.items():
             sig = self._params[k]
@@ -131,6 +151,24 @@ class Knobs(MutableMapping):
 
         if self._record:
             self._record(time.time(), updates)
+
+    # TODO: I don't like the fact that there's a _update_log PLUS a self._record
+    #   Se if we can merge them -- and add control over time stamps
+    def _offline_update(self, updates: KnobsDict):
+        """
+        The offline update method is used for non-real-time updates, where we can
+        afford to be a bit slower.
+        """
+        self._update_log.append(updates)
+
+        if self._record:
+            self._record(time.time(), updates)
+
+    def get_update_log(self):
+        """
+        Get the update log.
+        """
+        return self._update_log
 
     @property
     def __signature__(self):
@@ -224,6 +262,78 @@ def _json_friendly_records(records):
     return list(map(_processed_record, records))
 
 
+# TODO: Not using this. Thought I needed it. Delete if not needed.
+def auto_play(obj):
+    """
+    Recursively call .play() on all PyoObjects inside an object or list.
+    """
+    if isinstance(obj, PyoObject):
+        obj.play()
+    elif isinstance(obj, list) or isinstance(obj, tuple):
+        for item in obj:
+            auto_play(item)
+    # Optional: if your graph sometimes returns dicts of PyoObjects
+    elif isinstance(obj, dict):
+        for item in obj.values():
+            auto_play(item)
+    # Otherwise: ignore non-Pyo things (ints, floats, etc.)
+
+
+import time
+from typing import Iterator, Union, List, Tuple, Dict
+
+KnobsDict = Dict[str, Union[float, dict]]  # reusing your existing type
+
+
+class ReplayEvents:
+    """
+    An iterator that replays a sequence of timestamped knob updates in real-time.
+
+    This class takes a list of (timestamp, KnobsDict) events and yields
+    each update at the correct real-time intervals, automatically sleeping
+    between updates to recreate the original timing.
+
+    Usage:
+    ------
+    Simply wrap your recorded control events and feed them into play_events:
+
+        synth.play_events(ReplayEvents(control_events))
+
+    Why use ReplayEvents?
+    ----------------------
+    - Centralizes real-time replay logic.
+    - Makes it easy to later add speed controls, jitter, filtering, etc.
+    - Keeps `play_events` clean and flexible.
+    - Supports a future where playback streams can be manipulated easily.
+
+    Parameters
+    ----------
+    control_events : List[Tuple[float, KnobsDict]]
+        A list of (timestamp, knob updates) pairs.
+    speed : float
+        A multiplier for playback speed. 1.0 = normal speed,
+        2.0 = twice as fast, 0.5 = half speed, etc. Default is 1.0.
+    """
+
+    def __init__(
+        self, control_events: List[Tuple[float, KnobsDict]], speed: float = 1.0
+    ):
+        self.control_events = control_events
+        self.speed = speed
+
+    def __iter__(self) -> Iterator[Union[KnobsDict, None]]:
+        if not self.control_events:
+            return
+        base_time, first_update = self.control_events[0]
+        yield first_update
+        for (curr_time, updates), (next_time, _) in zip(
+            self.control_events, self.control_events[1:]
+        ):
+            sleep_duration = (next_time - curr_time) / self.speed
+            time.sleep(max(sleep_duration, 0))
+            yield updates
+
+
 class Synth:
     """
     A class for creating a real-time synthesizer using pyo.
@@ -285,7 +395,6 @@ class Synth:
         self._synth_func = synth_func
         self._server = None
         self.output = None
-        self.knobs = None
         self._synth_func_params = get_pyoobj_params(self._synth_func)
 
         # Recording
@@ -294,6 +403,9 @@ class Synth:
         self._recording = False
         self._recording_start_time = None
         self._recorded_events = None
+
+        # In Synth.__init__:
+        self.knobs = Knobs(self._synth_func_params, live=False)
 
     def _init_recorded_events(self):
         self._recorded_events = self._event_log_factory()
@@ -339,7 +451,10 @@ class Synth:
             name: dict_to_sigto(spec) for name, spec in self._synth_func_params.items()
         }
 
-        self.knobs = Knobs(self._initial_knob_params)
+        self.knobs = Knobs(
+            self._initial_knob_params, record=self._record_callback, live=True
+        )
+
         self.output = self._synth_func(**self._initial_knob_params)
         self.output.out()
         self._server.start()
@@ -354,6 +469,44 @@ class Synth:
             self._server.stop()
         if self._record_on_start:
             self.stop_recording()
+
+    def play_events(
+        self,
+        events: Iterator[Union[KnobsDict, None]],
+        *,
+        idle_sleep_time=0.01,
+        inter_event_delay=0,
+        tail_time=1.0,
+    ):
+        """
+        Play an event stream, applying updates from an iterator of KnobsDicts or None.
+
+        Parameters
+        ----------
+        events : Iterator[Union[KnobsDict, None]]
+            An iterator yielding KnobsDict updates (or None for idle).
+        tail_time : float
+            Time to wait after finishing event playback to allow sound to finish.
+        idle_sleep_time : float
+            Time to sleep if the iterator yields None (idle).
+        inter_event_delay : float
+            Time to sleep systematically after each non-None event.
+        """
+        with self:
+            for event in events:
+                if event is None:
+                    time.sleep(idle_sleep_time)
+                    continue
+
+                self.knobs.update(event)
+
+                if inter_event_delay > 0:
+                    time.sleep(inter_event_delay)
+
+            time.sleep(tail_time)
+
+    def replay_events(self, control_events, *, tail_time=1.0):
+        self.play_events(ReplayEvents(control_events), tail_time=tail_time)
 
     def render_recording(
         self,
@@ -371,9 +524,10 @@ class Synth:
             if not control_events:
                 raise ValueError("Nothing to render. No control events recorded.")
 
-        base_time = control_events[0][0]
+        TIME_IDX = 0
+        base_time = control_events[0][TIME_IDX]
         normalized = [(t - base_time, knobs) for t, knobs in control_events]
-        total_duration = normalized[-1][0] + 0.1  # add small buffer
+        total_duration = normalized[-1][TIME_IDX] + 0.1  # add small buffer
 
         offline_server_kwargs = dict(self._server_kwargs, audio="offline")
         server = Server(**offline_server_kwargs).boot()
@@ -381,13 +535,15 @@ class Synth:
 
         all_keys = set(k for _, knobs in control_events for k in knobs)
         raw_params = {k: SigTo(value=0, time=0.01) for k in all_keys}
-        synth_output = self._synth_func(**raw_params)
+        synth_output = self._synth_func(**raw_params).out()
         table_recorder = TableRec(synth_output, table=table).play()
 
         try:
             for i, (event_time, updates) in enumerate(normalized):
                 next_time = (
-                    normalized[i + 1][0] if i + 1 < len(normalized) else total_duration
+                    normalized[i + 1][TIME_IDX]
+                    if i + 1 < len(normalized)
+                    else total_duration
                 )
                 dur = next_time - event_time
 
@@ -463,6 +619,13 @@ def example_01_basic_dual_osc():
         synth.knobs.update(dict(freq1={'value': 880, 'time': 0.1}, freq2=1100))
         time.sleep(1)
 
+    # ------------------------- replay the events -------------------------
+    time.sleep(0.5)
+
+    events = synth.get_recording()
+    synth.replay_events(events)
+
+    # ------------------------- get the wav_bytes of this recording --------------------
     wav_bytes = synth.render_recording()
     assert isinstance(wav_bytes, bytes)
     assert len(wav_bytes) > 0, "No bytes returned"
@@ -584,6 +747,7 @@ def example_05_offline_rendering():
 def example_06_knob_recording_playback():
     from hum.pyo_util import Synth
     import time
+    import recode
     from pyo import Sine, ButLP, SigTo
 
     # Dual sine oscillator with LFO-controlled lowpass filter
@@ -604,6 +768,19 @@ def example_06_knob_recording_playback():
         synth.knobs.update(dict(freq1={'value': 880, 'time': 0.1}, freq2=1100))
         time.sleep(1)
 
-    recorded_frames = synth.get_recording()
-    assert len(recorded_frames) > 0, "No frames recorded"
-    return recorded_frames
+    control_events = synth.get_recording()
+    assert len(control_events) > 0, "No frames recorded"
+
+    def dual_osc_graph_offline(freq1=220, freq2=330, amp=0.3, lfo_freq=0.5):
+        osc1 = Sine(freq=freq1)
+        osc2 = Sine(freq=freq2)
+        blend = Mix([osc1, osc2], voices=2) * amp
+        lfo_freq_sig = (
+            lfo_freq if isinstance(lfo_freq, (PyoObject, SigTo)) else Sig(lfo_freq)
+        )
+        lfo = Sine(freq=lfo_freq_sig).range(400, 2000)
+        return ButLP(blend, freq=lfo)
+
+    synth2 = Synth(dual_osc_graph_offline)
+    wf, sr = synth2.render_recording(control_events, egress=recode.decode_wav_bytes)
+    return wf, sr
