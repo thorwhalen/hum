@@ -11,6 +11,7 @@ from typing import (
     Union,
     Dict,
     Protocol,
+    Set,
     TypeVar,
     runtime_checkable,
 )
@@ -32,6 +33,8 @@ T = TypeVar('T')
 KnobsValue = Union[float, SigTo, Dict[str, float]]
 KnobsDict = Dict[str, KnobsValue]
 Recorder = Callable[[float, KnobsDict], None]
+SigToValueType = Union[float, int, PyoObject]
+_sigto_value_types = set(SigToValueType.__args__)
 
 
 @runtime_checkable
@@ -61,6 +64,30 @@ class PyoServer(Server):
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.stop()
         self.shutdown()
+
+
+def knob_params(*include: str):
+    """
+    Decorator to specify which parameters should be treated as live knobs (SigTo).
+    """
+
+    def decorator(func):
+        func._knob_params = set(include)
+        return func
+
+    return decorator
+
+
+def knob_exclude(*exclude: str):
+    """
+    Decorator to specify which parameters should NOT be treated as live knobs.
+    """
+
+    def decorator(func):
+        func._knob_exclude = set(exclude)
+        return func
+
+    return decorator
 
 
 class Knobs(MutableMapping):
@@ -197,19 +224,56 @@ class Knobs(MutableMapping):
         return f"<Knobs {list(self._params.keys())}>"
 
 
-# TODO: Add validation of values
-def get_pyoobj_params(pyoobj):
+# TODO: Deprecate if params_dict deprecates
+def is_valid_sigto_value(value):
     """
-    Get the parameters of a PyoObject subclass.
+    Check if the value is a valid SigTo value.
+    """
+
+    return isinstance(value, SigToValueType.__args__)
+
+
+# TODO: Deprecate? Was to replace get_pyoobj_params, but now we use synth_func_defaults
+def params_dict(pyoobj, is_valid_value=is_valid_sigto_value):
+    """
+    Get a dict of {key: value} pairs from a callable object (e.g. a PyoObject).
+    Only (k,v) items whose v satisfies is_valid_value(v) are included.
     """
     # get the signature of the function
     signa = inspect.signature(pyoobj)
-    # get the dict of parameters, using names as keys and .default as values if provided, and None if not
-    specs = {
-        k: (v.default if v.default is not inspect.Parameter.empty else None)
-        for k, v in signa.parameters.items()
-    }
-    return specs
+
+    def sigto_items():
+        for k, v in signa.parameters.items():
+            value = v.default
+            if is_valid_sigto_value(value):
+                yield k, value
+
+    return dict(sigto_items())
+
+
+def synth_func_defaults(func: Callable) -> dict:
+    """
+    Get the {name: default_value} pairs from a callable object (e.g. a PyoObject).
+    Also asserts that all arguments of function have a default value.
+    """
+    # get the signature of the function
+    func_signature = inspect.signature(func)
+
+    def name_and_default_pairs():
+        for k, v in func_signature.parameters.items():
+            if (
+                v.kind == inspect.Parameter.VAR_KEYWORD
+                or v.kind == inspect.Parameter.VAR_POSITIONAL
+            ):
+                # Skip *args and **kwargs
+                continue
+            elif v.default is inspect.Parameter.empty:
+                raise ValueError(
+                    f"Synth function {func.__name__} has no default value for {k}"
+                )
+            yield k, v.default
+
+    return dict(name_and_default_pairs())
 
 
 def dict_to_sigto(d: Union[float, dict]) -> SigTo:
@@ -334,6 +398,14 @@ class ReplayEvents:
             yield updates
 
 
+def list_if_string(x):
+    """
+    Convert a string to a list of strings.
+    """
+    if isinstance(x, str):
+        return [x]
+    return x
+
 class Synth:
     """
     A class for creating a real-time synthesizer using pyo.
@@ -358,6 +430,8 @@ class Synth:
         self,
         synth_func,
         *,
+        knob_params: Optional[Set[str]] = None,
+        knob_exclude: Optional[Set[str]] = None,
         sr=DFLT_PYO_SR,
         nchnls=DFLT_PYO_NCHNLS,
         record_on_start: bool = True,
@@ -395,7 +469,16 @@ class Synth:
         self._synth_func = synth_func
         self._server = None
         self.output = None
-        self._synth_func_params = get_pyoobj_params(self._synth_func)
+        self._synth_func_params = synth_func_defaults(synth_func)
+
+        _knob_params = knob_params or getattr(
+            synth_func, '_knob_params', set(self._synth_func_params)
+        )
+        _knob_params = list_if_string(_knob_params)
+        _knob_exclude = knob_exclude or getattr(synth_func, '_knob_exclude', set())
+        knob_exclude = list_if_string(knob_exclude)
+        self._knob_params = set(_knob_params) - set(_knob_exclude)
+        self._knob_defaults = {k: self._synth_func_params[k] for k in _knob_params}
 
         # Recording
         self._record_on_start = record_on_start
@@ -406,6 +489,17 @@ class Synth:
 
         # In Synth.__init__:
         self.knobs = Knobs(self._synth_func_params, live=False)
+
+    @property
+    def _initial_knob_params(self):
+        _initial_knob_params = {}
+        for name, spec in self._synth_func_params.items():
+            if name in self._knob_params:
+                _initial_knob_params[name] = dict_to_sigto(spec)
+            else:
+                _initial_knob_params[name] = spec
+
+        return _initial_knob_params
 
     def _init_recorded_events(self):
         self._recorded_events = self._event_log_factory()
@@ -447,16 +541,29 @@ class Synth:
         if self._server is None:
             self._server = Server(**self._server_kwargs).boot()
 
-        self._initial_knob_params = {
-            name: dict_to_sigto(spec) for name, spec in self._synth_func_params.items()
-        }
+        _initial_knob_params = self._initial_knob_params.copy()
 
         self.knobs = Knobs(
-            self._initial_knob_params, record=self._record_callback, live=True
+            _initial_knob_params, record=self._record_callback, live=True
         )
 
-        self.output = self._synth_func(**self._initial_knob_params)
+        try:
+            self.output = self._synth_func(**_initial_knob_params)
+        except TypeError as e:
+            raise TypeError(
+                f"Failed to initialize synth function '{self._synth_func.__name__}'.\n"
+                f"Perhaps some arguments were wrongly wrapped into SigTo.\n"
+                f"Consider :\n"
+                f"  * using the sigto_include argument to control which parameters are live.\n"
+                f"  * using the sigto_exclude argument to control which parameters are not live.\n"
+                f"Alternatively, at function definition time, you can control this by:\n"
+                f"  * using the @knob_params decorator to control which parameters are live.\n"
+                f"  * using the @knob_exclude decorator to control which parameters are not live.\n"
+                f"Original error: {e}"
+            ) from e
+
         self.output.out()
+
         self._server.start()
 
         if self._record_on_start:
