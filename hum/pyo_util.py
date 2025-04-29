@@ -113,15 +113,19 @@ class Knobs(MutableMapping):
         self.is_live = live
         self._record = record
         self._params = {}
+        self._sig_to_params = {
+            k: v for k, v in param_dict.items() if isinstance(v, SigTo)
+        }
 
         if live:
-            self._params = {
-                k: v if isinstance(v, SigTo) else dict_to_sigto(v)
-                for k, v in param_dict.items()
-            }
+            self._params = param_dict
+            # self._params = {
+            #     k: v if isinstance(v, SigTo) else dict_to_sigto(v)
+            #     for k, v in param_dict.items()
+            # }
             self._fast_update = self._live_update
         else:
-            self._params = param_dict.copy()
+            self._params = param_dict  # .copy()
             self._update_log = []
             self._fast_update = self._offline_update
 
@@ -159,22 +163,23 @@ class Knobs(MutableMapping):
         self._fast_update(combined)
 
     def _live_update(self, updates: KnobsDict):
-        """
-        The live update method is used for real-time updates, where speed is critical.
-        """
         for k, v in updates.items():
             sig = self._params[k]
-            if isinstance(v, dict):
-                # Note: No validation of the v keys. If you pass keys that are not
-                # valid SigTo parameters, (i.e. other than value, time, mul or add)
-                # it will simply add them to the SigTo object as attributes, but
-                # that won't have any (audible) effect.
-                # The reason we're not validating is that this update is in a real-time
-                # context, and we don't want to slow it down with validation.
-                for attr_name, attr_value in v.items():
-                    setattr(sig, attr_name, attr_value)
+            if isinstance(sig, SigTo):
+                if isinstance(v, dict):
+                    # Note: No validation of the v keys. If you pass keys that are not
+                    # valid SigTo parameters, (i.e. other than value, time, mul or add)
+                    # it will simply add them to the SigTo object as attributes, but
+                    # that won't have any (audible) effect.
+                    # The reason we're not validating is that this update is in a real-time
+                    # context, and we don't want to slow it down with validation.
+                    for attr_name, attr_value in v.items():
+                        setattr(sig, attr_name, attr_value)
+                else:
+                    sig.value = v
             else:
-                sig.value = v
+                # Not a SigTo: Replace value directly
+                self._params[k] = v
 
         if self._record:
             self._record(time.time(), updates)
@@ -405,6 +410,7 @@ def list_if_string(x):
     if isinstance(x, str):
         return [x]
     return x
+
 
 class Synth:
     """
