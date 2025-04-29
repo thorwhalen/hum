@@ -485,6 +485,8 @@ class Synth:
         knob_exclude = list_if_string(knob_exclude)
         self._knob_params = set(_knob_params) - set(_knob_exclude)
         self._knob_defaults = {k: self._synth_func_params[k] for k in _knob_params}
+        self._live_params = set(self._knob_params)
+        self._rebuild_params = set(self._synth_func_params) - set(self._knob_params)
 
         # Recording
         self._record_on_start = record_on_start
@@ -496,6 +498,77 @@ class Synth:
         # In Synth.__init__:
         self.knobs = Knobs(self._synth_func_params, live=False)
 
+    def update(self, updates: KnobsDict):
+        """
+        Update the synthesizer parameters.
+
+        - Live parameters (SigTo) are updated smoothly.
+        - Rebuild parameters (non-SigTo, like n_voices) trigger a full synth rebuild.
+        """
+        live_updates = {}
+        rebuild_updates = {}
+
+        for k, v in updates.items():
+            if k in self._live_params:
+                live_updates[k] = v
+            elif k in self._rebuild_params:
+                rebuild_updates[k] = v
+            else:
+                raise ValueError(f"Unknown parameter: {k}")
+
+        if live_updates:
+            self.knobs.update(live_updates)
+
+        if rebuild_updates:
+            self._rebuild_graph(rebuild_updates)
+
+    def _rebuild_graph(self, rebuild_updates: KnobsDict):
+        """
+        Rebuild the synthesizer graph when structural parameters change.
+        """
+        # Stop current graph
+        if self.output is not None:
+            self.output.stop()
+
+        # Merge current parameter values
+        merged_params = {}
+
+        # Start from live current knob values
+        for k, v in self.knobs.items():
+            if isinstance(v, SigTo):
+                merged_params[k] = v.value  # unwrap SigTo current value
+            else:
+                merged_params[k] = v
+
+        # Also update with explicit new rebuild updates
+        merged_params.update(rebuild_updates)
+
+        # Store updated synth_func_params
+        self._synth_func_params.update(merged_params)
+
+        # Rebuild knobs
+        new_initial_knob_params = {}
+        for name, spec in merged_params.items():
+            if name in self._live_params:
+                new_initial_knob_params[name] = dict_to_sigto(spec)
+            else:
+                new_initial_knob_params[name] = spec
+
+        self.knobs = Knobs(
+            new_initial_knob_params, record=self._record_callback, live=True
+        )
+
+        # Rebuild output
+        try:
+            self.output = self._synth_func(**new_initial_knob_params)
+        except TypeError as e:
+            raise TypeError(
+                f"Failed to rebuild synth function '{self._synth_func.__name__}'.\n"
+                f"Original error: {e}"
+            ) from e
+
+        self.output.out()
+        
     @property
     def _initial_knob_params(self):
         _initial_knob_params = {}
