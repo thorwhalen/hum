@@ -1,6 +1,7 @@
 """pyo utils"""
 
 import os
+from functools import partial
 import tempfile
 import inspect
 from inspect import Signature, Parameter
@@ -479,8 +480,8 @@ class Synth(MutableMapping):
             synth_func, '_knob_params', set(self._synth_func_params)
         )
         _knob_params = list_if_string(_knob_params)
-        _knob_exclude = knob_exclude or getattr(synth_func, '_knob_exclude', set())
         knob_exclude = list_if_string(knob_exclude)
+        _knob_exclude = knob_exclude or getattr(synth_func, '_knob_exclude', set())
         self._knob_params = set(_knob_params) - set(_knob_exclude)
         self._knob_defaults = {k: self._synth_func_params[k] for k in _knob_params}
         self._live_params = set(self._knob_params)
@@ -754,7 +755,7 @@ class Synth(MutableMapping):
     def replay_events(self, control_events, *, tail_time=1.0):
         self.play_events(ReplayEvents(control_events), tail_time=tail_time)
 
-    def render_recording(
+    def render_events(
         self,
         control_events=None,
         *,
@@ -861,23 +862,24 @@ class Synth(MutableMapping):
         return f"<Synth {list(self.knobs.keys())}>"
 
 
-# --------------------------------------------------------------------------------------
-# Example functions for testing the Synth class
-# --------------------------------------------------------------------------------------
-
-
-def basic_synth_test():
-    def simple_sine(freq=220, volume=1):
-        sine = Sine(freq=freq, mul=volume)
-
-    synth = Synth(simple_sine)
-
-    with synth:
-        time.sleep(1)
-        synth['freq'] = 220 * 3 / 2
-        time.sleep(1)
-        synth['freq'] = 220 * 2
-        time.sleep(1)
-
-    events = synth.get_recording()
-    synth.replay_events(events)
+def synth(
+    synth_func=None,
+    *,
+    knob_params: Optional[Set[str]] = None,
+    knob_exclude: Optional[Set[str]] = None,
+    sr=DFLT_PYO_SR,
+    nchnls=DFLT_PYO_NCHNLS,
+    record_on_start: bool = True,
+    event_log_factory: RecordFactory = list,  # No argument factory that makes an Appendable
+    audio='portaudio',
+    verbosity=DFLT_PYO_VERBOSITY,
+    **server_kwargs,
+):
+    synth_kwargs = dict(
+        {k: v for k, v in locals().items() if k not in {'synth_func', 'server_kwargs'}},
+        **server_kwargs
+    )
+    if synth_func is None:
+        return partial(Synth, **synth_kwargs)
+    else:
+        return Synth(synth_func, **synth_kwargs)

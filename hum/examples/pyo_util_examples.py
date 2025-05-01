@@ -34,7 +34,7 @@ def example_01_basic_dual_osc():
     synth.replay_events(events)
 
     # ------------------------- get the wav_bytes of this recording --------------------
-    wav_bytes = synth.render_recording()
+    wav_bytes = synth.render_events()
     assert isinstance(wav_bytes, bytes)
     assert len(wav_bytes) > 0, "No bytes returned"
     # verify that the bytes are a valid WAV file
@@ -190,5 +190,5 @@ def example_06_knob_recording_playback():
         return ButLP(blend, freq=lfo)
 
     synth2 = Synth(dual_osc_graph_offline)
-    wf, sr = synth2.render_recording(control_events, egress=recode.decode_wav_bytes)
+    wf, sr = synth2.render_events(control_events, egress=recode.decode_wav_bytes)
     return wf, sr

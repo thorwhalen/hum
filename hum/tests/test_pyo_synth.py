@@ -25,41 +25,50 @@ def test_synth_frequency_sequence():
     base_freq = 220
 
     # Make a synth that plays a simple sine waves
-    def simple_sine(freq=base_freq, volume=0.1):
-        return Sine(freq=freq, mul=volume)
+    def simple_sine(freq=base_freq):
+        return Sine(freq=freq)
 
-    synth = Synth(simple_sine, **synth_special_kwargs)
+    s = Synth(simple_sine, **synth_special_kwargs)
 
     # Define a sequence of frequencies to play
     freq_sequence = [base_freq] + [base_freq * 3 / 2, base_freq * 2]
 
     # Play the frequencies in sequence
-    with synth:
+    with s:
         time.sleep(1)  # let base_freq play for a second
-        synth['freq'] = freq_sequence[1]  # Change to 330 Hz
-        time.sleep(1)
-        synth['freq'] = freq_sequence[2]  # Change to 440 Hz
-        time.sleep(1)
+        s(freq=freq_sequence[1])  # Change to 330 Hz
+        time.sleep(1)  # ... play that for a second
+        s['freq'] = freq_sequence[
+            2
+        ]  # ...then change to 440 Hz (doing it differently)
+        time.sleep(1)  # ... play that for a second
+        # ... tnad htne exit the context manager, which stops the synth
 
-    # Get the recorded events and round timing for consistency
-    events = synth.get_recording()
+    # These actions on the synth should be recorded, with the time of the
+    # change recorded as well.
+    # You can get the recorded events like so:
+    events = s.get_recording()
+    # Often, you might want to round timing for consistency and readability:
     events = list(round_event_times(events, round_to=0.1))
+    # These are the events we expect to see:
     expected_events = [
         (
             0.0,
             {
+                # Note that the first event is the event create by the defaults of the synth function (and other internals)
                 'freq': {'value': 220, 'time': 0.025, 'mul': 1, 'add': 0},
-                'volume': {'value': 0.1, 'time': 0.025, 'mul': 1, 'add': 0},
             },
         ),
         (1.0, {'freq': 330.0}),
         (2.0, {'freq': 440}),
+        # Note that the last event's "knobs" dict is empty, as we are just recording when the synth is stopped
         (3.0, {}),
     ]
     assert events == expected_events, f"Expected {expected_events}, got {events}"
 
-    # Render the recording to audio
-    wav_bytes = synth.render_recording(events, suffix_buffer_seconds=0)
+    # You can "render" these. By default, the synth will render to a WAV format bytes.
+    # This means that you can then save these, play these, or do whatever you want with them.
+    wav_bytes = s.render_events(events)
 
     # Verify basic properties of the rendered audio
     assert isinstance(wav_bytes, bytes)
