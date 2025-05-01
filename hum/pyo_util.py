@@ -11,7 +11,9 @@ from typing import (
     Union,
     Dict,
     Protocol,
+    List,
     Set,
+    Tuple,
     TypeVar,
     runtime_checkable,
 )
@@ -119,15 +121,11 @@ class Knobs(MutableMapping):
 
         if live:
             self._params = param_dict
-            # self._params = {
-            #     k: v if isinstance(v, SigTo) else dict_to_sigto(v)
-            #     for k, v in param_dict.items()
-            # }
-            self._fast_update = self._live_update
+            self._update = self._live_update
         else:
             self._params = param_dict  # .copy()
             self._update_log = []
-            self._fast_update = self._offline_update
+            self._update = self._offline_update
 
     def __call__(self, **updates_kwargs):
         self.update(updates_kwargs)
@@ -160,7 +158,7 @@ class Knobs(MutableMapping):
             raise TypeError("Knobs.update() requires a mapping or iterable of pairs")
 
         combined.update(kwargs)
-        self._fast_update(combined)
+        self._update(combined)
 
     def _live_update(self, updates: KnobsDict):
         for k, v in updates.items():
@@ -348,12 +346,6 @@ def auto_play(obj):
     # Otherwise: ignore non-Pyo things (ints, floats, etc.)
 
 
-import time
-from typing import Iterator, Union, List, Tuple, Dict
-
-KnobsDict = Dict[str, Union[float, dict]]  # reusing your existing type
-
-
 class ReplayEvents:
     """
     An iterator that replays a sequence of timestamped knob updates in real-time.
@@ -412,7 +404,7 @@ def list_if_string(x):
     return x
 
 
-class Synth:
+class Synth(MutableMapping):
     """
     A class for creating a real-time synthesizer using pyo.
 
@@ -495,8 +487,13 @@ class Synth:
         self._recording_start_time = None
         self._recorded_events = None
 
-        # In Synth.__init__:
         self.knobs = Knobs(self._synth_func_params, live=False)
+
+    def __call__(self, **updates):
+        """
+        Call the synthesizer with the given updates.
+        """
+        self.update(updates)
 
     def update(self, updates: KnobsDict):
         """
@@ -774,6 +771,32 @@ class Synth:
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.stop()
+
+    @property
+    def __signature__(self):
+        return Signature(
+            parameters=[
+                Parameter(name, kind=Parameter.KEYWORD_ONLY) for name in self.knobs
+            ]
+        )
+
+    def __setitem__(self, key, value):
+        self.update({key: value})
+
+    def __getitem__(self, key):
+        return self.knobs[key]
+
+    def __delitem__(self, key):
+        del self.knobs[key]
+
+    def __iter__(self):
+        return iter(self.knobs)
+
+    def __len__(self):
+        return len(self.knobs)
+
+    def __repr__(self):
+        return f"<Synth {list(self.knobs.keys())}>"
 
 
 # --------------------------------------------------------------------------------------
