@@ -1,0 +1,1072 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hum.pyo_util &mdash; hum 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            hum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum.html">hum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/examples/pyo_util_examples.html">hum.examples.pyo_util_examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/extra_util.html">hum.extra_util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/pyo_util.html">hum.pyo_util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/scrap/belangeo_Degradation.html">hum.scrap.belangeo_Degradation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/util.html">hum.util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/utils.html">hum.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/utils/date_ticks.html">hum.utils.date_ticks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/utils/plotting.html">hum.utils.plotting</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">hum.pyo_util</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hum.pyo_util</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;pyo utils&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">inspect</span><span class="w"> </span><span class="kn">import</span> <span class="n">Signature</span><span class="p">,</span> <span class="n">Parameter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Iterator</span><span class="p">,</span>
+    <span class="n">Callable</span><span class="p">,</span>
+    <span class="n">Optional</span><span class="p">,</span>
+    <span class="n">Union</span><span class="p">,</span>
+    <span class="n">Dict</span><span class="p">,</span>
+    <span class="n">Protocol</span><span class="p">,</span>
+    <span class="n">List</span><span class="p">,</span>
+    <span class="n">Set</span><span class="p">,</span>
+    <span class="n">Tuple</span><span class="p">,</span>
+    <span class="n">TypeVar</span><span class="p">,</span>
+    <span class="n">runtime_checkable</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">MutableMapping</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">hum.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">round_numbers</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyo</span><span class="w"> </span><span class="kn">import</span> <span class="n">PyoObject</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyo</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>  <span class="c1"># TODO: change to be explicit object imports</span>
+
+
+<span class="c1"># -------------------------------------------------------------------------------------</span>
+<span class="c1"># Constants</span>
+<span class="c1"># -------------------------------------------------------------------------------------</span>
+
+<span class="n">DFLT_PYO_SR</span> <span class="o">=</span> <span class="mi">44100</span>
+<span class="n">DFLT_PYO_NCHNLS</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">DFLT_PYO_AUDIO</span> <span class="o">=</span> <span class="s2">&quot;portaudio&quot;</span>
+<span class="n">DFLT_PYO_VERBOSITY</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">DFLT_TIME_TIME</span> <span class="o">=</span> <span class="mf">0.025</span>  <span class="c1"># default time of pyo.SigTo, but should we default to 0 instead?</span>
+
+
+<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">)</span>
+
+<span class="n">KnobsValue</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">SigTo</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span>
+<span class="n">KnobsDict</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">KnobsValue</span><span class="p">]</span>
+<span class="n">Recorder</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">,</span> <span class="n">KnobsDict</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span>
+<span class="n">SigToValueType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">PyoObject</span><span class="p">]</span>
+<span class="n">_sigto_value_types</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">SigToValueType</span><span class="o">.</span><span class="n">__args__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Appendable">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.Appendable">[docs]</a>
+<span class="nd">@runtime_checkable</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Appendable</span><span class="p">(</span><span class="n">Protocol</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A protocol for objects that can be appended to.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span></div>
+
+
+
+<span class="c1"># -------------------------------------------------------------------------------------</span>
+<span class="c1"># Utils</span>
+<span class="c1"># -------------------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="PyoServer">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.PyoServer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PyoServer</span><span class="p">(</span><span class="n">Server</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A subclass of the pyo Server class that makes it a context manager.</span>
+
+<span class="sd">    See pyo issue #300: https://github.com/belangeo/pyo/issues/300</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_boot_with_new_buffer</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boot</span><span class="p">(</span><span class="n">newBuffer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_boot_with_new_buffer</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="knob_params">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.knob_params">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">knob_params</span><span class="p">(</span><span class="o">*</span><span class="n">include</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Decorator to specify which parameters should be treated as live knobs (SigTo).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="n">func</span><span class="o">.</span><span class="n">_knob_params</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">include</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">func</span>
+
+    <span class="k">return</span> <span class="n">decorator</span></div>
+
+
+
+<div class="viewcode-block" id="round_event_times">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.round_event_times">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">round_event_times</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">round_to</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Round the times (d[0]) of events ([d, ...]) to the nearest multiple of round_to.</span>
+
+<span class="sd">    &gt;&gt;&gt; events = [(0, {&#39;freq&#39;: 220}), (1.0021910667419434, {&#39;freq&#39;: 330.0})]</span>
+<span class="sd">    &gt;&gt;&gt; list(round_event_times(events, round_to=0.001))</span>
+<span class="sd">    [(0.0, {&#39;freq&#39;: 220}), (1.002, {&#39;freq&#39;: 330.0})]</span>
+<span class="sd">    &gt;&gt;&gt; list(round_event_times(events, round_to=0.01))</span>
+<span class="sd">    [(0.0, {&#39;freq&#39;: 220}), (1.0, {&#39;freq&#39;: 330.0})]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">round_numbers</span><span class="p">(</span>
+        <span class="n">events</span><span class="p">,</span> <span class="n">round_to</span><span class="o">=</span><span class="n">round_to</span><span class="p">,</span> <span class="n">index_of_item_number</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">egress</span><span class="o">=</span><span class="nb">tuple</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="c1"># -------------------------------------------------------------------------------------</span>
+<span class="c1"># Knobs</span>
+<span class="c1"># -------------------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="knob_exclude">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.knob_exclude">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">knob_exclude</span><span class="p">(</span><span class="o">*</span><span class="n">exclude</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Decorator to specify which parameters should NOT be treated as live knobs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="n">func</span><span class="o">.</span><span class="n">_knob_exclude</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">exclude</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">func</span>
+
+    <span class="k">return</span> <span class="n">decorator</span></div>
+
+
+
+<div class="viewcode-block" id="Knobs">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.Knobs">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Knobs</span><span class="p">(</span><span class="n">MutableMapping</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A simplified class for managing signal parameters (as SigTo).</span>
+
+<span class="sd">    Behaves like a MutableMapping (dict-like) for parameter access.</span>
+<span class="sd">    Recording functionality has been moved to the Synth class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_dict</span><span class="p">:</span> <span class="n">KnobsDict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        param_dict : dict</span>
+<span class="sd">            A dictionary of parameters to be used in the synthesizer.</span>
+<span class="sd">            The keys are the names of the parameters, and the values are the initial values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_params</span> <span class="o">=</span> <span class="n">param_dict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sig_to_params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">param_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">SigTo</span><span class="p">)</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">updates_kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update parameters using keyword arguments.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">updates_kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Knobs.update">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.Knobs.update">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">updates</span><span class="p">:</span> <span class="n">KnobsDict</span> <span class="o">=</span> <span class="p">(),</span> <span class="o">/</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the parameters of the synthesizer.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        updates : dict</span>
+<span class="sd">            A dictionary of parameters to update. The keys are the names of the parameters,</span>
+<span class="sd">            and the values are the new values for those parameters.</span>
+
+<span class="sd">        Mostly, the knob updates values are numbers, but you can also express how a</span>
+<span class="sd">        particular knob should transition to that number (&quot;value&quot;) from where it is now,</span>
+<span class="sd">        by specifying a &quot;time&quot; parameter. The time parameter is the number of seconds</span>
+<span class="sd">        it takes to transition to the new value.</span>
+<span class="sd">        You can also specify a &quot;mul&quot; and &quot;add&quot; parameter, which are multiplied and</span>
+<span class="sd">        added to the value respectively.</span>
+<span class="sd">        Essentially, you can specify a `pyo.SigTo` object as the value of a knob.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">updates</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">combined</span> <span class="o">=</span> <span class="n">updates</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">updates</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span>
+            <span class="n">combined</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">updates</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Knobs.update() requires a mapping or iterable of pairs&quot;</span><span class="p">)</span>
+
+        <span class="n">combined</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">combined</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">sig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="n">SigTo</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                    <span class="c1"># Note: No validation of the v keys. If you pass keys that are not</span>
+                    <span class="c1"># valid SigTo parameters, (i.e. other than value, time, mul or add)</span>
+                    <span class="c1"># it will simply add them to the SigTo object as attributes, but</span>
+                    <span class="c1"># that won&#39;t have any (audible) effect.</span>
+                    <span class="k">for</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">attr_value</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="nb">setattr</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">attr_value</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">sig</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Not a SigTo: Replace value directly</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__signature__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Signature</span><span class="p">(</span>
+            <span class="n">parameters</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">Parameter</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">Parameter</span><span class="o">.</span><span class="n">KEYWORD_ONLY</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;Knobs </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&gt;&quot;</span></div>
+
+
+
+<span class="c1"># -------------------------------------------------------------------------------------</span>
+<span class="c1"># Synth helpers</span>
+<span class="c1"># -------------------------------------------------------------------------------------</span>
+
+
+<span class="c1"># TODO: Deprecate if params_dict deprecates</span>
+<div class="viewcode-block" id="is_valid_sigto_value">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.is_valid_sigto_value">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_valid_sigto_value</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if the value is a valid SigTo value.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">SigToValueType</span><span class="o">.</span><span class="n">__args__</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># TODO: Deprecate? Was to replace get_pyoobj_params, but now we use synth_func_defaults</span>
+<div class="viewcode-block" id="params_dict">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.params_dict">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">params_dict</span><span class="p">(</span><span class="n">pyoobj</span><span class="p">,</span> <span class="n">is_valid_value</span><span class="o">=</span><span class="n">is_valid_sigto_value</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a dict of {key: value} pairs from a callable object (e.g. a PyoObject).</span>
+<span class="sd">    Only (k,v) items whose v satisfies is_valid_value(v) are included.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># get the signature of the function</span>
+    <span class="n">signa</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">pyoobj</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">sigto_items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">signa</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">default</span>
+            <span class="k">if</span> <span class="n">is_valid_sigto_value</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="n">k</span><span class="p">,</span> <span class="n">value</span>
+
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">sigto_items</span><span class="p">())</span></div>
+
+
+
+<div class="viewcode-block" id="synth_func_defaults">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.synth_func_defaults">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">synth_func_defaults</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the {name: default_value} pairs from a callable object (e.g. a PyoObject).</span>
+<span class="sd">    Also asserts that all arguments of function have a default value.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># get the signature of the function</span>
+    <span class="n">func_signature</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">name_and_default_pairs</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">func_signature</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">v</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">VAR_KEYWORD</span>
+                <span class="ow">or</span> <span class="n">v</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">VAR_POSITIONAL</span>
+            <span class="p">):</span>
+                <span class="c1"># Skip *args and **kwargs</span>
+                <span class="k">continue</span>
+            <span class="k">elif</span> <span class="n">v</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Synth function </span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> has no default value for </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="k">yield</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">default</span>
+
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">name_and_default_pairs</span><span class="p">())</span></div>
+
+
+
+<div class="viewcode-block" id="dict_to_sigto">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.dict_to_sigto">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">dict_to_sigto</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">SigTo</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a SigTo object from a parameter spec dictionary or a number.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="c1"># TODO: Simplify?</span>
+        <span class="n">sigto_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">k</span><span class="p">:</span> <span class="n">v</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;init&#39;</span><span class="p">,</span> <span class="s1">&#39;mul&#39;</span><span class="p">,</span> <span class="s1">&#39;add&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sigto_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">d</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">SigTo</span><span class="p">(</span><span class="o">**</span><span class="n">sigto_kwargs</span><span class="p">)</span></div>
+
+
+
+<span class="n">RecordFactory</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Appendable</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="sigto_to_dict">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.sigto_to_dict">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">sigto_to_dict</span><span class="p">(</span><span class="n">sigto</span><span class="p">:</span> <span class="n">SigTo</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a SigTo object to a dictionary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">sigto</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">sigto</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+        <span class="s1">&#39;mul&#39;</span><span class="p">:</span> <span class="n">sigto</span><span class="o">.</span><span class="n">mul</span><span class="p">,</span>
+        <span class="s1">&#39;add&#39;</span><span class="p">:</span> <span class="n">sigto</span><span class="o">.</span><span class="n">add</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="serialize_knobs">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.serialize_knobs">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">serialize_knobs</span><span class="p">(</span><span class="n">knobs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert the knobs to a dictionary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="n">k</span><span class="p">:</span> <span class="n">sigto_to_dict</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">SigTo</span><span class="p">)</span> <span class="k">else</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">knobs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">}</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_json_friendly_records</span><span class="p">(</span><span class="n">records</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert the recorded frames to a JSON-friendly format.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_processed_record</span><span class="p">(</span><span class="n">record</span><span class="p">):</span>
+        <span class="n">timestamp</span><span class="p">,</span> <span class="n">knobs</span> <span class="o">=</span> <span class="n">record</span>
+        <span class="k">return</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">serialize_knobs</span><span class="p">(</span><span class="n">knobs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">_processed_record</span><span class="p">,</span> <span class="n">records</span><span class="p">))</span>
+
+
+<span class="c1"># TODO: Not using this. Thought I needed it. Delete if not needed.</span>
+<div class="viewcode-block" id="auto_play">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.auto_play">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">auto_play</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Recursively call .play() on all PyoObjects inside an object or list.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">PyoObject</span><span class="p">):</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">play</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+            <span class="n">auto_play</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+    <span class="c1"># Optional: if your graph sometimes returns dicts of PyoObjects</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">auto_play</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
+
+    <span class="c1"># Otherwise: ignore non-Pyo things (ints, floats, etc.)</span>
+
+
+<div class="viewcode-block" id="ReplayEvents">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.ReplayEvents">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ReplayEvents</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An iterator that replays a sequence of timestamped knob updates in real-time.</span>
+
+<span class="sd">    This class takes a list of (timestamp, KnobsDict) events and yields</span>
+<span class="sd">    each update at the correct real-time intervals, automatically sleeping</span>
+<span class="sd">    between updates to recreate the original timing.</span>
+
+<span class="sd">    Usage:</span>
+<span class="sd">    ------</span>
+<span class="sd">    Simply wrap your recorded control events and feed them into play_events:</span>
+
+<span class="sd">        synth.play_events(ReplayEvents(control_events))</span>
+
+<span class="sd">    Why use ReplayEvents?</span>
+<span class="sd">    ----------------------</span>
+<span class="sd">    - Centralizes real-time replay logic.</span>
+<span class="sd">    - Makes it easy to later add speed controls, jitter, filtering, etc.</span>
+<span class="sd">    - Keeps `play_events` clean and flexible.</span>
+<span class="sd">    - Supports a future where playback streams can be manipulated easily.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    control_events : List[Tuple[float, KnobsDict]]</span>
+<span class="sd">        A list of (timestamp, knob updates) pairs.</span>
+<span class="sd">    speed : float</span>
+<span class="sd">        A multiplier for playback speed. 1.0 = normal speed,</span>
+<span class="sd">        2.0 = twice as fast, 0.5 = half speed, etc. Default is 1.0.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">control_events</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">KnobsDict</span><span class="p">]],</span> <span class="n">speed</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">control_events</span> <span class="o">=</span> <span class="n">control_events</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="n">speed</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">KnobsDict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">control_events</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">base_time</span><span class="p">,</span> <span class="n">first_update</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">control_events</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">yield</span> <span class="n">first_update</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">curr_time</span><span class="p">,</span> <span class="n">updates</span><span class="p">),</span> <span class="p">(</span><span class="n">next_time</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">control_events</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">control_events</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="p">):</span>
+            <span class="n">sleep_duration</span> <span class="o">=</span> <span class="p">(</span><span class="n">next_time</span> <span class="o">-</span> <span class="n">curr_time</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">speed</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">sleep_duration</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="k">yield</span> <span class="n">updates</span></div>
+
+
+
+<div class="viewcode-block" id="list_if_string">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.list_if_string">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">list_if_string</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a string to a list of strings.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">x</span></div>
+
+
+
+<span class="c1"># -------------------------------------------------------------------------------------</span>
+<span class="c1"># Synth</span>
+<span class="c1"># -------------------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="Synth">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.Synth">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Synth</span><span class="p">(</span><span class="n">MutableMapping</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class for creating a real-time synthesizer using pyo.</span>
+
+<span class="sd">    The synth_func is a function whose arguments determine the parameters of the synthesizer.</span>
+<span class="sd">    We call a dictionary of such parameters &quot;knobs&quot;:</span>
+<span class="sd">    These are dicts that specify the value for each knob (i.e. sound parameter) that</span>
+<span class="sd">    has changed (all other sound parameters remain as they were).</span>
+
+<span class="sd">    Mostly, the knobs values are numbers, but you can also express how a particular knob</span>
+<span class="sd">    should transition to that number (&quot;value&quot;) from where it is now, by specifying</span>
+<span class="sd">    a &quot;time&quot; parameter. The time parameter is the number of seconds it takes to</span>
+<span class="sd">    transition to the new value.</span>
+<span class="sd">    You can also specify a &quot;mul&quot; and &quot;add&quot; parameter, which are multiplied and added to the value</span>
+<span class="sd">    respectively.</span>
+<span class="sd">    Essentially, you can specify a `pyo.SigTo` object as the value of a knob.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">default_time_time</span> <span class="o">=</span> <span class="n">DFLT_TIME_TIME</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">synth_func</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">knob_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">knob_exclude</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">sr</span><span class="o">=</span><span class="n">DFLT_PYO_SR</span><span class="p">,</span>
+        <span class="n">nchnls</span><span class="o">=</span><span class="n">DFLT_PYO_NCHNLS</span><span class="p">,</span>
+        <span class="n">record_on_start</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">event_log_factory</span><span class="p">:</span> <span class="n">RecordFactory</span> <span class="o">=</span> <span class="nb">list</span><span class="p">,</span>  <span class="c1"># No argument factory that makes an Appendable</span>
+        <span class="n">audio</span><span class="o">=</span><span class="s1">&#39;portaudio&#39;</span><span class="p">,</span>
+        <span class="n">verbosity</span><span class="o">=</span><span class="n">DFLT_PYO_VERBOSITY</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">server_kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        synth_func : callable</span>
+<span class="sd">            A function that returns a pyo object. The function should accept keyword arguments</span>
+<span class="sd">            that are the parameters of the synthesizer.</span>
+<span class="sd">        knob_params : Optional[Set[str]]</span>
+<span class="sd">            Parameters to treat as live knobs (controllable in real-time).</span>
+<span class="sd">            If None, defaults to all parameters.</span>
+<span class="sd">        knob_exclude : Optional[Set[str]]</span>
+<span class="sd">            Parameters to exclude from live knobs.</span>
+<span class="sd">        sr : int</span>
+<span class="sd">            The sample rate of the server. Default is 44100.</span>
+<span class="sd">        nchnls : int</span>
+<span class="sd">            The number of channels of the server. Default is 1.</span>
+<span class="sd">        record_on_start : bool</span>
+<span class="sd">            Whether to start recording when the server starts. Default is True.</span>
+<span class="sd">        event_log_factory : callable</span>
+<span class="sd">            A function that returns an empty list or other Appendable object to store the</span>
+<span class="sd">            recorded events. Default is list.</span>
+<span class="sd">        audio : str</span>
+<span class="sd">            The audio driver to use. Default is &#39;portaudio&#39;.</span>
+<span class="sd">        verbosity : int</span>
+<span class="sd">            The verbosity level of the server. Default is 1.</span>
+<span class="sd">        server_kwargs : dict</span>
+<span class="sd">            Additional keyword arguments to pass to the pyo Server constructor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_server_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">server_kwargs</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">nchnls</span><span class="o">=</span><span class="n">nchnls</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="n">verbosity</span><span class="p">,</span> <span class="n">audio</span><span class="o">=</span><span class="n">audio</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_synth_func</span> <span class="o">=</span> <span class="n">synth_func</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_server</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_synth_func_params</span> <span class="o">=</span> <span class="n">synth_func_defaults</span><span class="p">(</span><span class="n">synth_func</span><span class="p">)</span>
+
+        <span class="n">_knob_params</span> <span class="o">=</span> <span class="n">knob_params</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span>
+            <span class="n">synth_func</span><span class="p">,</span> <span class="s1">&#39;_knob_params&#39;</span><span class="p">,</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_synth_func_params</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">_knob_params</span> <span class="o">=</span> <span class="n">list_if_string</span><span class="p">(</span><span class="n">_knob_params</span><span class="p">)</span>
+        <span class="n">_knob_exclude</span> <span class="o">=</span> <span class="n">knob_exclude</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">synth_func</span><span class="p">,</span> <span class="s1">&#39;_knob_exclude&#39;</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
+        <span class="n">knob_exclude</span> <span class="o">=</span> <span class="n">list_if_string</span><span class="p">(</span><span class="n">knob_exclude</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_knob_params</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">_knob_params</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">_knob_exclude</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_knob_defaults</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_synth_func_params</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">_knob_params</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_live_params</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_knob_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rebuild_params</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_synth_func_params</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_knob_params</span><span class="p">)</span>
+
+        <span class="c1"># Recording</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_record_on_start</span> <span class="o">=</span> <span class="n">record_on_start</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event_log_factory</span> <span class="o">=</span> <span class="n">event_log_factory</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recording</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recording_start_time</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recorded_events</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">knobs</span> <span class="o">=</span> <span class="n">Knobs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_synth_func_params</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">updates</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Call the synthesizer with the given updates.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">updates</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Synth.update">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.Synth.update">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">updates</span><span class="p">:</span> <span class="n">KnobsDict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the synthesizer parameters and record changes if recording is active.</span>
+
+<span class="sd">        - Live parameters (SigTo) are updated smoothly.</span>
+<span class="sd">        - Rebuild parameters (non-SigTo, like n_voices) trigger a full synth rebuild.</span>
+
+<span class="sd">        This method handles parameter updates and recording in one place, unlike the</span>
+<span class="sd">        previous design where recording was handled in the Knobs class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">live_updates</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">rebuild_updates</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">updates</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_live_params</span><span class="p">:</span>
+                <span class="n">live_updates</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="k">elif</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rebuild_params</span><span class="p">:</span>
+                <span class="n">rebuild_updates</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown parameter: </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Record the update if recording is active</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recording</span> <span class="ow">and</span> <span class="p">(</span><span class="n">live_updates</span> <span class="ow">or</span> <span class="n">rebuild_updates</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_record_update</span><span class="p">(</span><span class="n">updates</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">live_updates</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">knobs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">live_updates</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">rebuild_updates</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rebuild_graph</span><span class="p">(</span><span class="n">rebuild_updates</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_record_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">updates</span><span class="p">:</span> <span class="n">KnobsDict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Record parameter updates with timestamps.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        updates : dict</span>
+<span class="sd">            Dictionary of parameter updates to record</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recording_start_time</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Recording start time not set. Did you call start_recording()?&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">rel_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recording_start_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recorded_events</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">rel_time</span><span class="p">,</span> <span class="n">updates</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_rebuild_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rebuild_updates</span><span class="p">:</span> <span class="n">KnobsDict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Rebuild the synthesizer graph when structural parameters change.</span>
+
+<span class="sd">        This happens when non-SigTo parameters are updated, requiring a complete</span>
+<span class="sd">        reconstruction of the synthesis graph.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Stop current graph</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+        <span class="c1"># Merge current parameter values</span>
+        <span class="n">merged_params</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Start from live current knob values</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">knobs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">SigTo</span><span class="p">):</span>
+                <span class="n">merged_params</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">value</span>  <span class="c1"># unwrap SigTo current value</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">merged_params</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+        <span class="c1"># Also update with explicit new rebuild updates</span>
+        <span class="n">merged_params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">rebuild_updates</span><span class="p">)</span>
+
+        <span class="c1"># Store updated synth_func_params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_synth_func_params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">merged_params</span><span class="p">)</span>
+
+        <span class="c1"># Rebuild knobs</span>
+        <span class="n">new_initial_knob_params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">spec</span> <span class="ow">in</span> <span class="n">merged_params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_live_params</span><span class="p">:</span>
+                <span class="n">new_initial_knob_params</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">dict_to_sigto</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">new_initial_knob_params</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">spec</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">knobs</span> <span class="o">=</span> <span class="n">Knobs</span><span class="p">(</span><span class="n">new_initial_knob_params</span><span class="p">)</span>
+
+        <span class="c1"># Rebuild output</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_synth_func</span><span class="p">(</span><span class="o">**</span><span class="n">new_initial_knob_params</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Failed to rebuild synth function &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_synth_func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39;.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Original error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">out</span><span class="p">()</span>
+
+        <span class="c1"># Record rebuild if recording is active</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recording</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_record_update</span><span class="p">(</span><span class="n">rebuild_updates</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_initial_knob_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">_initial_knob_params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">spec</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_synth_func_params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_knob_params</span><span class="p">:</span>
+                <span class="n">_initial_knob_params</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">dict_to_sigto</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_initial_knob_params</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">spec</span>
+
+        <span class="k">return</span> <span class="n">_initial_knob_params</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_init_recorded_events</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the recording structure.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recorded_events</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event_log_factory</span><span class="p">()</span>
+        <span class="c1"># The first event should be the initial state of the synth_func</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recorded_events</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">serialize_knobs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">knobs</span><span class="p">)))</span>
+
+<div class="viewcode-block" id="Synth.start_recording">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.Synth.start_recording">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start_recording</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Start recording parameter updates.</span>
+
+<span class="sd">        Records the initial state of all knobs and prepares to record future updates.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">knobs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot start recording without initializing knobs. &quot;</span>
+                <span class="s2">&quot;Did you forget to call start() or do a with synth... block?&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recording</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recorded_events</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event_log_factory</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recording_start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="c1"># Record initial state of all knobs</span>
+        <span class="n">initial_state</span> <span class="o">=</span> <span class="n">serialize_knobs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">knobs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recorded_events</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">initial_state</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Synth.stop_recording">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.Synth.stop_recording">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stop_recording</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stop recording parameter updates.</span>
+
+<span class="sd">        Adds a final empty event with the current timestamp to mark the end of recording.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recording</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recording</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Inject a final dummy event at current relative time</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recorded_events</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recording_start_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="n">rel_now</span> <span class="o">=</span> <span class="n">now</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recording_start_time</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_recorded_events</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">rel_now</span><span class="p">,</span> <span class="p">{}))</span></div>
+
+
+<div class="viewcode-block" id="Synth.get_recording">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.Synth.get_recording">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_recording</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">process_recording</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">_json_friendly_records</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the recorded parameter updates.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">process_recording</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_recorded_events</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Synth.get_update_log">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.Synth.get_update_log">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_update_log</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the recorded parameter updates.</span>
+
+<span class="sd">        Returns a list of updates without timestamps (unlike get_recording).</span>
+<span class="sd">        If nothing has been recorded, returns an empty list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recorded_events</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="c1"># Extract just the update dictionaries, ignoring timestamps</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">updates</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">updates</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recorded_events</span> <span class="k">if</span> <span class="n">updates</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Synth.start">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.Synth.start">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Start the synthesizer.</span>
+
+<span class="sd">        This boots the server, initializes knobs, starts the audio output,</span>
+<span class="sd">        and optionally begins recording.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_server</span> <span class="o">=</span> <span class="n">Server</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_server_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">boot</span><span class="p">()</span>
+
+        <span class="n">_initial_knob_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initial_knob_params</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">knobs</span> <span class="o">=</span> <span class="n">Knobs</span><span class="p">(</span><span class="n">_initial_knob_params</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_synth_func</span><span class="p">(</span><span class="o">**</span><span class="n">_initial_knob_params</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Failed to initialize synth function &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_synth_func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39;.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Perhaps some arguments were wrongly wrapped into SigTo.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Consider :</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;  * using the sigto_include argument to control which parameters are live.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;  * using the sigto_exclude argument to control which parameters are not live.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Alternatively, at function definition time, you can control this by:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;  * using the @knob_params decorator to control which parameters are live.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;  * using the @knob_exclude decorator to control which parameters are not live.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Original error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">out</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_record_on_start</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">start_recording</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_record_on_start</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stop_recording</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Synth.play_events">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.Synth.play_events">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">play_events</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">events</span><span class="p">:</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">KnobsDict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">idle_sleep_time</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+        <span class="n">inter_event_delay</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">tail_time</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Play an event stream, applying updates from an iterator of KnobsDicts or None.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        events : Iterator[Union[KnobsDict, None]]</span>
+<span class="sd">            An iterator yielding KnobsDict updates (or None for idle).</span>
+<span class="sd">        tail_time : float</span>
+<span class="sd">            Time to wait after finishing event playback to allow sound to finish.</span>
+<span class="sd">        idle_sleep_time : float</span>
+<span class="sd">            Time to sleep if the iterator yields None (idle).</span>
+<span class="sd">        inter_event_delay : float</span>
+<span class="sd">            Time to sleep systematically after each non-None event.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">event</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">idle_sleep_time</span><span class="p">)</span>
+                    <span class="k">continue</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">inter_event_delay</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">inter_event_delay</span><span class="p">)</span>
+
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">tail_time</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">replay_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_events</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">tail_time</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">play_events</span><span class="p">(</span><span class="n">ReplayEvents</span><span class="p">(</span><span class="n">control_events</span><span class="p">),</span> <span class="n">tail_time</span><span class="o">=</span><span class="n">tail_time</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Synth.render_recording">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.Synth.render_recording">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render_recording</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">control_events</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">output_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">egress</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span>
+        <span class="n">file_format</span><span class="o">=</span><span class="s1">&#39;wav&#39;</span><span class="p">,</span>
+        <span class="n">suffix_buffer_seconds</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the recording to a file or return it processed by the egress function.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">control_events</span><span class="p">:</span>
+            <span class="n">control_events</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_recording</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">control_events</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Nothing to render. No control events recorded.&quot;</span><span class="p">)</span>
+
+        <span class="n">TIME_IDX</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">base_time</span> <span class="o">=</span> <span class="n">control_events</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">TIME_IDX</span><span class="p">]</span>
+        <span class="n">normalized</span> <span class="o">=</span> <span class="p">[(</span><span class="n">t</span> <span class="o">-</span> <span class="n">base_time</span><span class="p">,</span> <span class="n">knobs</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">knobs</span> <span class="ow">in</span> <span class="n">control_events</span><span class="p">]</span>
+        <span class="n">total_duration</span> <span class="o">=</span> <span class="n">normalized</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">TIME_IDX</span><span class="p">]</span> <span class="o">+</span> <span class="n">suffix_buffer_seconds</span>
+
+        <span class="n">offline_server_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_server_kwargs</span><span class="p">,</span> <span class="n">audio</span><span class="o">=</span><span class="s2">&quot;offline&quot;</span><span class="p">)</span>
+        <span class="n">server</span> <span class="o">=</span> <span class="n">Server</span><span class="p">(</span><span class="o">**</span><span class="n">offline_server_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">boot</span><span class="p">()</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">NewTable</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="n">total_duration</span><span class="p">)</span>
+
+        <span class="n">all_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">knobs</span> <span class="ow">in</span> <span class="n">control_events</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">knobs</span><span class="p">)</span>
+        <span class="n">raw_params</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">SigTo</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">all_keys</span><span class="p">}</span>
+        <span class="n">synth_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_synth_func</span><span class="p">(</span><span class="o">**</span><span class="n">raw_params</span><span class="p">)</span><span class="o">.</span><span class="n">out</span><span class="p">()</span>
+        <span class="n">table_recorder</span> <span class="o">=</span> <span class="n">TableRec</span><span class="p">(</span><span class="n">synth_output</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">play</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">event_time</span><span class="p">,</span> <span class="n">updates</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">normalized</span><span class="p">):</span>
+                <span class="n">next_time</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">normalized</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="n">TIME_IDX</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">normalized</span><span class="p">)</span>
+                    <span class="k">else</span> <span class="n">total_duration</span>
+                <span class="p">)</span>
+                <span class="n">dur</span> <span class="o">=</span> <span class="n">next_time</span> <span class="o">-</span> <span class="n">event_time</span>
+
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">updates</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;mul&#39;</span><span class="p">,</span> <span class="s1">&#39;add&#39;</span><span class="p">]:</span>
+                            <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">val</span><span class="p">:</span>
+                                <span class="nb">setattr</span><span class="p">(</span><span class="n">raw_params</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">attr</span><span class="p">,</span> <span class="n">val</span><span class="p">[</span><span class="n">attr</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">raw_params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">val</span>
+
+                <span class="n">server</span><span class="o">.</span><span class="n">recordOptions</span><span class="p">(</span><span class="n">dur</span><span class="o">=</span><span class="n">dur</span><span class="p">)</span>
+                <span class="n">server</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">table_recorder</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">output_filepath</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tmpfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span>
+                <span class="n">suffix</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;.</span><span class="si">{</span><span class="n">file_format</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+            <span class="n">output_filepath</span> <span class="o">=</span> <span class="n">tmpfile</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">tmpfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="n">table</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">output_filepath</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">egress</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">output_filepath</span>
+        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="n">egress</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_filepath</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">audio</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">egress</span><span class="p">(</span><span class="n">audio</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid egress&quot;</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__signature__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Signature</span><span class="p">(</span>
+            <span class="n">parameters</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">Parameter</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">Parameter</span><span class="o">.</span><span class="n">KEYWORD_ONLY</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">knobs</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">knobs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">knobs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">knobs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">knobs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;Synth </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">knobs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&gt;&quot;</span></div>
+
+
+
+<span class="c1"># --------------------------------------------------------------------------------------</span>
+<span class="c1"># Example functions for testing the Synth class</span>
+<span class="c1"># --------------------------------------------------------------------------------------</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">basic_synth_test</span><span class="p">():</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">simple_sine</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="mi">220</span><span class="p">,</span> <span class="n">volume</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">sine</span> <span class="o">=</span> <span class="n">Sine</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">freq</span><span class="p">,</span> <span class="n">mul</span><span class="o">=</span><span class="n">volume</span><span class="p">)</span>
+
+    <span class="n">synth</span> <span class="o">=</span> <span class="n">Synth</span><span class="p">(</span><span class="n">simple_sine</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">synth</span><span class="p">:</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">synth</span><span class="p">[</span><span class="s1">&#39;freq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">220</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">synth</span><span class="p">[</span><span class="s1">&#39;freq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">220</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">events</span> <span class="o">=</span> <span class="n">synth</span><span class="o">.</span><span class="n">get_recording</span><span class="p">()</span>
+    <span class="n">synth</span><span class="o">.</span><span class="n">replay_events</span><span class="p">(</span><span class="n">events</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright NO COPYRIGHT.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

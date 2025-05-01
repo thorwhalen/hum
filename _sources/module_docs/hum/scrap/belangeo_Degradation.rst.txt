@@ -1,0 +1,4 @@
+hum.scrap.belangeo_Degradation
+==============================
+.. automodule:: hum.scrap.belangeo_Degradation
+   :members:

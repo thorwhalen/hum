@@ -1,0 +1,4 @@
+hum.pyo_util
+============
+.. automodule:: hum.pyo_util
+   :members:

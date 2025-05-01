@@ -1,0 +1,403 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hum.pyo_util &mdash; hum 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="hum.scrap.belangeo_Degradation" href="scrap/belangeo_Degradation.html" />
+    <link rel="prev" title="hum.extra_util" href="extra_util.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            hum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../hum.html">hum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/pyo_util_examples.html">hum.examples.pyo_util_examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extra_util.html">hum.extra_util</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">hum.pyo_util</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.Appendable"><code class="docutils literal notranslate"><span class="pre">Appendable</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.Knobs"><code class="docutils literal notranslate"><span class="pre">Knobs</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#hum.pyo_util.Knobs.update"><code class="docutils literal notranslate"><span class="pre">Knobs.update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.PyoServer"><code class="docutils literal notranslate"><span class="pre">PyoServer</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.ReplayEvents"><code class="docutils literal notranslate"><span class="pre">ReplayEvents</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.Synth"><code class="docutils literal notranslate"><span class="pre">Synth</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#hum.pyo_util.Synth.get_recording"><code class="docutils literal notranslate"><span class="pre">Synth.get_recording()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hum.pyo_util.Synth.get_update_log"><code class="docutils literal notranslate"><span class="pre">Synth.get_update_log()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hum.pyo_util.Synth.play_events"><code class="docutils literal notranslate"><span class="pre">Synth.play_events()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hum.pyo_util.Synth.render_recording"><code class="docutils literal notranslate"><span class="pre">Synth.render_recording()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hum.pyo_util.Synth.start"><code class="docutils literal notranslate"><span class="pre">Synth.start()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hum.pyo_util.Synth.start_recording"><code class="docutils literal notranslate"><span class="pre">Synth.start_recording()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hum.pyo_util.Synth.stop_recording"><code class="docutils literal notranslate"><span class="pre">Synth.stop_recording()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hum.pyo_util.Synth.update"><code class="docutils literal notranslate"><span class="pre">Synth.update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.auto_play"><code class="docutils literal notranslate"><span class="pre">auto_play()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.dict_to_sigto"><code class="docutils literal notranslate"><span class="pre">dict_to_sigto()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.is_valid_sigto_value"><code class="docutils literal notranslate"><span class="pre">is_valid_sigto_value()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.knob_exclude"><code class="docutils literal notranslate"><span class="pre">knob_exclude()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.knob_params"><code class="docutils literal notranslate"><span class="pre">knob_params()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.list_if_string"><code class="docutils literal notranslate"><span class="pre">list_if_string()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.params_dict"><code class="docutils literal notranslate"><span class="pre">params_dict()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.round_event_times"><code class="docutils literal notranslate"><span class="pre">round_event_times()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.serialize_knobs"><code class="docutils literal notranslate"><span class="pre">serialize_knobs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.sigto_to_dict"><code class="docutils literal notranslate"><span class="pre">sigto_to_dict()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.synth_func_defaults"><code class="docutils literal notranslate"><span class="pre">synth_func_defaults()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="scrap/belangeo_Degradation.html">hum.scrap.belangeo_Degradation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="util.html">hum.util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">hum.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils/date_ticks.html">hum.utils.date_ticks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils/plotting.html">hum.utils.plotting</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">hum.pyo_util</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/module_docs/hum/pyo_util.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-hum.pyo_util">
+<span id="hum-pyo-util"></span><h1>hum.pyo_util<a class="headerlink" href="#module-hum.pyo_util" title="Link to this heading"></a></h1>
+<p>pyo utils</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="hum.pyo_util.Appendable">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hum.pyo_util.</span></span><span class="sig-name descname"><span class="pre">Appendable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#Appendable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.Appendable" title="Link to this definition"></a></dt>
+<dd><p>A protocol for objects that can be appended to.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hum.pyo_util.Knobs">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hum.pyo_util.</span></span><span class="sig-name descname"><span class="pre">Knobs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">SigTo</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#Knobs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.Knobs" title="Link to this definition"></a></dt>
+<dd><p>A simplified class for managing signal parameters (as SigTo).</p>
+<p>Behaves like a MutableMapping (dict-like) for parameter access.
+Recording functionality has been moved to the Synth class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hum.pyo_util.Knobs.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">updates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">SigTo</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#Knobs.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.Knobs.update" title="Link to this definition"></a></dt>
+<dd><p>Update the parameters of the synthesizer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>updates</strong> (<em>dict</em>) – A dictionary of parameters to update. The keys are the names of the parameters,
+and the values are the new values for those parameters.</p></li>
+<li><p><strong>Mostly</strong></p></li>
+<li><p><strong>numbers</strong> (<em>the knob updates values are</em>)</p></li>
+<li><p><strong>a</strong> (<em>but you can also express how</em>)</p></li>
+<li><p><strong>now</strong> (<em>particular knob should transition to that number</em><em> (</em><em>&quot;value&quot;</em><em>) </em><em>from where it is</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<p>:param :
+:param by specifying a “time” parameter. The time parameter is the number of seconds:
+:param it takes to transition to the new value.:
+:param You can also specify a “mul” and “add” parameter:
+:param which are multiplied and:
+:param added to the value respectively.:
+:param Essentially:
+:param you can specify a <cite>pyo.SigTo</cite> object as the value of a knob.:</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hum.pyo_util.PyoServer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hum.pyo_util.</span></span><span class="sig-name descname"><span class="pre">PyoServer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">44100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nchnls</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffersize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duplex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">audio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'portaudio'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jackname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pyo'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ichnls</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">winhost</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'directsound'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">midi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'portmidi'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbosity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">7</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#PyoServer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.PyoServer" title="Link to this definition"></a></dt>
+<dd><p>A subclass of the pyo Server class that makes it a context manager.</p>
+<p>See pyo issue #300: <a class="reference external" href="https://github.com/belangeo/pyo/issues/300">https://github.com/belangeo/pyo/issues/300</a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hum.pyo_util.ReplayEvents">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hum.pyo_util.</span></span><span class="sig-name descname"><span class="pre">ReplayEvents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">control_events</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">SigTo</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#ReplayEvents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.ReplayEvents" title="Link to this definition"></a></dt>
+<dd><p>An iterator that replays a sequence of timestamped knob updates in real-time.</p>
+<p>This class takes a list of (timestamp, KnobsDict) events and yields
+each update at the correct real-time intervals, automatically sleeping
+between updates to recreate the original timing.</p>
+<section id="usage">
+<h2>Usage:<a class="headerlink" href="#usage" title="Link to this heading"></a></h2>
+<p>Simply wrap your recorded control events and feed them into play_events:</p>
+<blockquote>
+<div><p>synth.play_events(ReplayEvents(control_events))</p>
+</div></blockquote>
+</section>
+<section id="why-use-replayevents">
+<h2>Why use ReplayEvents?<a class="headerlink" href="#why-use-replayevents" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Centralizes real-time replay logic.</p></li>
+<li><p>Makes it easy to later add speed controls, jitter, filtering, etc.</p></li>
+<li><p>Keeps <cite>play_events</cite> clean and flexible.</p></li>
+<li><p>Supports a future where playback streams can be manipulated easily.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">param control_events<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of (timestamp, knob updates) pairs.</p>
+</dd>
+<dt class="field-even">type control_events<span class="colon">:</span></dt>
+<dd class="field-even"><p>List[Tuple[float, KnobsDict]]</p>
+</dd>
+<dt class="field-odd">param speed<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A multiplier for playback speed. 1.0 = normal speed,
+2.0 = twice as fast, 0.5 = half speed, etc. Default is 1.0.</p>
+</dd>
+<dt class="field-even">type speed<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hum.pyo_util.Synth">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hum.pyo_util.</span></span><span class="sig-name descname"><span class="pre">Synth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">synth_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">knob_params:</span> <span class="pre">~typing.Set[str]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">knob_exclude:</span> <span class="pre">~typing.Set[str]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sr=44100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nchnls=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record_on_start:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_log_factory:</span> <span class="pre">~typing.Callable[[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~hum.pyo_util.Appendable]</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">audio='portaudio'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbosity=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**server_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#Synth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.Synth" title="Link to this definition"></a></dt>
+<dd><p>A class for creating a real-time synthesizer using pyo.</p>
+<p>The synth_func is a function whose arguments determine the parameters of the synthesizer.
+We call a dictionary of such parameters “knobs”:
+These are dicts that specify the value for each knob (i.e. sound parameter) that
+has changed (all other sound parameters remain as they were).</p>
+<p>Mostly, the knobs values are numbers, but you can also express how a particular knob
+should transition to that number (“value”) from where it is now, by specifying
+a “time” parameter. The time parameter is the number of seconds it takes to
+transition to the new value.
+You can also specify a “mul” and “add” parameter, which are multiplied and added to the value
+respectively.
+Essentially, you can specify a <cite>pyo.SigTo</cite> object as the value of a knob.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hum.pyo_util.Synth.get_recording">
+<span class="sig-name descname"><span class="pre">get_recording</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">process_recording:</span> <span class="pre">~typing.Callable</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">_json_friendly_records&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#Synth.get_recording"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.Synth.get_recording" title="Link to this definition"></a></dt>
+<dd><p>Get the recorded parameter updates.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hum.pyo_util.Synth.get_update_log">
+<span class="sig-name descname"><span class="pre">get_update_log</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#Synth.get_update_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.Synth.get_update_log" title="Link to this definition"></a></dt>
+<dd><p>Get the recorded parameter updates.</p>
+<p>Returns a list of updates without timestamps (unlike get_recording).
+If nothing has been recorded, returns an empty list.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hum.pyo_util.Synth.play_events">
+<span class="sig-name descname"><span class="pre">play_events</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">events</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">SigTo</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idle_sleep_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inter_event_delay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tail_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#Synth.play_events"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.Synth.play_events" title="Link to this definition"></a></dt>
+<dd><p>Play an event stream, applying updates from an iterator of KnobsDicts or None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>events</strong> (<em>Iterator</em><em>[</em><em>Union</em><em>[</em><em>KnobsDict</em><em>, </em><em>None</em><em>]</em><em>]</em>) – An iterator yielding KnobsDict updates (or None for idle).</p></li>
+<li><p><strong>tail_time</strong> (<em>float</em>) – Time to wait after finishing event playback to allow sound to finish.</p></li>
+<li><p><strong>idle_sleep_time</strong> (<em>float</em>) – Time to sleep if the iterator yields None (idle).</p></li>
+<li><p><strong>inter_event_delay</strong> (<em>float</em>) – Time to sleep systematically after each non-None event.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hum.pyo_util.Synth.render_recording">
+<span class="sig-name descname"><span class="pre">render_recording</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">control_events=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_filepath=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">egress=&lt;function</span> <span class="pre">Synth.&lt;lambda&gt;&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_format='wav'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix_buffer_seconds=0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#Synth.render_recording"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.Synth.render_recording" title="Link to this definition"></a></dt>
+<dd><p>Render the recording to a file or return it processed by the egress function.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hum.pyo_util.Synth.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#Synth.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.Synth.start" title="Link to this definition"></a></dt>
+<dd><p>Start the synthesizer.</p>
+<p>This boots the server, initializes knobs, starts the audio output,
+and optionally begins recording.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hum.pyo_util.Synth.start_recording">
+<span class="sig-name descname"><span class="pre">start_recording</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#Synth.start_recording"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.Synth.start_recording" title="Link to this definition"></a></dt>
+<dd><p>Start recording parameter updates.</p>
+<p>Records the initial state of all knobs and prepares to record future updates.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hum.pyo_util.Synth.stop_recording">
+<span class="sig-name descname"><span class="pre">stop_recording</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#Synth.stop_recording"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.Synth.stop_recording" title="Link to this definition"></a></dt>
+<dd><p>Stop recording parameter updates.</p>
+<p>Adds a final empty event with the current timestamp to mark the end of recording.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hum.pyo_util.Synth.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">updates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">SigTo</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#Synth.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.Synth.update" title="Link to this definition"></a></dt>
+<dd><p>Update the synthesizer parameters and record changes if recording is active.</p>
+<ul class="simple">
+<li><p>Live parameters (SigTo) are updated smoothly.</p></li>
+<li><p>Rebuild parameters (non-SigTo, like n_voices) trigger a full synth rebuild.</p></li>
+</ul>
+<p>This method handles parameter updates and recording in one place, unlike the
+previous design where recording was handled in the Knobs class.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hum.pyo_util.auto_play">
+<span class="sig-prename descclassname"><span class="pre">hum.pyo_util.</span></span><span class="sig-name descname"><span class="pre">auto_play</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#auto_play"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.auto_play" title="Link to this definition"></a></dt>
+<dd><p>Recursively call .play() on all PyoObjects inside an object or list.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hum.pyo_util.dict_to_sigto">
+<span class="sig-prename descclassname"><span class="pre">hum.pyo_util.</span></span><span class="sig-name descname"><span class="pre">dict_to_sigto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SigTo</span></span></span><a class="reference internal" href="../../_modules/hum/pyo_util.html#dict_to_sigto"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.dict_to_sigto" title="Link to this definition"></a></dt>
+<dd><p>Create a SigTo object from a parameter spec dictionary or a number.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hum.pyo_util.is_valid_sigto_value">
+<span class="sig-prename descclassname"><span class="pre">hum.pyo_util.</span></span><span class="sig-name descname"><span class="pre">is_valid_sigto_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#is_valid_sigto_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.is_valid_sigto_value" title="Link to this definition"></a></dt>
+<dd><p>Check if the value is a valid SigTo value.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hum.pyo_util.knob_exclude">
+<span class="sig-prename descclassname"><span class="pre">hum.pyo_util.</span></span><span class="sig-name descname"><span class="pre">knob_exclude</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#knob_exclude"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.knob_exclude" title="Link to this definition"></a></dt>
+<dd><p>Decorator to specify which parameters should NOT be treated as live knobs.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hum.pyo_util.knob_params">
+<span class="sig-prename descclassname"><span class="pre">hum.pyo_util.</span></span><span class="sig-name descname"><span class="pre">knob_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">include</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#knob_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.knob_params" title="Link to this definition"></a></dt>
+<dd><p>Decorator to specify which parameters should be treated as live knobs (SigTo).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hum.pyo_util.list_if_string">
+<span class="sig-prename descclassname"><span class="pre">hum.pyo_util.</span></span><span class="sig-name descname"><span class="pre">list_if_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#list_if_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.list_if_string" title="Link to this definition"></a></dt>
+<dd><p>Convert a string to a list of strings.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hum.pyo_util.params_dict">
+<span class="sig-prename descclassname"><span class="pre">hum.pyo_util.</span></span><span class="sig-name descname"><span class="pre">params_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyoobj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_valid_value=&lt;function</span> <span class="pre">is_valid_sigto_value&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#params_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.params_dict" title="Link to this definition"></a></dt>
+<dd><p>Get a dict of {key: value} pairs from a callable object (e.g. a PyoObject).
+Only (k,v) items whose v satisfies is_valid_value(v) are included.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hum.pyo_util.round_event_times">
+<span class="sig-prename descclassname"><span class="pre">hum.pyo_util.</span></span><span class="sig-name descname"><span class="pre">round_event_times</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">events</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">round_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#round_event_times"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.round_event_times" title="Link to this definition"></a></dt>
+<dd><p>Round the times (d[0]) of events ([d, …]) to the nearest multiple of round_to.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">events</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;freq&#39;</span><span class="p">:</span> <span class="mi">220</span><span class="p">}),</span> <span class="p">(</span><span class="mf">1.0021910667419434</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;freq&#39;</span><span class="p">:</span> <span class="mf">330.0</span><span class="p">})]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">round_event_times</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">round_to</span><span class="o">=</span><span class="mf">0.001</span><span class="p">))</span>
+<span class="go">[(0.0, {&#39;freq&#39;: 220}), (1.002, {&#39;freq&#39;: 330.0})]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">round_event_times</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">round_to</span><span class="o">=</span><span class="mf">0.01</span><span class="p">))</span>
+<span class="go">[(0.0, {&#39;freq&#39;: 220}), (1.0, {&#39;freq&#39;: 330.0})]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hum.pyo_util.serialize_knobs">
+<span class="sig-prename descclassname"><span class="pre">hum.pyo_util.</span></span><span class="sig-name descname"><span class="pre">serialize_knobs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">knobs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#serialize_knobs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.serialize_knobs" title="Link to this definition"></a></dt>
+<dd><p>Convert the knobs to a dictionary.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hum.pyo_util.sigto_to_dict">
+<span class="sig-prename descclassname"><span class="pre">hum.pyo_util.</span></span><span class="sig-name descname"><span class="pre">sigto_to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigto</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SigTo</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/hum/pyo_util.html#sigto_to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.sigto_to_dict" title="Link to this definition"></a></dt>
+<dd><p>Convert a SigTo object to a dictionary.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hum.pyo_util.synth_func_defaults">
+<span class="sig-prename descclassname"><span class="pre">hum.pyo_util.</span></span><span class="sig-name descname"><span class="pre">synth_func_defaults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../../_modules/hum/pyo_util.html#synth_func_defaults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.synth_func_defaults" title="Link to this definition"></a></dt>
+<dd><p>Get the {name: default_value} pairs from a callable object (e.g. a PyoObject).
+Also asserts that all arguments of function have a default value.</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="extra_util.html" class="btn btn-neutral float-left" title="hum.extra_util" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="scrap/belangeo_Degradation.html" class="btn btn-neutral float-right" title="hum.scrap.belangeo_Degradation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright NO COPYRIGHT.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

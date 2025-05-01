@@ -1,0 +1,4 @@
+hum.extra_util
+==============
+.. automodule:: hum.extra_util
+   :members:

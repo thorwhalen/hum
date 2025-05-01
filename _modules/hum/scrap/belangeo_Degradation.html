@@ -1,0 +1,221 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hum.scrap.belangeo_Degradation &mdash; hum 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/toggleprompt.js?v=d7ede5d2"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            hum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum.html">hum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/examples/pyo_util_examples.html">hum.examples.pyo_util_examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/extra_util.html">hum.extra_util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/pyo_util.html">hum.pyo_util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/scrap/belangeo_Degradation.html">hum.scrap.belangeo_Degradation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/util.html">hum.util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/utils.html">hum.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/utils/date_ticks.html">hum.utils.date_ticks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/utils/plotting.html">hum.utils.plotting</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">hum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">hum.scrap.belangeo_Degradation</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hum.scrap.belangeo_Degradation</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Template for a RadioPyo song (version 1.0).</span>
+
+<span class="sd">A RadioPyo song is a musical python script using the python-pyo</span>
+<span class="sd">module to create the audio processing chain. You can connect to</span>
+<span class="sd">the radio here : http://radiopyo.acaia.ca/</span>
+
+<span class="sd">There is only a few rules:</span>
+<span class="sd">    1 - It must be a one-page script.</span>
+<span class="sd">    2 - No soundfile, only synthesis.</span>
+<span class="sd">    3 - The script must be finite in time, with fade-in and fade-out</span>
+<span class="sd">        to avoid clicks between pieces. Use the DURATION variable.</span>
+
+<span class="sd">belangeo - 2014</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyo</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+
+<span class="n">TITLE</span> <span class="o">=</span> <span class="s2">&quot;Degradation&quot;</span>  <span class="c1"># The title of the music</span>
+<span class="n">ARTIST</span> <span class="o">=</span> <span class="s2">&quot;belangeo&quot;</span>  <span class="c1"># Your artist name</span>
+<span class="n">DURATION</span> <span class="o">=</span> <span class="mi">120</span>  <span class="c1"># The duration of the music in seconds</span>
+
+
+<div class="viewcode-block" id="dict_diff">
+<a class="viewcode-back" href="../../../module_docs/hum/scrap/belangeo_Degradation.html#hum.scrap.belangeo_Degradation.dict_diff">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">dict_diff</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the elements of a that are not keys of b.</span>
+
+<span class="sd">    &gt;&gt;&gt; dict_diff({&#39;a&#39;: 1, &#39;b&#39;: 2}, {&#39;b&#39;: 3})</span>
+<span class="sd">    {&#39;a&#39;: 1}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">a</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">a</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">b</span><span class="p">}</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">processing_chain</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">pre_locals</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="ow">or</span> <span class="p">{}</span>
+
+    <span class="n">metro_rate</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metro_rate&quot;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">degrade_bits</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;degrade_bits&quot;</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+    <span class="n">filt_freq</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;filter_freq&quot;</span><span class="p">,</span> <span class="mi">5000</span><span class="p">)</span>
+    <span class="n">verb_fb</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reverb_feedback&quot;</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">)</span>
+
+    <span class="n">fade</span> <span class="o">=</span> <span class="n">Fader</span><span class="p">(</span><span class="n">fadein</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">fadeout</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">dur</span><span class="o">=</span><span class="n">DURATION</span><span class="p">)</span><span class="o">.</span><span class="n">play</span><span class="p">()</span>
+
+    <span class="n">env</span> <span class="o">=</span> <span class="n">CosTable</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">),</span> <span class="p">(</span><span class="mi">8191</span><span class="p">,</span> <span class="mi">0</span><span class="p">)])</span>
+    <span class="n">env2</span> <span class="o">=</span> <span class="n">CosTable</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">),</span> <span class="p">(</span><span class="mi">8191</span><span class="p">,</span> <span class="mi">0</span><span class="p">)])</span>
+
+    <span class="n">met</span> <span class="o">=</span> <span class="n">Metro</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span><span class="o">.</span><span class="n">play</span><span class="p">()</span>
+
+    <span class="n">car</span> <span class="o">=</span> <span class="n">TrigChoice</span><span class="p">(</span>
+        <span class="n">met</span><span class="o">.</span><span class="n">mix</span><span class="p">(),</span>
+        <span class="p">[</span><span class="mi">50</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span> <span class="o">+</span> <span class="p">[</span><span class="mi">75</span><span class="p">,</span> <span class="mi">99</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">[</span><span class="mi">151</span><span class="p">],</span>
+        <span class="n">init</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+        <span class="n">mul</span><span class="o">=</span><span class="n">RandInt</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mf">0.3125</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">ind</span> <span class="o">=</span> <span class="n">SampHold</span><span class="p">(</span><span class="n">Clip</span><span class="p">(</span><span class="n">Sine</span><span class="p">(</span><span class="mf">0.02</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span> <span class="n">met</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">amp</span> <span class="o">=</span> <span class="n">TrigEnv</span><span class="p">(</span><span class="n">met</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="n">mul</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+    <span class="n">fm</span> <span class="o">=</span> <span class="n">FM</span><span class="p">(</span><span class="n">car</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.33</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">],</span> <span class="n">ind</span><span class="p">,</span> <span class="n">amp</span><span class="p">)</span>
+    <span class="n">srscl</span> <span class="o">=</span> <span class="n">SampHold</span><span class="p">(</span><span class="n">Sine</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.06</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="n">met</span><span class="o">.</span><span class="n">mix</span><span class="p">(),</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">deg</span> <span class="o">=</span> <span class="n">Degrade</span><span class="p">(</span><span class="n">fm</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="n">srscl</span><span class="p">)</span>
+    <span class="n">filt</span> <span class="o">=</span> <span class="n">Biquad</span><span class="p">(</span><span class="n">deg</span><span class="o">.</span><span class="n">mix</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">freq</span><span class="o">=</span><span class="mi">5000</span><span class="p">)</span>
+
+    <span class="n">low</span> <span class="o">=</span> <span class="n">Biquad</span><span class="p">(</span><span class="n">filt</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">mul</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+    <span class="n">b1</span> <span class="o">=</span> <span class="n">Biquad</span><span class="p">(</span><span class="n">filt</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">b2</span> <span class="o">=</span> <span class="n">Biquad</span><span class="p">(</span><span class="n">filt</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">b3</span> <span class="o">=</span> <span class="n">Biquad</span><span class="p">(</span><span class="n">filt</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">b4</span> <span class="o">=</span> <span class="n">Biquad</span><span class="p">(</span><span class="n">filt</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="mi">1700</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">b5</span> <span class="o">=</span> <span class="n">Biquad</span><span class="p">(</span><span class="n">filt</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="mi">2500</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">delb1</span> <span class="o">=</span> <span class="n">SDelay</span><span class="p">(</span><span class="n">b1</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">maxdelay</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">delb3</span> <span class="o">=</span> <span class="n">SDelay</span><span class="p">(</span><span class="n">b3</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mf">1.6</span><span class="p">,</span> <span class="n">maxdelay</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mul</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">delb4</span> <span class="o">=</span> <span class="n">SDelay</span><span class="p">(</span><span class="n">b4</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mf">3.2</span><span class="p">,</span> <span class="n">maxdelay</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">mul</span><span class="o">=</span><span class="mf">0.75</span><span class="p">)</span>
+    <span class="n">delb5</span> <span class="o">=</span> <span class="n">SDelay</span><span class="p">(</span><span class="n">b5</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mf">6.4</span><span class="p">,</span> <span class="n">maxdelay</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">mul</span><span class="o">=</span><span class="mf">0.75</span><span class="p">)</span>
+
+    <span class="n">total</span> <span class="o">=</span> <span class="n">low</span> <span class="o">+</span> <span class="n">delb1</span> <span class="o">+</span> <span class="n">b2</span> <span class="o">+</span> <span class="n">delb3</span> <span class="o">+</span> <span class="n">delb4</span> <span class="o">+</span> <span class="n">delb5</span>
+
+    <span class="n">rev</span> <span class="o">=</span> <span class="n">WGVerb</span><span class="p">(</span><span class="n">total</span><span class="p">,</span> <span class="n">feedback</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span> <span class="n">bal</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span> <span class="n">mul</span><span class="o">=</span><span class="n">fade</span> <span class="o">*</span> <span class="mf">1.3</span><span class="p">)</span><span class="o">.</span><span class="n">out</span><span class="p">()</span>
+
+    <span class="n">rumvol</span> <span class="o">=</span> <span class="n">TrigEnv</span><span class="p">(</span><span class="n">met</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">met</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">env2</span><span class="p">,</span> <span class="mf">0.39</span><span class="p">,</span> <span class="n">mul</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+    <span class="n">rumble</span> <span class="o">=</span> <span class="n">Rossler</span><span class="p">(</span><span class="n">pitch</span><span class="o">=</span><span class="p">[</span><span class="mf">0.09</span><span class="p">,</span> <span class="mf">0.09003</span><span class="p">],</span> <span class="n">chaos</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">mul</span><span class="o">=</span><span class="n">fade</span> <span class="o">*</span> <span class="n">rumvol</span><span class="p">)</span><span class="o">.</span><span class="n">out</span><span class="p">()</span>
+    <span class="n">bass</span> <span class="o">=</span> <span class="n">Sine</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="p">[</span><span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">],</span> <span class="n">mul</span><span class="o">=</span><span class="n">fade</span> <span class="o">*</span> <span class="n">rumvol</span> <span class="o">*</span> <span class="mf">0.25</span><span class="p">)</span><span class="o">.</span><span class="n">out</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">dict_diff</span><span class="p">(</span><span class="nb">locals</span><span class="p">(),</span> <span class="n">pre_locals</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_chain</span><span class="p">(</span><span class="n">chain_func</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">dur</span><span class="o">=</span><span class="n">DURATION</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fileformat</span><span class="o">=</span><span class="mi">7</span><span class="p">):</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">Server</span><span class="p">(</span><span class="n">duplex</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">audio</span><span class="o">=</span><span class="s2">&quot;offline&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">boot</span><span class="p">()</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">recordOptions</span><span class="p">(</span><span class="n">dur</span><span class="o">=</span><span class="n">dur</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">fileformat</span><span class="o">=</span><span class="n">fileformat</span><span class="p">)</span>
+
+    <span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">chain_func</span><span class="p">())</span>
+
+    <span class="n">s</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">compute_chain</span><span class="p">(</span>
+        <span class="n">processing_chain</span><span class="p">,</span>
+        <span class="n">dur</span><span class="o">=</span><span class="n">DURATION</span><span class="p">,</span>
+        <span class="n">filename</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> 
+    <span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright NO COPYRIGHT.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
