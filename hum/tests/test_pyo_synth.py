@@ -7,16 +7,15 @@ import os
 from hum.pyo_util import Synth, DFLT_PYO_SR, round_event_times
 from hum.extra_util import estimate_frequencies
 
+running_in_ci = os.environ.get("CI") in ("true", "1")
 
-# @pytest.mark.skipif(
-#     os.environ.get("CI") in ("true", "1"), reason="Skipped on CI: Need speakers!"
-# )
-
-if os.environ.get("CI") in ("true", "1"):
+if running_in_ci:
     synth_special_kwargs = dict(audio='dummy')
 else:
     synth_special_kwargs = {}
 
+
+@pytest.mark.skipif(running_in_ci, reason="Skipped on CI: Need speakers!")
 def test_synth_frequency_sequence():
     """
     Test that the Synth correctly plays different frequencies in sequence and
@@ -42,7 +41,6 @@ def test_synth_frequency_sequence():
         synth['freq'] = freq_sequence[2]  # Change to 440 Hz
         time.sleep(1)
 
-    return synth
     # Get the recorded events and round timing for consistency
     events = synth.get_recording()
     events = list(round_event_times(events, round_to=0.1))
