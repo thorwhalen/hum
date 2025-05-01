@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hum.pyo_util &mdash; hum 1.0.0 documentation</title>
+  <title>hum.pyo_util &mdash; hum 1.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/documentation_options.js?v=292eb321"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -64,7 +64,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#hum.pyo_util.Synth.get_recording"><code class="docutils literal notranslate"><span class="pre">Synth.get_recording()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#hum.pyo_util.Synth.get_update_log"><code class="docutils literal notranslate"><span class="pre">Synth.get_update_log()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#hum.pyo_util.Synth.play_events"><code class="docutils literal notranslate"><span class="pre">Synth.play_events()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hum.pyo_util.Synth.render_recording"><code class="docutils literal notranslate"><span class="pre">Synth.render_recording()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hum.pyo_util.Synth.render_events"><code class="docutils literal notranslate"><span class="pre">Synth.render_events()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#hum.pyo_util.Synth.start"><code class="docutils literal notranslate"><span class="pre">Synth.start()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#hum.pyo_util.Synth.start_recording"><code class="docutils literal notranslate"><span class="pre">Synth.start_recording()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#hum.pyo_util.Synth.stop_recording"><code class="docutils literal notranslate"><span class="pre">Synth.stop_recording()</span></code></a></li>
@@ -251,8 +251,8 @@ If nothing has been recorded, returns an empty list.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hum.pyo_util.Synth.render_recording">
-<span class="sig-name descname"><span class="pre">render_recording</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">control_events=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_filepath=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">egress=&lt;function</span> <span class="pre">Synth.&lt;lambda&gt;&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_format='wav'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix_buffer_seconds=0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#Synth.render_recording"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.Synth.render_recording" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="hum.pyo_util.Synth.render_events">
+<span class="sig-name descname"><span class="pre">render_events</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">control_events=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_filepath=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">egress=&lt;function</span> <span class="pre">Synth.&lt;lambda&gt;&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_format='wav'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix_buffer_seconds=0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#Synth.render_events"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.Synth.render_events" title="Link to this definition"></a></dt>
 <dd><p>Render the recording to a file or return it processed by the egress function.</p>
 </dd></dl>
 

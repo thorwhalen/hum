@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hum.pyo_util &mdash; hum 1.0.0 documentation</title>
+  <title>hum.pyo_util &mdash; hum 1.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/documentation_options.js?v=292eb321"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -85,6 +85,7 @@
 <span></span><span class="sd">&quot;&quot;&quot;pyo utils&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">inspect</span><span class="w"> </span><span class="kn">import</span> <span class="n">Signature</span><span class="p">,</span> <span class="n">Parameter</span>
@@ -121,7 +122,7 @@
 <span class="n">DFLT_TIME_TIME</span> <span class="o">=</span> <span class="mf">0.025</span>  <span class="c1"># default time of pyo.SigTo, but should we default to 0 instead?</span>
 
 
-<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">)</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">)</span>
 
 <span class="n">KnobsValue</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">SigTo</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span>
 <span class="n">KnobsDict</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">KnobsValue</span><span class="p">]</span>
@@ -399,10 +400,10 @@
         <span class="n">sigto_kwargs</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">k</span><span class="p">:</span> <span class="n">v</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;init&#39;</span><span class="p">,</span> <span class="s1">&#39;mul&#39;</span><span class="p">,</span> <span class="s1">&#39;add&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;init&quot;</span><span class="p">,</span> <span class="s2">&quot;mul&quot;</span><span class="p">,</span> <span class="s2">&quot;add&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="p">}</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">sigto_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">d</span><span class="p">}</span>
+        <span class="n">sigto_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">d</span><span class="p">}</span>
     <span class="k">return</span> <span class="n">SigTo</span><span class="p">(</span><span class="o">**</span><span class="n">sigto_kwargs</span><span class="p">)</span></div>
 
 
@@ -417,10 +418,10 @@
 <span class="sd">    Convert a SigTo object to a dictionary.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">{</span>
-        <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">sigto</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-        <span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">sigto</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
-        <span class="s1">&#39;mul&#39;</span><span class="p">:</span> <span class="n">sigto</span><span class="o">.</span><span class="n">mul</span><span class="p">,</span>
-        <span class="s1">&#39;add&#39;</span><span class="p">:</span> <span class="n">sigto</span><span class="o">.</span><span class="n">add</span><span class="p">,</span>
+        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">sigto</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="n">sigto</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+        <span class="s2">&quot;mul&quot;</span><span class="p">:</span> <span class="n">sigto</span><span class="o">.</span><span class="n">mul</span><span class="p">,</span>
+        <span class="s2">&quot;add&quot;</span><span class="p">:</span> <span class="n">sigto</span><span class="o">.</span><span class="n">add</span><span class="p">,</span>
     <span class="p">}</span></div>
 
 
@@ -570,7 +571,7 @@
         <span class="n">nchnls</span><span class="o">=</span><span class="n">DFLT_PYO_NCHNLS</span><span class="p">,</span>
         <span class="n">record_on_start</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">event_log_factory</span><span class="p">:</span> <span class="n">RecordFactory</span> <span class="o">=</span> <span class="nb">list</span><span class="p">,</span>  <span class="c1"># No argument factory that makes an Appendable</span>
-        <span class="n">audio</span><span class="o">=</span><span class="s1">&#39;portaudio&#39;</span><span class="p">,</span>
+        <span class="n">audio</span><span class="o">=</span><span class="s2">&quot;portaudio&quot;</span><span class="p">,</span>
         <span class="n">verbosity</span><span class="o">=</span><span class="n">DFLT_PYO_VERBOSITY</span><span class="p">,</span>
         <span class="o">**</span><span class="n">server_kwargs</span><span class="p">,</span>
     <span class="p">):</span>
@@ -610,11 +611,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_synth_func_params</span> <span class="o">=</span> <span class="n">synth_func_defaults</span><span class="p">(</span><span class="n">synth_func</span><span class="p">)</span>
 
         <span class="n">_knob_params</span> <span class="o">=</span> <span class="n">knob_params</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span>
-            <span class="n">synth_func</span><span class="p">,</span> <span class="s1">&#39;_knob_params&#39;</span><span class="p">,</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_synth_func_params</span><span class="p">)</span>
+            <span class="n">synth_func</span><span class="p">,</span> <span class="s2">&quot;_knob_params&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_synth_func_params</span><span class="p">)</span>
         <span class="p">)</span>
         <span class="n">_knob_params</span> <span class="o">=</span> <span class="n">list_if_string</span><span class="p">(</span><span class="n">_knob_params</span><span class="p">)</span>
-        <span class="n">_knob_exclude</span> <span class="o">=</span> <span class="n">knob_exclude</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">synth_func</span><span class="p">,</span> <span class="s1">&#39;_knob_exclude&#39;</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
         <span class="n">knob_exclude</span> <span class="o">=</span> <span class="n">list_if_string</span><span class="p">(</span><span class="n">knob_exclude</span><span class="p">)</span>
+        <span class="n">_knob_exclude</span> <span class="o">=</span> <span class="n">knob_exclude</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">synth_func</span><span class="p">,</span> <span class="s1">&#39;_knob_exclude&#39;</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_knob_params</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">_knob_params</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">_knob_exclude</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_knob_defaults</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_synth_func_params</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">_knob_params</span><span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_live_params</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_knob_params</span><span class="p">)</span>
@@ -909,15 +910,15 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">replay_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control_events</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">tail_time</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">play_events</span><span class="p">(</span><span class="n">ReplayEvents</span><span class="p">(</span><span class="n">control_events</span><span class="p">),</span> <span class="n">tail_time</span><span class="o">=</span><span class="n">tail_time</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Synth.render_recording">
-<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.Synth.render_recording">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">render_recording</span><span class="p">(</span>
+<div class="viewcode-block" id="Synth.render_events">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.Synth.render_events">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render_events</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">control_events</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">output_filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">egress</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span>
-        <span class="n">file_format</span><span class="o">=</span><span class="s1">&#39;wav&#39;</span><span class="p">,</span>
+        <span class="n">file_format</span><span class="o">=</span><span class="s2">&quot;wav&quot;</span><span class="p">,</span>
         <span class="n">suffix_buffer_seconds</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the recording to a file or return it processed by the egress function.&quot;&quot;&quot;</span>
@@ -951,7 +952,7 @@
 
                 <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">updates</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;mul&#39;</span><span class="p">,</span> <span class="s1">&#39;add&#39;</span><span class="p">]:</span>
+                        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;mul&quot;</span><span class="p">,</span> <span class="s2">&quot;add&quot;</span><span class="p">]:</span>
                             <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">val</span><span class="p">:</span>
                                 <span class="nb">setattr</span><span class="p">(</span><span class="n">raw_params</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">attr</span><span class="p">,</span> <span class="n">val</span><span class="p">[</span><span class="n">attr</span><span class="p">])</span>
                     <span class="k">else</span><span class="p">:</span>
@@ -1020,26 +1021,27 @@
 
 
 
-<span class="c1"># --------------------------------------------------------------------------------------</span>
-<span class="c1"># Example functions for testing the Synth class</span>
-<span class="c1"># --------------------------------------------------------------------------------------</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">basic_synth_test</span><span class="p">():</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">simple_sine</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="mi">220</span><span class="p">,</span> <span class="n">volume</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-        <span class="n">sine</span> <span class="o">=</span> <span class="n">Sine</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">freq</span><span class="p">,</span> <span class="n">mul</span><span class="o">=</span><span class="n">volume</span><span class="p">)</span>
-
-    <span class="n">synth</span> <span class="o">=</span> <span class="n">Synth</span><span class="p">(</span><span class="n">simple_sine</span><span class="p">)</span>
-
-    <span class="k">with</span> <span class="n">synth</span><span class="p">:</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">synth</span><span class="p">[</span><span class="s1">&#39;freq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">220</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">/</span> <span class="mi">2</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">synth</span><span class="p">[</span><span class="s1">&#39;freq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">220</span> <span class="o">*</span> <span class="mi">2</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-
-    <span class="n">events</span> <span class="o">=</span> <span class="n">synth</span><span class="o">.</span><span class="n">get_recording</span><span class="p">()</span>
-    <span class="n">synth</span><span class="o">.</span><span class="n">replay_events</span><span class="p">(</span><span class="n">events</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">synth</span><span class="p">(</span>
+    <span class="n">synth_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">knob_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">knob_exclude</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">sr</span><span class="o">=</span><span class="n">DFLT_PYO_SR</span><span class="p">,</span>
+    <span class="n">nchnls</span><span class="o">=</span><span class="n">DFLT_PYO_NCHNLS</span><span class="p">,</span>
+    <span class="n">record_on_start</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">event_log_factory</span><span class="p">:</span> <span class="n">RecordFactory</span> <span class="o">=</span> <span class="nb">list</span><span class="p">,</span>  <span class="c1"># No argument factory that makes an Appendable</span>
+    <span class="n">audio</span><span class="o">=</span><span class="s1">&#39;portaudio&#39;</span><span class="p">,</span>
+    <span class="n">verbosity</span><span class="o">=</span><span class="n">DFLT_PYO_VERBOSITY</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">server_kwargs</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">synth_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;synth_func&#39;</span><span class="p">,</span> <span class="s1">&#39;server_kwargs&#39;</span><span class="p">}},</span>
+        <span class="o">**</span><span class="n">server_kwargs</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">synth_func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="n">Synth</span><span class="p">,</span> <span class="o">**</span><span class="n">synth_kwargs</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Synth</span><span class="p">(</span><span class="n">synth_func</span><span class="p">,</span> <span class="o">**</span><span class="n">synth_kwargs</span><span class="p">)</span>
 </pre></div>
 
            </div>
