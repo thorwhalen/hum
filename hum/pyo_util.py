@@ -481,7 +481,7 @@ class Synth(MutableMapping):
         )
         _knob_params = list_if_string(_knob_params)
         knob_exclude = list_if_string(knob_exclude)
-        _knob_exclude = knob_exclude or getattr(synth_func, '_knob_exclude', set())
+        _knob_exclude = knob_exclude or getattr(synth_func, "_knob_exclude", set())
         self._knob_params = set(_knob_params) - set(_knob_exclude)
         self._knob_defaults = {k: self._synth_func_params[k] for k in _knob_params}
         self._live_params = set(self._knob_params)
@@ -871,13 +871,13 @@ def synth(
     nchnls=DFLT_PYO_NCHNLS,
     record_on_start: bool = True,
     event_log_factory: RecordFactory = list,  # No argument factory that makes an Appendable
-    audio='portaudio',
+    audio="portaudio",
     verbosity=DFLT_PYO_VERBOSITY,
     **server_kwargs,
 ):
     synth_kwargs = dict(
-        {k: v for k, v in locals().items() if k not in {'synth_func', 'server_kwargs'}},
-        **server_kwargs
+        {k: v for k, v in locals().items() if k not in {"synth_func", "server_kwargs"}},
+        **server_kwargs,
     )
     if synth_func is None:
         return partial(Synth, **synth_kwargs)
