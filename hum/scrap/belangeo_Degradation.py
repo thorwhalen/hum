@@ -100,5 +100,5 @@ if __name__ == "__main__":
     compute_chain(
         processing_chain,
         dur=DURATION,
-        filename=sys.argv[1], 
+        filename=sys.argv[1],
     )

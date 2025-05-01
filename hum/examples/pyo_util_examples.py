@@ -20,11 +20,11 @@ def example_01_basic_dual_osc():
     # 👂 Frequency shifts with LFO sweeping filter
     with synth:
         time.sleep(0.5)
-        synth['freq1'] = 440
+        synth["freq1"] = 440
         time.sleep(1)
-        synth['freq2'] = SigTo(550, time=0.5)  # Smooth shift
+        synth["freq2"] = SigTo(550, time=0.5)  # Smooth shift
         time.sleep(0.5)
-        synth.knobs.update(dict(freq1={'value': 880, 'time': 0.1}, freq2=1100))
+        synth.knobs.update(dict(freq1={"value": 880, "time": 0.1}, freq2=1100))
         time.sleep(1)
 
     # ------------------------- replay the events -------------------------
@@ -62,9 +62,9 @@ def example_02_distortion_and_reverb():
     # 👂 Brightness control of distorted tone
     with Synth(distorted_reverb_graph) as synth:
         time.sleep(1)
-        synth['cutoff'] = 500
+        synth["cutoff"] = 500
         time.sleep(1)
-        synth['cutoff'] = SigTo(3000, time=2.0)
+        synth["cutoff"] = SigTo(3000, time=2.0)
         time.sleep(2)
 
 
@@ -83,10 +83,10 @@ def example_03_detuned_polyphonic_feel():
     # 👂 Sweeping resonance and cutoff
     with Synth(poly_synth_graph) as synth:
         time.sleep(1)
-        synth['cutoff'] = 200
+        synth["cutoff"] = 200
         time.sleep(1)
-        synth['cutoff'] = SigTo(4000, time=1.5)
-        synth['res'] = 0.9
+        synth["cutoff"] = SigTo(4000, time=1.5)
+        synth["res"] = 0.9
         time.sleep(2)
 
 
@@ -105,11 +105,11 @@ def example_04_dynamic_tremolo_and_filter_sweep():
     # 👂 Tremolo rate and filter brightness changes
     with Synth(tremolo_filter_graph) as synth:
         time.sleep(1)
-        synth['trem_rate'] = 7.0
+        synth["trem_rate"] = 7.0
         time.sleep(1)
-        synth['cutoff'] = 400
+        synth["cutoff"] = 400
         time.sleep(1)
-        synth['cutoff'] = 2000
+        synth["cutoff"] = 2000
         time.sleep(2)
 
 
@@ -127,11 +127,11 @@ def example_05_offline_rendering():
         return ButLP(modulated, freq=cutoff)
 
     frames = [
-        {'tempo': 120, 'frequency': 440, 'amplitude': 0.5, 'cutoff': 1000},
-        {'tempo': 135, 'frequency': 330, 'amplitude': 0.7, 'cutoff': 500},
-        {'tempo': 100, 'frequency': 550, 'amplitude': 0.3, 'cutoff': 2000},
-        {'tempo': 150, 'frequency': 220, 'amplitude': 0.9, 'cutoff': 750},
-        {'tempo': 110, 'frequency': 660, 'amplitude': 0.6, 'cutoff': 1500},
+        {"tempo": 120, "frequency": 440, "amplitude": 0.5, "cutoff": 1000},
+        {"tempo": 135, "frequency": 330, "amplitude": 0.7, "cutoff": 500},
+        {"tempo": 100, "frequency": 550, "amplitude": 0.3, "cutoff": 2000},
+        {"tempo": 150, "frequency": 220, "amplitude": 0.9, "cutoff": 750},
+        {"tempo": 110, "frequency": 660, "amplitude": 0.6, "cutoff": 1500},
     ]
 
     renderer = OfflineSynthRenderer(
@@ -169,11 +169,11 @@ def example_06_knob_recording_playback():
     synth = Synth(dual_osc_graph)
 
     with synth:
-        synth['freq1'] = 440
+        synth["freq1"] = 440
         time.sleep(1)
-        synth['freq2'] = SigTo(550, time=0.5)  # Smooth shift
+        synth["freq2"] = SigTo(550, time=0.5)  # Smooth shift
         time.sleep(1)
-        synth.knobs.update(dict(freq1={'value': 880, 'time': 0.1}, freq2=1100))
+        synth.knobs.update(dict(freq1={"value": 880, "time": 0.1}, freq2=1100))
         time.sleep(1)
 
     control_events = synth.get_recording()

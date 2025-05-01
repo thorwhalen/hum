@@ -75,7 +75,7 @@ def round_numbers(items, round_to=0.001, *, index_of_item_number=None, egress=No
     >>> list(round_numbers(items, round_to=0.1, index_of_item_number=0))
     [[1.2, 'one'], [3.1, 'three']]
     """
-    digits = len(str(round_to).split('.')[-1])
+    digits = len(str(round_to).split(".")[-1])
 
     for item in items:
         if index_of_item_number is None:
@@ -129,4 +129,3 @@ class ModuleNotFoundIgnore:
         if exc_type is ModuleNotFoundError:
             pass
         return True
-

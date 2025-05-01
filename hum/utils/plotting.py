@@ -58,7 +58,7 @@ def plot_wf(
 def disp_wf(wf, sr=DFLT_SR, autoplay=False, wf_plot_func=plot_wf):
     """
     Display waveform in Jupyter notebook
-    
+
     Parameters
     ----------
     wf : array-like

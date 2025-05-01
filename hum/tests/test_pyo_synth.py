@@ -10,7 +10,7 @@ from hum.extra_util import estimate_frequencies
 running_in_ci = os.environ.get("CI") in ("true", "1")
 
 if running_in_ci:
-    synth_special_kwargs = dict(audio='dummy')
+    synth_special_kwargs = dict(audio="dummy")
 else:
     synth_special_kwargs = {}
 
