@@ -10,7 +10,7 @@ from hum.extra_util import estimate_frequencies
 running_in_ci = os.environ.get("CI") in ("true", "1")
 
 if running_in_ci:
-    synth_special_kwargs = dict(audio='dummy')
+    synth_special_kwargs = dict(audio="dummy")
 else:
     synth_special_kwargs = {}
 
@@ -36,9 +36,9 @@ def test_synth_frequency_sequence():
     # Play the frequencies in sequence
     with synth:
         time.sleep(1)  # let base_freq play for a second
-        synth['freq'] = freq_sequence[1]  # Change to 330 Hz
+        synth["freq"] = freq_sequence[1]  # Change to 330 Hz
         time.sleep(1)
-        synth['freq'] = freq_sequence[2]  # Change to 440 Hz
+        synth["freq"] = freq_sequence[2]  # Change to 440 Hz
         time.sleep(1)
 
     # Get the recorded events and round timing for consistency
@@ -48,12 +48,12 @@ def test_synth_frequency_sequence():
         (
             0.0,
             {
-                'freq': {'value': 220, 'time': 0.025, 'mul': 1, 'add': 0},
-                'volume': {'value': 0.1, 'time': 0.025, 'mul': 1, 'add': 0},
+                "freq": {"value": 220, "time": 0.025, "mul": 1, "add": 0},
+                "volume": {"value": 0.1, "time": 0.025, "mul": 1, "add": 0},
             },
         ),
-        (1.0, {'freq': 330.0}),
-        (2.0, {'freq': 440}),
+        (1.0, {"freq": 330.0}),
+        (2.0, {"freq": 440}),
         (3.0, {}),
     ]
     assert events == expected_events, f"Expected {expected_events}, got {events}"

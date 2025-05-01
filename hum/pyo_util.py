@@ -37,7 +37,7 @@ DFLT_PYO_VERBOSITY = 1
 DFLT_TIME_TIME = 0.025  # default time of pyo.SigTo, but should we default to 0 instead?
 
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 KnobsValue = Union[float, SigTo, Dict[str, float]]
 KnobsDict = Dict[str, KnobsValue]
@@ -283,10 +283,10 @@ def dict_to_sigto(d: Union[float, dict]) -> SigTo:
         sigto_kwargs = {
             k: v
             for k, v in d.items()
-            if k in ['value', 'time', 'init', 'mul', 'add'] and v is not None
+            if k in ["value", "time", "init", "mul", "add"] and v is not None
         }
     else:
-        sigto_kwargs = {'value': d}
+        sigto_kwargs = {"value": d}
     return SigTo(**sigto_kwargs)
 
 
@@ -298,10 +298,10 @@ def sigto_to_dict(sigto: SigTo) -> Dict[str, float]:
     Convert a SigTo object to a dictionary.
     """
     return {
-        'value': sigto.value,
-        'time': sigto.time,
-        'mul': sigto.mul,
-        'add': sigto.add,
+        "value": sigto.value,
+        "time": sigto.time,
+        "mul": sigto.mul,
+        "add": sigto.add,
     }
 
 
@@ -436,7 +436,7 @@ class Synth(MutableMapping):
         nchnls=DFLT_PYO_NCHNLS,
         record_on_start: bool = True,
         event_log_factory: RecordFactory = list,  # No argument factory that makes an Appendable
-        audio='portaudio',
+        audio="portaudio",
         verbosity=DFLT_PYO_VERBOSITY,
         **server_kwargs,
     ):
@@ -476,10 +476,10 @@ class Synth(MutableMapping):
         self._synth_func_params = synth_func_defaults(synth_func)
 
         _knob_params = knob_params or getattr(
-            synth_func, '_knob_params', set(self._synth_func_params)
+            synth_func, "_knob_params", set(self._synth_func_params)
         )
         _knob_params = list_if_string(_knob_params)
-        _knob_exclude = knob_exclude or getattr(synth_func, '_knob_exclude', set())
+        _knob_exclude = knob_exclude or getattr(synth_func, "_knob_exclude", set())
         knob_exclude = list_if_string(knob_exclude)
         self._knob_params = set(_knob_params) - set(_knob_exclude)
         self._knob_defaults = {k: self._synth_func_params[k] for k in _knob_params}
@@ -760,7 +760,7 @@ class Synth(MutableMapping):
         *,
         output_filepath=None,
         egress=lambda x: x,
-        file_format='wav',
+        file_format="wav",
         suffix_buffer_seconds=0.0,
     ):
         """Render the recording to a file or return it processed by the egress function."""
@@ -794,7 +794,7 @@ class Synth(MutableMapping):
 
                 for key, val in updates.items():
                     if isinstance(val, dict):
-                        for attr in ['value', 'time', 'mul', 'add']:
+                        for attr in ["value", "time", "mul", "add"]:
                             if attr in val:
                                 setattr(raw_params[key], attr, val[attr])
                     else:
@@ -874,9 +874,9 @@ def basic_synth_test():
 
     with synth:
         time.sleep(1)
-        synth['freq'] = 220 * 3 / 2
+        synth["freq"] = 220 * 3 / 2
         time.sleep(1)
-        synth['freq'] = 220 * 2
+        synth["freq"] = 220 * 2
         time.sleep(1)
 
     events = synth.get_recording()
