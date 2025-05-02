@@ -131,7 +131,7 @@ def ensure_identifier_list(x: Union[str, Iterable[str]]) -> List[str]:
     # Handle string input by extracting word sequences
     if isinstance(x, str):
         # Extract word sequences (consecutive alphanumeric chars + underscore)
-        identifiers = re.findall(r'\w+', x)
+        identifiers = re.findall(r"\w+", x)
     # Handle iterable input by converting to list
     elif isinstance(x, Iterable):
         identifiers = list(x)

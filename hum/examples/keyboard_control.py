@@ -65,7 +65,7 @@ def _load_arg_mapping(arg_mapping: Union[str, Dict]) -> Dict:
     if isinstance(arg_mapping, str):
         # If it's a file path
         if os.path.isfile(arg_mapping):
-            with open(arg_mapping, 'r') as f:
+            with open(arg_mapping, "r") as f:
                 return json.load(f)
         # Otherwise treat as JSON string
         try:
@@ -83,7 +83,7 @@ def _initialize_pyo_synth(synth_func):
     Returns the initialized synth function that's ready to play sounds.
     """
     # Try to detect if this is a Synth instance from hum.pyo_util
-    if hasattr(synth_func, 'start') and hasattr(synth_func, 'stop'):
+    if hasattr(synth_func, "start") and hasattr(synth_func, "stop"):
         # This is likely a Synth instance, start it
         synth_func.start()
         return synth_func
@@ -153,7 +153,7 @@ def keyboard_reader(
             )
 
         # Initialize the synth if it's a pyo synth
-        if "pyo_synths" in str(callback_func) or hasattr(callback_func, 'start'):
+        if "pyo_synths" in str(callback_func) or hasattr(callback_func, "start"):
             if debug:
                 print(f"Initializing synth function: {callback_func}")
             synth_instance = _initialize_pyo_synth(callback_func)
@@ -178,19 +178,19 @@ def keyboard_reader(
             # Special keys (arrows, esc, etc.)
             # Create a mapping for special keys that need specific names
             special_keys = {
-                'Key.esc': 'escape',
-                'Key.space': 'space',
-                'Key.enter': 'enter',
-                'Key.tab': 'tab',
+                "Key.esc": "escape",
+                "Key.space": "space",
+                "Key.enter": "enter",
+                "Key.tab": "tab",
             }
 
             key_str = str(key)
             if key_str in special_keys:
                 key_char = special_keys[key_str]
             else:
-                key_char = key_str.replace('Key.', '')
+                key_char = key_str.replace("Key.", "")
 
-        key_info = {'key': key_char, 'timestamp': time.time(), 'raw_key': str(key)}
+        key_info = {"key": key_char, "timestamp": time.time(), "raw_key": str(key)}
         key_events.append(key_info)
 
         # Call the callback function if provided
@@ -208,16 +208,16 @@ def keyboard_reader(
                         if isinstance(mapping[key_char], (int, float)):
                             if debug:
                                 print(f"Playing freq={mapping[key_char]}")
-                            if hasattr(callback_func, 'update'):
+                            if hasattr(callback_func, "update"):
                                 # This is likely a Synth instance
-                                callback_func.update({'freq': mapping[key_char]})
+                                callback_func.update({"freq": mapping[key_char]})
                             else:
                                 callback_func(freq=mapping[key_char])
                         # If it's already a dict, pass it directly
                         elif isinstance(mapping[key_char], dict):
                             if debug:
                                 print(f"Playing with params: {mapping[key_char]}")
-                            if hasattr(callback_func, 'update'):
+                            if hasattr(callback_func, "update"):
                                 callback_func.update(mapping[key_char])
                             else:
                                 callback_func(**mapping[key_char])
@@ -234,7 +234,7 @@ def keyboard_reader(
                         print(
                             f"No mapping, calling with raw key: {key_info['raw_key']}"
                         )
-                    callback_func(key_info['raw_key'])
+                    callback_func(key_info["raw_key"])
             except Exception as e:
                 print(f"Error in callback function: {e}")
 
@@ -264,7 +264,7 @@ def keyboard_reader(
         listener.stop()
 
         # Clean up synth instance if we created one
-        if synth_instance and hasattr(synth_instance, 'stop'):
+        if synth_instance and hasattr(synth_instance, "stop"):
             synth_instance.stop()
 
 
@@ -323,7 +323,7 @@ def main():
                 print(f"Event: {event}")
 
                 # Exit on specified exit key press
-                if event['key'] == args.exit_key:
+                if event["key"] == args.exit_key:
                     print("Quitting...")
                     break
     except KeyboardInterrupt:
