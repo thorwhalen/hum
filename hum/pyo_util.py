@@ -868,7 +868,7 @@ class Synth(MutableMapping):
                 target = raw_params[key] if raw_params else self.knobs[key]
                 if isinstance(target, SigTo):
                     if isinstance(val, dict):
-                        for attr in ['value', 'time', 'mul', 'add']:
+                        for attr in ["value", "time", "mul", "add"]:
                             if attr in val:
                                 setattr(target, attr, val[attr])
                     else:
@@ -951,7 +951,7 @@ def synth(
     **server_kwargs,
 ):
     synth_kwargs = dict(
-        {k: v for k, v in locals().items() if k not in {'synth_func', 'server_kwargs'}},
+        {k: v for k, v in locals().items() if k not in {"synth_func", "server_kwargs"}},
         **server_kwargs,
     )
     if synth_func is None:
