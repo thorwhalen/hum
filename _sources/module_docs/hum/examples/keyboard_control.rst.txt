@@ -1,0 +1,4 @@
+hum.examples.keyboard_control
+=============================
+.. automodule:: hum.examples.keyboard_control
+   :members:

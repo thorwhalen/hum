@@ -1,0 +1,4 @@
+hum.pyo_util_examples
+=====================
+.. automodule:: hum.pyo_util_examples
+   :members:

@@ -3,9 +3,12 @@
    :caption: Contents:
 
    module_docs/hum
+   module_docs/hum/examples/keyboard_control
    module_docs/hum/examples/pyo_util_examples
    module_docs/hum/extra_util
+   module_docs/hum/pyo_synths
    module_docs/hum/pyo_util
+   module_docs/hum/pyo_util_examples
    module_docs/hum/scrap/belangeo_Degradation
    module_docs/hum/util
    module_docs/hum/utils

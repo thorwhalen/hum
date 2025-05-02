@@ -1,0 +1,4 @@
+hum.pyo_synths
+==============
+.. automodule:: hum.pyo_synths
+   :members:

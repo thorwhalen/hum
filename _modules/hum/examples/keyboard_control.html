@@ -1,0 +1,457 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hum.examples.keyboard_control &mdash; hum 1.0.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=71272d9f"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/toggleprompt.js?v=d7ede5d2"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            hum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum.html">hum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/examples/keyboard_control.html">hum.examples.keyboard_control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/examples/pyo_util_examples.html">hum.examples.pyo_util_examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/extra_util.html">hum.extra_util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/pyo_synths.html">hum.pyo_synths</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/pyo_util.html">hum.pyo_util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/pyo_util_examples.html">hum.pyo_util_examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/scrap/belangeo_Degradation.html">hum.scrap.belangeo_Degradation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/util.html">hum.util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/utils.html">hum.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/utils/date_ticks.html">hum.utils.date_ticks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/utils/plotting.html">hum.utils.plotting</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">hum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">hum.examples.keyboard_control</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hum.examples.keyboard_control</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Keyboard event reader that allows detecting keypress events.</span>
+<span class="sd">Run this script directly in a terminal.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">importlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_load_callback_from_string</span><span class="p">(</span><span class="n">callback_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load a callback function from a module path string.</span>
+
+<span class="sd">    Format: &quot;module.path:function_name&quot;</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        callback_path: String path to the callback function</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The callback function</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If the path format is invalid</span>
+<span class="sd">        ImportError: If the module or function cannot be imported</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s2">&quot;:&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">callback_path</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Callback path must be in format &#39;module.path:function_name&#39;&quot;</span><span class="p">)</span>
+
+    <span class="n">module_path</span><span class="p">,</span> <span class="n">function_name</span> <span class="o">=</span> <span class="n">callback_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">module_path</span><span class="p">)</span>
+        <span class="n">callback_func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">function_name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">callback_func</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Object </span><span class="si">{</span><span class="n">function_name</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">module_path</span><span class="si">}</span><span class="s2"> is not callable&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">callback_func</span>
+    <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not import module </span><span class="si">{</span><span class="n">module_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Could not find function </span><span class="si">{</span><span class="n">function_name</span><span class="si">}</span><span class="s2"> in module </span><span class="si">{</span><span class="n">module_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_load_arg_mapping</span><span class="p">(</span><span class="n">arg_mapping</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load argument mapping from a string (file path or JSON string) or return the dict directly.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        arg_mapping: String path to JSON file, JSON string, or dict</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dict of argument mappings</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg_mapping</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">arg_mapping</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg_mapping</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="c1"># If it&#39;s a file path</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">arg_mapping</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">arg_mapping</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="c1"># Otherwise treat as JSON string</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">arg_mapping</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid JSON string: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;arg_mapping must be a dict, file path, or JSON string&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_initialize_pyo_synth</span><span class="p">(</span><span class="n">synth_func</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Initialize a pyo synth function with a server if it&#39;s a Synth object.</span>
+
+<span class="sd">    Returns the initialized synth function that&#39;s ready to play sounds.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Try to detect if this is a Synth instance from hum.pyo_util</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">synth_func</span><span class="p">,</span> <span class="s1">&#39;start&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">synth_func</span><span class="p">,</span> <span class="s1">&#39;stop&#39;</span><span class="p">):</span>
+        <span class="c1"># This is likely a Synth instance, start it</span>
+        <span class="n">synth_func</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">synth_func</span>
+
+    <span class="c1"># For raw pyo synth functions, we need to create a synth instance</span>
+    <span class="c1"># Try to import Synth from hum.pyo_util</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">hum.pyo_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">Synth</span>
+
+        <span class="n">synth_instance</span> <span class="o">=</span> <span class="n">Synth</span><span class="p">(</span><span class="n">synth_func</span><span class="p">)</span>
+        <span class="n">synth_instance</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">synth_instance</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="c1"># If we can&#39;t import Synth, just return the original function</span>
+        <span class="k">return</span> <span class="n">synth_func</span>
+
+
+<div class="viewcode-block" id="keyboard_reader">
+<a class="viewcode-back" href="../../../module_docs/hum/examples/keyboard_control.html#hum.examples.keyboard_control.keyboard_reader">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">keyboard_reader</span><span class="p">(</span>
+    <span class="n">read_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">exit_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;escape&quot;</span><span class="p">,</span>
+    <span class="n">callback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">arg_mapping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generator that yields keyboard events at specified intervals.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        read_rate: Time in seconds between checks. Defaults to 0.1.</span>
+<span class="sd">        exit_key: Key that will trigger exit when using the default example. Defaults to &quot;escape&quot;.</span>
+<span class="sd">        callback: Optional callback function to call when keys are pressed. Can be a callable</span>
+<span class="sd">            or a string path to a callable in the format &quot;module.path:function_name&quot;.</span>
+<span class="sd">        arg_mapping: Optional mapping from raw keys to callback arguments. Can be a dict,</span>
+<span class="sd">            a path to a JSON file, or a JSON string.</span>
+<span class="sd">        debug: Enable debug output for troubleshooting sound issues.</span>
+
+<span class="sd">    Yields:</span>
+<span class="sd">        Dict with key event information or None if no key was pressed</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; # Usage example (not a doctest)</span>
+<span class="sd">        &gt;&gt;&gt; reader = keyboard_reader()</span>
+<span class="sd">        &gt;&gt;&gt; for event in reader:</span>
+<span class="sd">        ...     if event:</span>
+<span class="sd">        ...         print(f&quot;Key pressed: {event[&#39;key&#39;]}&quot;)</span>
+<span class="sd">        ...     if event and event[&#39;key&#39;] == &#39;escape&#39;:</span>
+<span class="sd">        ...         break</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">pynput</span><span class="w"> </span><span class="kn">import</span> <span class="n">keyboard</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This script requires the pynput library.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Install it with: pip install pynput&quot;</span><span class="p">)</span>
+        <span class="k">raise</span>
+
+    <span class="c1"># Process callback if provided</span>
+    <span class="n">callback_func</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">synth_instance</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">callback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">callback_func</span> <span class="o">=</span> <span class="n">_load_callback_from_string</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="n">callback</span><span class="p">):</span>
+            <span class="n">callback_func</span> <span class="o">=</span> <span class="n">callback</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Callback must be a callable or a string path to a callable&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Initialize the synth if it&#39;s a pyo synth</span>
+        <span class="k">if</span> <span class="s2">&quot;pyo_synths&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">callback_func</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">callback_func</span><span class="p">,</span> <span class="s1">&#39;start&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initializing synth function: </span><span class="si">{</span><span class="n">callback_func</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">synth_instance</span> <span class="o">=</span> <span class="n">_initialize_pyo_synth</span><span class="p">(</span><span class="n">callback_func</span><span class="p">)</span>
+            <span class="n">callback_func</span> <span class="o">=</span> <span class="n">synth_instance</span>
+
+    <span class="c1"># Process arg_mapping if provided</span>
+    <span class="n">mapping</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">arg_mapping</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">mapping</span> <span class="o">=</span> <span class="n">_load_arg_mapping</span><span class="p">(</span><span class="n">arg_mapping</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded mapping: </span><span class="si">{</span><span class="n">mapping</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Event queue to store key presses</span>
+    <span class="n">key_events</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_press</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Callback for key press events&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Regular key presses (alphanumeric keys)</span>
+            <span class="n">key_char</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">char</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="c1"># Special keys (arrows, esc, etc.)</span>
+            <span class="c1"># Create a mapping for special keys that need specific names</span>
+            <span class="n">special_keys</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;Key.esc&#39;</span><span class="p">:</span> <span class="s1">&#39;escape&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;Key.space&#39;</span><span class="p">:</span> <span class="s1">&#39;space&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;Key.enter&#39;</span><span class="p">:</span> <span class="s1">&#39;enter&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;Key.tab&#39;</span><span class="p">:</span> <span class="s1">&#39;tab&#39;</span><span class="p">,</span>
+            <span class="p">}</span>
+
+            <span class="n">key_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">key_str</span> <span class="ow">in</span> <span class="n">special_keys</span><span class="p">:</span>
+                <span class="n">key_char</span> <span class="o">=</span> <span class="n">special_keys</span><span class="p">[</span><span class="n">key_str</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">key_char</span> <span class="o">=</span> <span class="n">key_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;Key.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+        <span class="n">key_info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="n">key_char</span><span class="p">,</span> <span class="s1">&#39;timestamp&#39;</span><span class="p">:</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span> <span class="s1">&#39;raw_key&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)}</span>
+        <span class="n">key_events</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key_info</span><span class="p">)</span>
+
+        <span class="c1"># Call the callback function if provided</span>
+        <span class="k">if</span> <span class="n">callback_func</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">mapping</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># Look up the key in the mapping</span>
+                    <span class="k">if</span> <span class="n">key_char</span> <span class="ow">in</span> <span class="n">mapping</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span>
+                                <span class="sa">f</span><span class="s2">&quot;Key </span><span class="si">{</span><span class="n">key_char</span><span class="si">}</span><span class="s2"> found in mapping: </span><span class="si">{</span><span class="n">mapping</span><span class="p">[</span><span class="n">key_char</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                            <span class="p">)</span>
+
+                        <span class="c1"># If it&#39;s a simple value, convert to dict with &#39;freq&#39; key</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mapping</span><span class="p">[</span><span class="n">key_char</span><span class="p">],</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+                            <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+                                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Playing freq=</span><span class="si">{</span><span class="n">mapping</span><span class="p">[</span><span class="n">key_char</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">callback_func</span><span class="p">,</span> <span class="s1">&#39;update&#39;</span><span class="p">):</span>
+                                <span class="c1"># This is likely a Synth instance</span>
+                                <span class="n">callback_func</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;freq&#39;</span><span class="p">:</span> <span class="n">mapping</span><span class="p">[</span><span class="n">key_char</span><span class="p">]})</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">callback_func</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">mapping</span><span class="p">[</span><span class="n">key_char</span><span class="p">])</span>
+                        <span class="c1"># If it&#39;s already a dict, pass it directly</span>
+                        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mapping</span><span class="p">[</span><span class="n">key_char</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
+                            <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+                                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Playing with params: </span><span class="si">{</span><span class="n">mapping</span><span class="p">[</span><span class="n">key_char</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">callback_func</span><span class="p">,</span> <span class="s1">&#39;update&#39;</span><span class="p">):</span>
+                                <span class="n">callback_func</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">mapping</span><span class="p">[</span><span class="n">key_char</span><span class="p">])</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">callback_func</span><span class="p">(</span><span class="o">**</span><span class="n">mapping</span><span class="p">[</span><span class="n">key_char</span><span class="p">])</span>
+                        <span class="c1"># Otherwise just pass the value</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+                                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Playing with single value: </span><span class="si">{</span><span class="n">mapping</span><span class="p">[</span><span class="n">key_char</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                            <span class="n">callback_func</span><span class="p">(</span><span class="n">mapping</span><span class="p">[</span><span class="n">key_char</span><span class="p">])</span>
+                    <span class="k">elif</span> <span class="n">debug</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Key </span><span class="si">{</span><span class="n">key_char</span><span class="si">}</span><span class="s2"> not found in mapping&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Just pass the raw key if no mapping</span>
+                    <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;No mapping, calling with raw key: </span><span class="si">{</span><span class="n">key_info</span><span class="p">[</span><span class="s1">&#39;raw_key&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="p">)</span>
+                    <span class="n">callback_func</span><span class="p">(</span><span class="n">key_info</span><span class="p">[</span><span class="s1">&#39;raw_key&#39;</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error in callback function: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Start the listener in a non-blocking way</span>
+    <span class="n">listener</span> <span class="o">=</span> <span class="n">keyboard</span><span class="o">.</span><span class="n">Listener</span><span class="p">(</span><span class="n">on_press</span><span class="o">=</span><span class="n">on_press</span><span class="p">)</span>
+    <span class="n">listener</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Keyboard listener started. Press keys to see events.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Press &#39;</span><span class="si">{</span><span class="n">exit_key</span><span class="si">}</span><span class="s2">&#39; to quit the example.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">synth_instance</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Synth initialized and ready to play sounds.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Make sure your audio is turned on and at a reasonable volume.&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key_events</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">key_events</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="kc">None</span>
+
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">read_rate</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Keyboard listener stopped.&quot;</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="c1"># Ensure we stop the listener when we&#39;re done</span>
+        <span class="n">listener</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+        <span class="c1"># Clean up synth instance if we created one</span>
+        <span class="k">if</span> <span class="n">synth_instance</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">synth_instance</span><span class="p">,</span> <span class="s1">&#39;stop&#39;</span><span class="p">):</span>
+            <span class="n">synth_instance</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../../../module_docs/hum/examples/keyboard_control.html#hum.examples.keyboard_control.main">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Run a simple demo of the keyboard reader&quot;&quot;&quot;</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Monitor keyboard events&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-r&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--rate&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Poll rate in seconds (default: 0.1)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-e&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--exit-key&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;escape&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Key that will exit the program (default: escape)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-c&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--callback&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Callback function in format &#39;module.path:function_name&#39;&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-m&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--arg-mapping&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Mapping from keys to callback arguments (JSON file path or JSON string)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-d&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--debug&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Enable debug output&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+    <span class="c1"># Create the reader with the specified parameters</span>
+    <span class="n">reader</span> <span class="o">=</span> <span class="n">keyboard_reader</span><span class="p">(</span>
+        <span class="n">read_rate</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">rate</span><span class="p">,</span>
+        <span class="n">exit_key</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">exit_key</span><span class="p">,</span>
+        <span class="n">callback</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">callback</span><span class="p">,</span>
+        <span class="n">arg_mapping</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">arg_mapping</span><span class="p">,</span>
+        <span class="n">debug</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Polling for keyboard events every </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">rate</span><span class="si">}</span><span class="s2"> seconds.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Press &#39;</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">exit_key</span><span class="si">}</span><span class="s2">&#39; to quit.&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">event</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Event: </span><span class="si">{</span><span class="n">event</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="c1"># Exit on specified exit key press</span>
+                <span class="k">if</span> <span class="n">event</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">args</span><span class="o">.</span><span class="n">exit_key</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Quitting...&quot;</span><span class="p">)</span>
+                    <span class="k">break</span>
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Stopped by user.&quot;</span><span class="p">)</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright NO COPYRIGHT.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

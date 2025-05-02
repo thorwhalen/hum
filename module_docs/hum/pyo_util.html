@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hum.pyo_util &mdash; hum 1.0.3 documentation</title>
+  <title>hum.pyo_util &mdash; hum 1.0.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=baaebd52"></script>
+      <script src="../../_static/documentation_options.js?v=71272d9f"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -24,8 +24,8 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="hum.scrap.belangeo_Degradation" href="scrap/belangeo_Degradation.html" />
-    <link rel="prev" title="hum.extra_util" href="extra_util.html" /> 
+    <link rel="next" title="hum.pyo_util_examples" href="pyo_util_examples.html" />
+    <link rel="prev" title="hum.pyo_synths" href="pyo_synths.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -50,8 +50,10 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../hum.html">hum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/keyboard_control.html">hum.examples.keyboard_control</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples/pyo_util_examples.html">hum.examples.pyo_util_examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extra_util.html">hum.extra_util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyo_synths.html">hum.pyo_synths</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">hum.pyo_util</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.Appendable"><code class="docutils literal notranslate"><span class="pre">Appendable</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.Knobs"><code class="docutils literal notranslate"><span class="pre">Knobs</span></code></a><ul>
@@ -73,10 +75,8 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.auto_play"><code class="docutils literal notranslate"><span class="pre">auto_play()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.dict_to_sigto"><code class="docutils literal notranslate"><span class="pre">dict_to_sigto()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.ensure_identifier_list"><code class="docutils literal notranslate"><span class="pre">ensure_identifier_list()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.is_valid_sigto_value"><code class="docutils literal notranslate"><span class="pre">is_valid_sigto_value()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.knob_exclude"><code class="docutils literal notranslate"><span class="pre">knob_exclude()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.knob_params"><code class="docutils literal notranslate"><span class="pre">knob_params()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.list_if_string"><code class="docutils literal notranslate"><span class="pre">list_if_string()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.params_dict"><code class="docutils literal notranslate"><span class="pre">params_dict()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.round_event_times"><code class="docutils literal notranslate"><span class="pre">round_event_times()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.serialize_knobs"><code class="docutils literal notranslate"><span class="pre">serialize_knobs()</span></code></a></li>
@@ -84,6 +84,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#hum.pyo_util.synth_func_defaults"><code class="docutils literal notranslate"><span class="pre">synth_func_defaults()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="pyo_util_examples.html">hum.pyo_util_examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scrap/belangeo_Degradation.html">hum.scrap.belangeo_Degradation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="util.html">hum.util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">hum.utils</a></li>
@@ -306,27 +307,39 @@ previous design where recording was handled in the Knobs class.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="hum.pyo_util.ensure_identifier_list">
+<span class="sig-prename descclassname"><span class="pre">hum.pyo_util.</span></span><span class="sig-name descname"><span class="pre">ensure_identifier_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/hum/pyo_util.html#ensure_identifier_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.ensure_identifier_list" title="Link to this definition"></a></dt>
+<dd><p>Convert input to a list of valid Python identifiers.</p>
+<p>If input is a string, extract all word sequences.
+If input is an iterable, convert to a list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> – String or iterable of strings</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of valid Python identifiers</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If any items in the list are not valid Python identifiers</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ensure_identifier_list</span><span class="p">(</span><span class="s2">&quot;foo bar baz&quot;</span><span class="p">)</span>
+<span class="go">[&#39;foo&#39;, &#39;bar&#39;, &#39;baz&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ensure_identifier_list</span><span class="p">([</span><span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span><span class="p">])</span>
+<span class="go">[&#39;foo&#39;, &#39;bar&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ensure_identifier_list</span><span class="p">(</span><span class="s2">&quot;foo, bar.baz&quot;</span><span class="p">)</span>
+<span class="go">[&#39;foo&#39;, &#39;bar&#39;, &#39;baz&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ensure_identifier_list</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+<span class="go">[]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="hum.pyo_util.is_valid_sigto_value">
 <span class="sig-prename descclassname"><span class="pre">hum.pyo_util.</span></span><span class="sig-name descname"><span class="pre">is_valid_sigto_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#is_valid_sigto_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.is_valid_sigto_value" title="Link to this definition"></a></dt>
 <dd><p>Check if the value is a valid SigTo value.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="hum.pyo_util.knob_exclude">
-<span class="sig-prename descclassname"><span class="pre">hum.pyo_util.</span></span><span class="sig-name descname"><span class="pre">knob_exclude</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#knob_exclude"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.knob_exclude" title="Link to this definition"></a></dt>
-<dd><p>Decorator to specify which parameters should NOT be treated as live knobs.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="hum.pyo_util.knob_params">
-<span class="sig-prename descclassname"><span class="pre">hum.pyo_util.</span></span><span class="sig-name descname"><span class="pre">knob_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">include</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#knob_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.knob_params" title="Link to this definition"></a></dt>
-<dd><p>Decorator to specify which parameters should be treated as live knobs (SigTo).</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="hum.pyo_util.list_if_string">
-<span class="sig-prename descclassname"><span class="pre">hum.pyo_util.</span></span><span class="sig-name descname"><span class="pre">list_if_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#list_if_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.list_if_string" title="Link to this definition"></a></dt>
-<dd><p>Convert a string to a list of strings.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -374,8 +387,8 @@ Also asserts that all arguments of function have a default value.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="extra_util.html" class="btn btn-neutral float-left" title="hum.extra_util" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="scrap/belangeo_Degradation.html" class="btn btn-neutral float-right" title="hum.scrap.belangeo_Degradation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pyo_synths.html" class="btn btn-neutral float-left" title="hum.pyo_synths" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pyo_util_examples.html" class="btn btn-neutral float-right" title="hum.pyo_util_examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

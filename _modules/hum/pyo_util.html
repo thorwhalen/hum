@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hum.pyo_util &mdash; hum 1.0.3 documentation</title>
+  <title>hum.pyo_util &mdash; hum 1.0.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=baaebd52"></script>
+      <script src="../../_static/documentation_options.js?v=71272d9f"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -47,9 +47,12 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum.html">hum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/examples/keyboard_control.html">hum.examples.keyboard_control</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/examples/pyo_util_examples.html">hum.examples.pyo_util_examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/extra_util.html">hum.extra_util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/pyo_synths.html">hum.pyo_synths</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/pyo_util.html">hum.pyo_util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/pyo_util_examples.html">hum.pyo_util_examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/scrap/belangeo_Degradation.html">hum.scrap.belangeo_Degradation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/util.html">hum.util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/utils.html">hum.utils</a></li>
@@ -171,21 +174,6 @@
 
 
 
-<div class="viewcode-block" id="knob_params">
-<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.knob_params">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">knob_params</span><span class="p">(</span><span class="o">*</span><span class="n">include</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Decorator to specify which parameters should be treated as live knobs (SigTo).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-        <span class="n">func</span><span class="o">.</span><span class="n">_knob_params</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">include</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">func</span>
-
-    <span class="k">return</span> <span class="n">decorator</span></div>
-
-
-
 <div class="viewcode-block" id="round_event_times">
 <a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.round_event_times">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">round_event_times</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">round_to</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
@@ -204,24 +192,66 @@
 
 
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+
+
+<div class="viewcode-block" id="ensure_identifier_list">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.ensure_identifier_list">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">ensure_identifier_list</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert input to a list of valid Python identifiers.</span>
+
+<span class="sd">    If input is a string, extract all word sequences.</span>
+<span class="sd">    If input is an iterable, convert to a list.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x: String or iterable of strings</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of valid Python identifiers</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If any items in the list are not valid Python identifiers</span>
+
+<span class="sd">    Examples:</span>
+
+<span class="sd">        &gt;&gt;&gt; ensure_identifier_list(&quot;foo bar baz&quot;)</span>
+<span class="sd">        [&#39;foo&#39;, &#39;bar&#39;, &#39;baz&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; ensure_identifier_list([&quot;foo&quot;, &quot;bar&quot;])</span>
+<span class="sd">        [&#39;foo&#39;, &#39;bar&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; ensure_identifier_list(&quot;foo, bar.baz&quot;)</span>
+<span class="sd">        [&#39;foo&#39;, &#39;bar&#39;, &#39;baz&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; ensure_identifier_list(None)</span>
+<span class="sd">        []</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Handle string input by extracting word sequences</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="c1"># Extract word sequences (consecutive alphanumeric chars + underscore)</span>
+        <span class="n">identifiers</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\w+&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="c1"># Handle iterable input by converting to list</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+        <span class="n">identifiers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected string or iterable, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Check if all items are valid Python identifiers</span>
+    <span class="n">invalid</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">identifiers</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">.</span><span class="n">isidentifier</span><span class="p">()]</span>
+    <span class="k">if</span> <span class="n">invalid</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;The following items are not valid Python identifiers: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">invalid</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">identifiers</span></div>
+
+
+
 <span class="c1"># -------------------------------------------------------------------------------------</span>
 <span class="c1"># Knobs</span>
 <span class="c1"># -------------------------------------------------------------------------------------</span>
-
-
-<div class="viewcode-block" id="knob_exclude">
-<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.knob_exclude">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">knob_exclude</span><span class="p">(</span><span class="o">*</span><span class="n">exclude</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Decorator to specify which parameters should NOT be treated as live knobs.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-        <span class="n">func</span><span class="o">.</span><span class="n">_knob_exclude</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">exclude</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">func</span>
-
-    <span class="k">return</span> <span class="n">decorator</span></div>
-
 
 
 <div class="viewcode-block" id="Knobs">
@@ -549,21 +579,64 @@
 
 
 
-<div class="viewcode-block" id="list_if_string">
-<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.list_if_string">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">list_if_string</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert a string to a list of strings.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">x</span></div>
-
-
-
 <span class="c1"># -------------------------------------------------------------------------------------</span>
 <span class="c1"># Synth</span>
 <span class="c1"># -------------------------------------------------------------------------------------</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_resolve_dials_and_settings</span><span class="p">(</span><span class="n">dials</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">synth_func_params</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Resolve and validate dials and settings parameters for a synth.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dials : Optional[Union[str, List[str], Set[str]]]</span>
+<span class="sd">        Parameters to treat as live knobs (controllable in real-time).</span>
+<span class="sd">        If None, defaults to all parameters not in settings.</span>
+<span class="sd">    settings : Optional[Union[str, List[str], Set[str]]]</span>
+<span class="sd">        Parameters to exclude from live knobs.</span>
+<span class="sd">        If None, defaults to all parameters not in dials.</span>
+<span class="sd">    synth_func_params : Dict[str, Any]</span>
+<span class="sd">        Dictionary of all available parameters from the synth function.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Tuple[Set[str], Set[str]]</span>
+<span class="sd">        Resolved dials and settings as sets.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; assert (</span>
+<span class="sd">    ...     _resolve_dials_and_settings(None, None, {&#39;freq&#39;: 440, &#39;amp&#39;: 0.5})</span>
+<span class="sd">    ...     == ({&#39;freq&#39;, &#39;amp&#39;}, set())</span>
+<span class="sd">    ... )</span>
+
+<span class="sd">    &gt;&gt;&gt; _resolve_dials_and_settings(&#39;freq&#39;, None, {&#39;freq&#39;: 440, &#39;amp&#39;: 0.5})</span>
+<span class="sd">    ({&#39;freq&#39;}, {&#39;amp&#39;})</span>
+
+<span class="sd">    &gt;&gt;&gt; _resolve_dials_and_settings(None, [&#39;amp&#39;], {&#39;freq&#39;: 440, &#39;amp&#39;: 0.5})</span>
+<span class="sd">    ({&#39;freq&#39;}, {&#39;amp&#39;})</span>
+
+<span class="sd">    &gt;&gt;&gt; _resolve_dials_and_settings([&#39;freq&#39;, &#39;amp&#39;], [&#39;amp&#39;], {&#39;freq&#39;: 440, &#39;amp&#39;: 0.5})</span>
+<span class="sd">    ({&#39;freq&#39;}, {&#39;amp&#39;})</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">param_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">synth_func_params</span><span class="p">)</span>
+
+    <span class="n">dials_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ensure_identifier_list</span><span class="p">(</span><span class="n">dials</span><span class="p">))</span>
+    <span class="n">settings_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ensure_identifier_list</span><span class="p">(</span><span class="n">settings</span><span class="p">))</span>
+
+    <span class="n">unknown</span> <span class="o">=</span> <span class="p">(</span><span class="n">dials_set</span> <span class="o">|</span> <span class="n">settings_set</span><span class="p">)</span> <span class="o">-</span> <span class="n">param_names</span>
+    <span class="k">if</span> <span class="n">unknown</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown parameters specified: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">unknown</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">dials</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">settings</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">param_names</span><span class="p">,</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">dials</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">param_names</span> <span class="o">-</span> <span class="n">settings_set</span><span class="p">,</span> <span class="n">settings_set</span>
+    <span class="k">if</span> <span class="n">settings</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dials_set</span><span class="p">,</span> <span class="n">param_names</span> <span class="o">-</span> <span class="n">dials_set</span>
+
+    <span class="k">return</span> <span class="n">dials_set</span> <span class="o">-</span> <span class="n">settings_set</span><span class="p">,</span> <span class="n">settings_set</span>
 
 
 <div class="viewcode-block" id="Synth">
@@ -592,8 +665,8 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">synth_func</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">knob_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">knob_exclude</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dials</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">settings</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">sr</span><span class="o">=</span><span class="n">DFLT_PYO_SR</span><span class="p">,</span>
         <span class="n">nchnls</span><span class="o">=</span><span class="n">DFLT_PYO_NCHNLS</span><span class="p">,</span>
         <span class="n">record_on_start</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -608,10 +681,10 @@
 <span class="sd">        synth_func : callable</span>
 <span class="sd">            A function that returns a pyo object. The function should accept keyword arguments</span>
 <span class="sd">            that are the parameters of the synthesizer.</span>
-<span class="sd">        knob_params : Optional[Set[str]]</span>
+<span class="sd">        dials : Optional[Set[str]]</span>
 <span class="sd">            Parameters to treat as live knobs (controllable in real-time).</span>
 <span class="sd">            If None, defaults to all parameters.</span>
-<span class="sd">        knob_exclude : Optional[Set[str]]</span>
+<span class="sd">        settings : Optional[Set[str]]</span>
 <span class="sd">            Parameters to exclude from live knobs.</span>
 <span class="sd">        sr : int</span>
 <span class="sd">            The sample rate of the server. Default is 44100.</span>
@@ -637,16 +710,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_synth_func_params</span> <span class="o">=</span> <span class="n">synth_func_defaults</span><span class="p">(</span><span class="n">synth_func</span><span class="p">)</span>
 
-        <span class="n">_knob_params</span> <span class="o">=</span> <span class="n">knob_params</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span>
-            <span class="n">synth_func</span><span class="p">,</span> <span class="s2">&quot;_knob_params&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_synth_func_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dials</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span> <span class="o">=</span> <span class="n">_resolve_dials_and_settings</span><span class="p">(</span>
+            <span class="n">dials</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_synth_func_params</span>
         <span class="p">)</span>
-        <span class="n">_knob_params</span> <span class="o">=</span> <span class="n">list_if_string</span><span class="p">(</span><span class="n">_knob_params</span><span class="p">)</span>
-        <span class="n">knob_exclude</span> <span class="o">=</span> <span class="n">list_if_string</span><span class="p">(</span><span class="n">knob_exclude</span><span class="p">)</span>
-        <span class="n">_knob_exclude</span> <span class="o">=</span> <span class="n">knob_exclude</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">synth_func</span><span class="p">,</span> <span class="s2">&quot;_knob_exclude&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_knob_params</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">_knob_params</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">_knob_exclude</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_knob_defaults</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_synth_func_params</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">_knob_params</span><span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_live_params</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_knob_params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_rebuild_params</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_synth_func_params</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_knob_params</span><span class="p">)</span>
 
         <span class="c1"># Recording</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_record_on_start</span> <span class="o">=</span> <span class="n">record_on_start</span>
@@ -656,6 +722,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_recorded_events</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">knobs</span> <span class="o">=</span> <span class="n">Knobs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_synth_func_params</span><span class="p">)</span>
+        <span class="c1"># self._knob_defaults = {k: self._synth_func_params[k] for k in dials}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">updates</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -679,9 +746,9 @@
         <span class="n">rebuild_updates</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">updates</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_live_params</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dials</span><span class="p">:</span>
                 <span class="n">live_updates</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-            <span class="k">elif</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rebuild_params</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">:</span>
                 <span class="n">rebuild_updates</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown parameter: </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -744,7 +811,7 @@
         <span class="c1"># Rebuild knobs</span>
         <span class="n">new_initial_knob_params</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">spec</span> <span class="ow">in</span> <span class="n">merged_params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_live_params</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dials</span><span class="p">:</span>
                 <span class="n">new_initial_knob_params</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">dict_to_sigto</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">new_initial_knob_params</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">spec</span>
@@ -770,7 +837,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_initial_knob_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">_initial_knob_params</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">spec</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_synth_func_params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_knob_params</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dials</span><span class="p">:</span>
                 <span class="n">_initial_knob_params</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">dict_to_sigto</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">_initial_knob_params</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">spec</span>
@@ -1053,6 +1120,13 @@
     <span class="c1"># Handling the decorator mechanisms -----------------------------------------------</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">synth_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new Synth instance or return a partial function for configuration.</span>
+
+<span class="sd">        Trace on the deliberation of __new__ vs function design:</span>
+<span class="sd">        https://github.com/thorwhalen/hum/discussions/4#discussioncomment-13011135</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Case 1: Used directly as @Synth</span>
         <span class="k">if</span> <span class="n">synth_func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">callable</span><span class="p">(</span><span class="n">synth_func</span><span class="p">):</span>
             <span class="n">instance</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
@@ -1090,29 +1164,6 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;Synth </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">knobs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&gt;&quot;</span></div>
 
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">synth</span><span class="p">(</span>
-    <span class="n">synth_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">knob_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">knob_exclude</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">sr</span><span class="o">=</span><span class="n">DFLT_PYO_SR</span><span class="p">,</span>
-    <span class="n">nchnls</span><span class="o">=</span><span class="n">DFLT_PYO_NCHNLS</span><span class="p">,</span>
-    <span class="n">record_on_start</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">event_log_factory</span><span class="p">:</span> <span class="n">RecordFactory</span> <span class="o">=</span> <span class="nb">list</span><span class="p">,</span>  <span class="c1"># No argument factory that makes an Appendable</span>
-    <span class="n">audio</span><span class="o">=</span><span class="s2">&quot;portaudio&quot;</span><span class="p">,</span>
-    <span class="n">verbosity</span><span class="o">=</span><span class="n">DFLT_PYO_VERBOSITY</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">server_kwargs</span><span class="p">,</span>
-<span class="p">):</span>
-    <span class="n">synth_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
-        <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;synth_func&quot;</span><span class="p">,</span> <span class="s2">&quot;server_kwargs&quot;</span><span class="p">}},</span>
-        <span class="o">**</span><span class="n">server_kwargs</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="k">if</span> <span class="n">synth_func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="n">Synth</span><span class="p">,</span> <span class="o">**</span><span class="n">synth_kwargs</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">Synth</span><span class="p">(</span><span class="n">synth_func</span><span class="p">,</span> <span class="o">**</span><span class="n">synth_kwargs</span><span class="p">)</span>
 </pre></div>
 
            </div>
