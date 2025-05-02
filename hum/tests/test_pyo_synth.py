@@ -38,9 +38,7 @@ def test_synth_frequency_sequence():
         time.sleep(1)  # let base_freq play for a second
         s(freq=freq_sequence[1])  # Change to 330 Hz
         time.sleep(1)  # ... play that for a second
-        s['freq'] = freq_sequence[
-            2
-        ]  # ...then change to 440 Hz (doing it differently)
+        s["freq"] = freq_sequence[2]  # ...then change to 440 Hz (doing it differently)
         time.sleep(1)  # ... play that for a second
         # ... tnad htne exit the context manager, which stops the synth
 
@@ -56,11 +54,11 @@ def test_synth_frequency_sequence():
             0.0,
             {
                 # Note that the first event is the event create by the defaults of the synth function (and other internals)
-                'freq': {'value': 220, 'time': 0.025, 'mul': 1, 'add': 0},
+                "freq": {"value": 220, "time": 0.025, "mul": 1, "add": 0},
             },
         ),
-        (1.0, {'freq': 330.0}),
-        (2.0, {'freq': 440}),
+        (1.0, {"freq": 330.0}),
+        (2.0, {"freq": 440}),
         # Note that the last event's "knobs" dict is empty, as we are just recording when the synth is stopped
         (3.0, {}),
     ]
