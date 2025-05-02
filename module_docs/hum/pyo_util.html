@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hum.pyo_util &mdash; hum 1.0.1 documentation</title>
+  <title>hum.pyo_util &mdash; hum 1.0.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=292eb321"></script>
+      <script src="../../_static/documentation_options.js?v=1ed6394b"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -167,47 +167,56 @@ and the values are the new values for those parameters.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="hum.pyo_util.ReplayEvents">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hum.pyo_util.</span></span><span class="sig-name descname"><span class="pre">ReplayEvents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">control_events</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">SigTo</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#ReplayEvents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.ReplayEvents" title="Link to this definition"></a></dt>
-<dd><p>An iterator that replays a sequence of timestamped knob updates in real-time.</p>
-<p>This class takes a list of (timestamp, KnobsDict) events and yields
-each update at the correct real-time intervals, automatically sleeping
-between updates to recreate the original timing.</p>
-<section id="usage">
-<h2>Usage:<a class="headerlink" href="#usage" title="Link to this heading"></a></h2>
-<p>Simply wrap your recorded control events and feed them into play_events:</p>
-<blockquote>
-<div><p>synth.play_events(ReplayEvents(control_events))</p>
-</div></blockquote>
-</section>
-<section id="why-use-replayevents">
-<h2>Why use ReplayEvents?<a class="headerlink" href="#why-use-replayevents" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p>Centralizes real-time replay logic.</p></li>
-<li><p>Makes it easy to later add speed controls, jitter, filtering, etc.</p></li>
-<li><p>Keeps <cite>play_events</cite> clean and flexible.</p></li>
-<li><p>Supports a future where playback streams can be manipulated easily.</p></li>
-</ul>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hum.pyo_util.</span></span><span class="sig-name descname"><span class="pre">ReplayEvents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">events</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emit_none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensure_sorted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#ReplayEvents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.ReplayEvents" title="Link to this definition"></a></dt>
+<dd><p>Replays timestamped knob updates, optionally emitting None or sleeping to simulate
+timing.</p>
 <dl class="field-list simple">
-<dt class="field-odd">param control_events<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A list of (timestamp, knob updates) pairs.</p>
-</dd>
-<dt class="field-even">type control_events<span class="colon">:</span></dt>
-<dd class="field-even"><p>List[Tuple[float, KnobsDict]]</p>
-</dd>
-<dt class="field-odd">param speed<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A multiplier for playback speed. 1.0 = normal speed,
-2.0 = twice as fast, 0.5 = half speed, etc. Default is 1.0.</p>
-</dd>
-<dt class="field-even">type speed<span class="colon">:</span></dt>
-<dd class="field-even"><p>float</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>events</strong> (<em>List</em><em>[</em><em>Tuple</em><em>[</em><em>float</em><em>, </em><em>KnobsDict</em><em>]</em><em>]</em>) – A list of (timestamp, knob updates) pairs.</p></li>
+<li><p><strong>emit_none</strong> (<em>bool</em>) – If True, yields None to simulate time passage; if False, uses time.sleep.</p></li>
+<li><p><strong>time_scale</strong> (<em>float</em>) – Time compression/stretch factor: 2.0 = 2x faster, 0.5 = half speed.</p></li>
+<li><p><strong>ensure_sorted</strong> (<em>bool</em>) – Whether to sort the events by timestamp.</p></li>
+</ul>
 </dd>
 </dl>
-</section>
+<p class="rubric">Example</p>
+<p>Consider these events:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">events</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;freq&#39;</span><span class="p">:</span> <span class="mi">220</span><span class="p">}),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;freq&#39;</span><span class="p">:</span> <span class="mi">330</span><span class="p">}),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="mf">0.10</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;freq&#39;</span><span class="p">:</span> <span class="mi">440</span><span class="p">}),</span>
+<span class="gp">... </span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">ReplayEvents</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="mf">50.0</span><span class="p">))</span>
+<span class="go">[{&#39;freq&#39;: 220}, {&#39;freq&#39;: 330}, {&#39;freq&#39;: 440}]</span>
+</pre></div>
+</div>
+<p>That is, we should really get back the same events, without the timestamps.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">ReplayEvents</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span>
+<span class="go">[{&#39;freq&#39;: 220}, {&#39;freq&#39;: 330}, {&#39;freq&#39;: 440}]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">ReplayEvents</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="mf">10.0</span><span class="p">))</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">events</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>The timestamps are used to pace when new events are emitted.
+Note: Usually we’ll use time_scale=1.0 (the default), but we use time_scale=50 here
+just to accelerate the tests.</p>
+<p>The default is to sleep until the next event should be emitted, but you can also
+emulate a real-time sensor reads by setting emit_none=True.
+In this case, the instance will emit <cite>None</cite> if there’s no event to emit at that time.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">ReplayEvents</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">emit_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">time_scale</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span>  
+<span class="go">[{&#39;freq&#39;: 220}, None, ...]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="hum.pyo_util.Synth">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hum.pyo_util.</span></span><span class="sig-name descname"><span class="pre">Synth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">synth_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">knob_params:</span> <span class="pre">~typing.Set[str]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">knob_exclude:</span> <span class="pre">~typing.Set[str]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sr=44100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nchnls=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record_on_start:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_log_factory:</span> <span class="pre">~typing.Callable[[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~hum.pyo_util.Appendable]</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'list'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">audio='portaudio'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbosity=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**server_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#Synth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.Synth" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hum.pyo_util.</span></span><span class="sig-name descname"><span class="pre">Synth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">synth_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#Synth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.Synth" title="Link to this definition"></a></dt>
 <dd><p>A class for creating a real-time synthesizer using pyo.</p>
 <p>The synth_func is a function whose arguments determine the parameters of the synthesizer.
 We call a dictionary of such parameters “knobs”:
@@ -236,24 +245,16 @@ If nothing has been recorded, returns an empty list.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hum.pyo_util.Synth.play_events">
-<span class="sig-name descname"><span class="pre">play_events</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">events</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">SigTo</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idle_sleep_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inter_event_delay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tail_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#Synth.play_events"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.Synth.play_events" title="Link to this definition"></a></dt>
-<dd><p>Play an event stream, applying updates from an iterator of KnobsDicts or None.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>events</strong> (<em>Iterator</em><em>[</em><em>Union</em><em>[</em><em>KnobsDict</em><em>, </em><em>None</em><em>]</em><em>]</em>) – An iterator yielding KnobsDict updates (or None for idle).</p></li>
-<li><p><strong>tail_time</strong> (<em>float</em>) – Time to wait after finishing event playback to allow sound to finish.</p></li>
-<li><p><strong>idle_sleep_time</strong> (<em>float</em>) – Time to sleep if the iterator yields None (idle).</p></li>
-<li><p><strong>inter_event_delay</strong> (<em>float</em>) – Time to sleep systematically after each non-None event.</p></li>
-</ul>
-</dd>
-</dl>
+<span class="sig-name descname"><span class="pre">play_events</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">events</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">SigTo</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">SigTo</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idle_sleep_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inter_event_delay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tail_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#Synth.play_events"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.Synth.play_events" title="Link to this definition"></a></dt>
+<dd><p>Play an event stream, applying updates from either:
+- an iterator yielding KnobsDicts or None (real-time stream), or
+- a list of (timestamp, KnobsDict) pairs (automatically wrapped).</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hum.pyo_util.Synth.render_events">
 <span class="sig-name descname"><span class="pre">render_events</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">control_events=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_filepath=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">egress=&lt;function</span> <span class="pre">Synth.&lt;lambda&gt;&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_format='wav'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix_buffer_seconds=0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/pyo_util.html#Synth.render_events"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.pyo_util.Synth.render_events" title="Link to this definition"></a></dt>
-<dd><p>Render the recording to a file or return it processed by the egress function.</p>
+<dd><p>Render the control events to an audio file or return it via an egress function.</p>
 </dd></dl>
 
 <dl class="py method">
