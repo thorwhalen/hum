@@ -510,6 +510,21 @@ def _resolve_dials_and_settings(dials, settings, synth_func_params):
     return dials_set - settings_set, settings_set
 
 
+def _init_knob_params(synth_func_defaults, dials):
+    """Create initial knob parameters dictionary from function defaults and dials set."""
+    knob_params = {}
+    for name, spec in synth_func_defaults.items():
+        if name in dials:
+            knob_params[name] = dict_to_sigto(spec)
+        else:
+            knob_params[name] = spec
+    return knob_params
+
+
+from functools import cached_property
+import inspect
+
+
 class Synth(MutableMapping):
     """
     A class for creating a real-time synthesizer using pyo.
@@ -528,8 +543,6 @@ class Synth(MutableMapping):
     Essentially, you can specify a `pyo.SigTo` object as the value of a knob.
     """
 
-    default_time_time = DFLT_TIME_TIME
-
     def __init__(
         self,
         synth_func,
@@ -539,7 +552,8 @@ class Synth(MutableMapping):
         sr=DFLT_PYO_SR,
         nchnls=DFLT_PYO_NCHNLS,
         record_on_start: bool = True,
-        event_log_factory: RecordFactory = list,  # No argument factory that makes an Appendable
+        reset_on_start: bool = False,
+        event_log_factory: RecordFactory = list,
         audio="portaudio",
         verbosity=DFLT_PYO_VERBOSITY,
         **server_kwargs,
@@ -548,11 +562,9 @@ class Synth(MutableMapping):
         Parameters
         ----------
         synth_func : callable
-            A function that returns a pyo object. The function should accept keyword arguments
-            that are the parameters of the synthesizer.
+            A function that returns a pyo object.
         dials : Optional[Set[str]]
             Parameters to treat as live knobs (controllable in real-time).
-            If None, defaults to all parameters.
         settings : Optional[Set[str]]
             Parameters to exclude from live knobs.
         sr : int
@@ -561,9 +573,10 @@ class Synth(MutableMapping):
             The number of channels of the server. Default is 1.
         record_on_start : bool
             Whether to start recording when the server starts. Default is True.
+        reset_on_start : bool
+            Whether to reset to initial state when the server starts. Default is False.
         event_log_factory : callable
-            A function that returns an empty list or other Appendable object to store the
-            recorded events. Default is list.
+            A function that returns an empty list or other Appendable object.
         audio : str
             The audio driver to use. Default is 'portaudio'.
         verbosity : int
@@ -571,27 +584,59 @@ class Synth(MutableMapping):
         server_kwargs : dict
             Additional keyword arguments to pass to the pyo Server constructor.
         """
+        # Store init parameters for cloning - capture args automatically
+        frame = inspect.currentframe()
+        args, _, _, values = inspect.getargvalues(frame)
+        self._init_params = {arg: values[arg] for arg in args if arg != 'self'}
+        # Add any additional server kwargs
+        self._init_params.update(server_kwargs)
+
         self._server_kwargs = dict(
             server_kwargs, sr=sr, nchnls=nchnls, verbosity=verbosity, audio=audio
         )
         self._synth_func = synth_func
         self._server = None
         self.output = None
-        self._synth_func_params = synth_func_defaults(synth_func)
+
+        # # Store the true initial function parameters
+        # self._original_func_params = synth_func_defaults(synth_func)
 
         self._dials, self._settings = _resolve_dials_and_settings(
-            dials, settings, self._synth_func_params
+            dials, settings, self._original_func_params
         )
+
+        # # Create the true initial knob parameters (with SigTo objects for dials)
+        # self._original_knob_params = _init_knob_params(
+        #     self._original_func_params, self._dials
+        # )
+
+        # Current state that gets modified over time
+        self._current_func_params = self._original_func_params.copy()
 
         # Recording
         self._record_on_start = record_on_start
+        self._reset_on_start = reset_on_start
         self._event_log_factory = event_log_factory
         self._recording = False
         self._recording_start_time = None
         self._recorded_events = None
 
-        self.knobs = Knobs(self._synth_func_params)
-        # self._knob_defaults = {k: self._synth_func_params[k] for k in dials}
+        # Initialize with a copy of the original knob params
+        # self.knobs = Knobs(self._original_knob_params.copy())
+
+        # Initialize with a simple placeholder Knobs
+        self.knobs = Knobs(self._original_func_params.copy())
+        
+        # Flag to indicate knobs need to be properly initialized
+        self._knobs_initialized = False
+
+    @cached_property
+    def _original_func_params(self):
+        return synth_func_defaults(self._synth_func)
+
+    @cached_property
+    def _original_knob_params(self):
+        return _init_knob_params(self._original_func_params, self._dials)
 
     def __call__(self, **updates):
         """
@@ -647,46 +692,48 @@ class Synth(MutableMapping):
         rel_time = time.time() - self._recording_start_time
         self._recorded_events.append((rel_time, updates))
 
+    def _initialize_knobs_with_sigto(self):
+        """Initialize knobs with SigTo objects after server is booted."""
+        params = self._current_func_params if hasattr(self, '_current_func_params') else self._original_func_params.copy()
+        knob_params = _init_knob_params(params, self._dials)
+        self.knobs = Knobs(knob_params)
+        self._knobs_initialized = True
+        
+        # Update the output
+        if hasattr(self, 'output') and self.output is not None:
+            self.output.stop()
+        
+        try:
+            self.output = self._synth_func(**knob_params)
+        except TypeError as e:
+            raise TypeError(f"Failed to initialize synth function '{self._synth_func.__name__}'.\n{e}")
+        
+        self.output.out()
+        
     def _rebuild_graph(self, rebuild_updates: KnobsDict):
         """
         Rebuild the synthesizer graph when structural parameters change.
-
-        This happens when non-SigTo parameters are updated, requiring a complete
-        reconstruction of the synthesis graph.
         """
         # Stop current graph
         if self.output is not None:
             self.output.stop()
 
-        # Merge current parameter values
-        merged_params = {}
+        # Update current parameters state
+        self._current_func_params.update(rebuild_updates)
 
-        # Start from live current knob values
-        for k, v in self.knobs.items():
-            if isinstance(v, SigTo):
-                merged_params[k] = v.value  # unwrap SigTo current value
-            else:
-                merged_params[k] = v
-
-        # Also update with explicit new rebuild updates
-        merged_params.update(rebuild_updates)
-
-        # Store updated synth_func_params
-        self._synth_func_params.update(merged_params)
-
-        # Rebuild knobs
-        new_initial_knob_params = {}
-        for name, spec in merged_params.items():
+        # Build new knob parameters
+        new_knob_params = {}
+        for name, spec in self._current_func_params.items():
             if name in self._dials:
-                new_initial_knob_params[name] = dict_to_sigto(spec)
+                new_knob_params[name] = dict_to_sigto(spec)
             else:
-                new_initial_knob_params[name] = spec
+                new_knob_params[name] = spec
 
-        self.knobs = Knobs(new_initial_knob_params)
+        self.knobs = Knobs(new_knob_params)
 
         # Rebuild output
         try:
-            self.output = self._synth_func(**new_initial_knob_params)
+            self.output = self._synth_func(**new_knob_params)
         except TypeError as e:
             raise TypeError(
                 f"Failed to rebuild synth function '{self._synth_func.__name__}'.\n"
@@ -699,6 +746,10 @@ class Synth(MutableMapping):
         if self._recording:
             self._record_update(rebuild_updates)
 
+    # Note: Could make this a cached_property (would speed things up), but concerned
+    #   about keeping _initial_knob_params aligned with _synth_func_params and _dials.
+    #   Perhaps these should be made to be immutable? But that might make things slower
+    #   (here, _synth_func_params is a buitin dict, and _dials a builtin set).
     @property
     def _initial_knob_params(self):
         _initial_knob_params = {}
@@ -773,33 +824,30 @@ class Synth(MutableMapping):
     def start(self):
         """
         Start the synthesizer.
-
-        This boots the server, initializes knobs, starts the audio output,
-        and optionally begins recording.
         """
         if self._server is None:
             self._server = Server(**self._server_kwargs).boot()
 
-        _initial_knob_params = self._initial_knob_params.copy()
+        # Reset to initial state if configured
+        if self._reset_on_start or not self._knobs_initialized:
+            self._initialize_knobs_with_sigto()
+        else:
+            # Otherwise use current state or initialize if first start
+            current_knob_params = _init_knob_params(
+                self._current_func_params, self._dials
+            )
 
-        self.knobs = Knobs(_initial_knob_params)
+            self.knobs = Knobs(current_knob_params.copy())
 
-        try:
-            self.output = self._synth_func(**_initial_knob_params)
-        except TypeError as e:
-            raise TypeError(
-                f"Failed to initialize synth function '{self._synth_func.__name__}'.\n"
-                f"Perhaps some arguments were wrongly wrapped into SigTo.\n"
-                f"Consider :\n"
-                f"  * using the sigto_include argument to control which parameters are live.\n"
-                f"  * using the sigto_exclude argument to control which parameters are not live.\n"
-                f"Alternatively, at function definition time, you can control this by:\n"
-                f"  * using the @knob_params decorator to control which parameters are live.\n"
-                f"  * using the @knob_exclude decorator to control which parameters are not live.\n"
-                f"Original error: {e}"
-            ) from e
+            try:
+                self.output = self._synth_func(**current_knob_params)
+            except TypeError as e:
+                raise TypeError(
+                    f"Failed to initialize synth function '{self._synth_func.__name__}'.\n"
+                    f"Original error: {e}"
+                ) from e
 
-        self.output.out()
+            self.output.out()
 
         self._server.start()
 
@@ -967,20 +1015,34 @@ class Synth(MutableMapping):
     def __new__(cls, synth_func=None, **kwargs):
         """
         Create a new Synth instance or return a partial function for configuration.
-
-        Trace on the deliberation of __new__ vs function design:
-        https://github.com/thorwhalen/hum/discussions/4#discussioncomment-13011135
-
         """
-        # Case 1: Used directly as @Synth
-        if synth_func is not None and callable(synth_func):
+        # Case: Clone an existing Synth instance with modifications
+        if isinstance(synth_func, cls):
+            existing_synth = synth_func
+            
+            # Create a new instance
+            instance = super().__new__(cls)
+            
+            # First, copy all attributes from the existing instance
+            for attr_name, attr_value in existing_synth.__dict__.items():
+                setattr(instance, attr_name, attr_value)
+            
+            # Then update the attributes specified in kwargs
+            for key, value in kwargs.items():
+                private_key = f"_{key}" if not key.startswith('_') else key
+                setattr(instance, private_key, value)
+                
+            return instance
+        
+        # Case: Used directly as @Synth with a function
+        elif synth_func is not None and callable(synth_func):
             instance = super().__new__(cls)
             instance.__init__(synth_func, **kwargs)
             return instance
-        # Case 2: Used with config as @Synth(knob_params=...)
+            
+        # Case: Used with config as @Synth(knob_params=...)
         else:
             return partial(cls, **kwargs)
-
     # MutableMapping interface --------------------------------------------------------
 
     @property
