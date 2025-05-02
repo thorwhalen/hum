@@ -81,18 +81,6 @@ class PyoServer(Server):
         self.shutdown()
 
 
-def knob_params(*include: str):
-    """
-    Decorator to specify which parameters should be treated as live knobs (SigTo).
-    """
-
-    def decorator(func):
-        func._knob_params = set(include)
-        return func
-
-    return decorator
-
-
 def round_event_times(events, round_to=0.001):
     """
     Round the times (d[0]) of events ([d, ...]) to the nearest multiple of round_to.
@@ -108,21 +96,63 @@ def round_event_times(events, round_to=0.001):
     )
 
 
+from typing import Union, Iterable, List
+import re
+
+
+def ensure_identifier_list(x: Union[str, Iterable[str]]) -> List[str]:
+    """
+    Convert input to a list of valid Python identifiers.
+
+    If input is a string, extract all word sequences.
+    If input is an iterable, convert to a list.
+
+    Args:
+        x: String or iterable of strings
+
+    Returns:
+        List of valid Python identifiers
+
+    Raises:
+        ValueError: If any items in the list are not valid Python identifiers
+
+    Examples:
+
+        >>> ensure_identifier_list("foo bar baz")
+        ['foo', 'bar', 'baz']
+        >>> ensure_identifier_list(["foo", "bar"])
+        ['foo', 'bar']
+        >>> ensure_identifier_list("foo, bar.baz")
+        ['foo', 'bar', 'baz']
+        >>> ensure_identifier_list(None)
+        []
+
+    """
+    # Handle string input by extracting word sequences
+    if isinstance(x, str):
+        # Extract word sequences (consecutive alphanumeric chars + underscore)
+        identifiers = re.findall(r'\w+', x)
+    # Handle iterable input by converting to list
+    elif isinstance(x, Iterable):
+        identifiers = list(x)
+    elif x is None:
+        return []
+    else:
+        raise TypeError(f"Expected string or iterable, got {type(x).__name__}")
+
+    # Check if all items are valid Python identifiers
+    invalid = [item for item in identifiers if not str(item).isidentifier()]
+    if invalid:
+        raise ValueError(
+            f"The following items are not valid Python identifiers: {', '.join(repr(item) for item in invalid)}"
+        )
+
+    return identifiers
+
+
 # -------------------------------------------------------------------------------------
 # Knobs
 # -------------------------------------------------------------------------------------
-
-
-def knob_exclude(*exclude: str):
-    """
-    Decorator to specify which parameters should NOT be treated as live knobs.
-    """
-
-    def decorator(func):
-        func._knob_exclude = set(exclude)
-        return func
-
-    return decorator
 
 
 class Knobs(MutableMapping):
@@ -420,18 +450,64 @@ class ReplayEvents:
             prev_time = timestamp
 
 
-def list_if_string(x):
-    """
-    Convert a string to a list of strings.
-    """
-    if isinstance(x, str):
-        return [x]
-    return x
-
-
 # -------------------------------------------------------------------------------------
 # Synth
 # -------------------------------------------------------------------------------------
+
+
+def _resolve_dials_and_settings(dials, settings, synth_func_params):
+    """
+    Resolve and validate dials and settings parameters for a synth.
+
+    Parameters
+    ----------
+    dials : Optional[Union[str, List[str], Set[str]]]
+        Parameters to treat as live knobs (controllable in real-time).
+        If None, defaults to all parameters not in settings.
+    settings : Optional[Union[str, List[str], Set[str]]]
+        Parameters to exclude from live knobs.
+        If None, defaults to all parameters not in dials.
+    synth_func_params : Dict[str, Any]
+        Dictionary of all available parameters from the synth function.
+
+    Returns
+    -------
+    Tuple[Set[str], Set[str]]
+        Resolved dials and settings as sets.
+
+    Examples
+    --------
+    >>> assert (
+    ...     _resolve_dials_and_settings(None, None, {'freq': 440, 'amp': 0.5})
+    ...     == ({'freq', 'amp'}, set())
+    ... )
+
+    >>> _resolve_dials_and_settings('freq', None, {'freq': 440, 'amp': 0.5})
+    ({'freq'}, {'amp'})
+
+    >>> _resolve_dials_and_settings(None, ['amp'], {'freq': 440, 'amp': 0.5})
+    ({'freq'}, {'amp'})
+
+    >>> _resolve_dials_and_settings(['freq', 'amp'], ['amp'], {'freq': 440, 'amp': 0.5})
+    ({'freq'}, {'amp'})
+    """
+    param_names = set(synth_func_params)
+
+    dials_set = set(ensure_identifier_list(dials))
+    settings_set = set(ensure_identifier_list(settings))
+
+    unknown = (dials_set | settings_set) - param_names
+    if unknown:
+        raise ValueError(f"Unknown parameters specified: {', '.join(unknown)}")
+
+    if dials is None and settings is None:
+        return param_names, set()
+    if dials is None:
+        return param_names - settings_set, settings_set
+    if settings is None:
+        return dials_set, param_names - dials_set
+
+    return dials_set - settings_set, settings_set
 
 
 class Synth(MutableMapping):
@@ -458,8 +534,8 @@ class Synth(MutableMapping):
         self,
         synth_func,
         *,
-        knob_params: Optional[Set[str]] = None,
-        knob_exclude: Optional[Set[str]] = None,
+        dials: Optional[Set[str]] = None,
+        settings: Optional[Set[str]] = None,
         sr=DFLT_PYO_SR,
         nchnls=DFLT_PYO_NCHNLS,
         record_on_start: bool = True,
@@ -474,10 +550,10 @@ class Synth(MutableMapping):
         synth_func : callable
             A function that returns a pyo object. The function should accept keyword arguments
             that are the parameters of the synthesizer.
-        knob_params : Optional[Set[str]]
+        dials : Optional[Set[str]]
             Parameters to treat as live knobs (controllable in real-time).
             If None, defaults to all parameters.
-        knob_exclude : Optional[Set[str]]
+        settings : Optional[Set[str]]
             Parameters to exclude from live knobs.
         sr : int
             The sample rate of the server. Default is 44100.
@@ -503,16 +579,9 @@ class Synth(MutableMapping):
         self.output = None
         self._synth_func_params = synth_func_defaults(synth_func)
 
-        _knob_params = knob_params or getattr(
-            synth_func, "_knob_params", set(self._synth_func_params)
+        self._dials, self._settings = _resolve_dials_and_settings(
+            dials, settings, self._synth_func_params
         )
-        _knob_params = list_if_string(_knob_params)
-        knob_exclude = list_if_string(knob_exclude)
-        _knob_exclude = knob_exclude or getattr(synth_func, "_knob_exclude", set())
-        self._knob_params = set(_knob_params) - set(_knob_exclude)
-        self._knob_defaults = {k: self._synth_func_params[k] for k in _knob_params}
-        self._live_params = set(self._knob_params)
-        self._rebuild_params = set(self._synth_func_params) - set(self._knob_params)
 
         # Recording
         self._record_on_start = record_on_start
@@ -522,6 +591,7 @@ class Synth(MutableMapping):
         self._recorded_events = None
 
         self.knobs = Knobs(self._synth_func_params)
+        # self._knob_defaults = {k: self._synth_func_params[k] for k in dials}
 
     def __call__(self, **updates):
         """
@@ -543,9 +613,9 @@ class Synth(MutableMapping):
         rebuild_updates = {}
 
         for k, v in updates.items():
-            if k in self._live_params:
+            if k in self._dials:
                 live_updates[k] = v
-            elif k in self._rebuild_params:
+            elif k in self._settings:
                 rebuild_updates[k] = v
             else:
                 raise ValueError(f"Unknown parameter: {k}")
@@ -607,7 +677,7 @@ class Synth(MutableMapping):
         # Rebuild knobs
         new_initial_knob_params = {}
         for name, spec in merged_params.items():
-            if name in self._live_params:
+            if name in self._dials:
                 new_initial_knob_params[name] = dict_to_sigto(spec)
             else:
                 new_initial_knob_params[name] = spec
@@ -633,7 +703,7 @@ class Synth(MutableMapping):
     def _initial_knob_params(self):
         _initial_knob_params = {}
         for name, spec in self._synth_func_params.items():
-            if name in self._knob_params:
+            if name in self._dials:
                 _initial_knob_params[name] = dict_to_sigto(spec)
             else:
                 _initial_knob_params[name] = spec
@@ -895,6 +965,13 @@ class Synth(MutableMapping):
     # Handling the decorator mechanisms -----------------------------------------------
 
     def __new__(cls, synth_func=None, **kwargs):
+        """
+        Create a new Synth instance or return a partial function for configuration.
+
+        Trace on the deliberation of __new__ vs function design:
+        https://github.com/thorwhalen/hum/discussions/4#discussioncomment-13011135
+
+        """
         # Case 1: Used directly as @Synth
         if synth_func is not None and callable(synth_func):
             instance = super().__new__(cls)
@@ -931,26 +1008,3 @@ class Synth(MutableMapping):
 
     def __repr__(self):
         return f"<Synth {list(self.knobs.keys())}>"
-
-
-def synth(
-    synth_func=None,
-    *,
-    knob_params: Optional[Set[str]] = None,
-    knob_exclude: Optional[Set[str]] = None,
-    sr=DFLT_PYO_SR,
-    nchnls=DFLT_PYO_NCHNLS,
-    record_on_start: bool = True,
-    event_log_factory: RecordFactory = list,  # No argument factory that makes an Appendable
-    audio="portaudio",
-    verbosity=DFLT_PYO_VERBOSITY,
-    **server_kwargs,
-):
-    synth_kwargs = dict(
-        {k: v for k, v in locals().items() if k not in {"synth_func", "server_kwargs"}},
-        **server_kwargs,
-    )
-    if synth_func is None:
-        return partial(Synth, **synth_kwargs)
-    else:
-        return Synth(synth_func, **synth_kwargs)
