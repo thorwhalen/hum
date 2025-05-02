@@ -902,11 +902,7 @@ class Synth(MutableMapping):
             return instance
         # Case 2: Used with config as @Synth(knob_params=...)
         else:
-
-            def decorator(func):
-                return cls(func, **kwargs)
-
-            return decorator
+            return partial(cls, **kwargs)
 
     # MutableMapping interface --------------------------------------------------------
 
