@@ -346,51 +346,78 @@ def auto_play(obj):
 
 class ReplayEvents:
     """
-    An iterator that replays a sequence of timestamped knob updates in real-time.
-
-    This class takes a list of (timestamp, KnobsDict) events and yields
-    each update at the correct real-time intervals, automatically sleeping
-    between updates to recreate the original timing.
-
-    Usage:
-    ------
-    Simply wrap your recorded control events and feed them into play_events:
-
-        synth.play_events(ReplayEvents(control_events))
-
-    Why use ReplayEvents?
-    ----------------------
-    - Centralizes real-time replay logic.
-    - Makes it easy to later add speed controls, jitter, filtering, etc.
-    - Keeps `play_events` clean and flexible.
-    - Supports a future where playback streams can be manipulated easily.
+    Replays timestamped knob updates, optionally emitting None or sleeping to simulate
+    timing.
 
     Parameters
     ----------
-    control_events : List[Tuple[float, KnobsDict]]
+    events : List[Tuple[float, KnobsDict]]
         A list of (timestamp, knob updates) pairs.
-    speed : float
-        A multiplier for playback speed. 1.0 = normal speed,
-        2.0 = twice as fast, 0.5 = half speed, etc. Default is 1.0.
+    emit_none : bool
+        If True, yields None to simulate time passage; if False, uses time.sleep.
+    time_scale : float
+        Time compression/stretch factor: 2.0 = 2x faster, 0.5 = half speed.
+    ensure_sorted : bool
+        Whether to sort the events by timestamp.
+
+    Example
+    -------
+
+    Consider these events:
+
+    >>> events = [
+    ...     (0.0, {'freq': 220}),
+    ...     (0.05, {'freq': 330}),
+    ...     (0.10, {'freq': 440}),
+    ... ]
+
+    >>> list(ReplayEvents(events, time_scale=50.0))
+    [{'freq': 220}, {'freq': 330}, {'freq': 440}]
+
+    That is, we should really get back the same events, without the timestamps.
+
+    >>> list(ReplayEvents(events, time_scale=10.0))
+    [{'freq': 220}, {'freq': 330}, {'freq': 440}]
+
+    >>> list(ReplayEvents(events, time_scale=10.0)) == list(dict(events).values())
+    True
+
+    The timestamps are used to pace when new events are emitted.
+    Note: Usually we'll use time_scale=1.0 (the default), but we use time_scale=50 here
+    just to accelerate the tests.
+
+    The default is to sleep until the next event should be emitted, but you can also
+    emulate a real-time sensor reads by setting emit_none=True.
+    In this case, the instance will emit `None` if there's no event to emit at that time.
+
+    >>> list(ReplayEvents(events, emit_none=True, time_scale=2.0))  # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    [{'freq': 220}, None, ...]
+
     """
 
-    def __init__(
-        self, control_events: List[Tuple[float, KnobsDict]], speed: float = 1.0
-    ):
-        self.control_events = control_events
-        self.speed = speed
+    def __init__(self, events, *, emit_none=True, time_scale=1.0, ensure_sorted=False):
+        if ensure_sorted:
+            if not events:
+                raise ValueError("Events list must not be empty.")
+            self.events = sorted(events, key=lambda x: x[0])
+        else:
+            self.events = events
+        self.emit_none = emit_none
+        self.time_scale = time_scale
 
-    def __iter__(self) -> Iterator[Union[KnobsDict, None]]:
-        if not self.control_events:
-            return
-        base_time, first_update = self.control_events[0]
-        yield first_update
-        for (curr_time, updates), (next_time, _) in zip(
-            self.control_events, self.control_events[1:]
-        ):
-            sleep_duration = (next_time - curr_time) / self.speed
-            time.sleep(max(sleep_duration, 0))
-            yield updates
+    def __iter__(self):
+        prev_time = self.events[0][0]
+        for timestamp, knobs in self.events:
+            delay = (timestamp - prev_time) / self.time_scale
+            if self.emit_none:
+                steps = int(delay / 0.01)
+                for _ in range(steps):
+                    yield None
+            else:
+                if delay > 0:
+                    time.sleep(delay)
+            yield knobs
+            prev_time = timestamp
 
 
 def list_if_string(x):
@@ -717,43 +744,7 @@ class Synth(MutableMapping):
         if self._record_on_start:
             self.stop_recording()
 
-    def play_events(
-        self,
-        events: Iterator[Union[KnobsDict, None]],
-        *,
-        idle_sleep_time=0.01,
-        inter_event_delay=0,
-        tail_time=1.0,
-    ):
-        """
-        Play an event stream, applying updates from an iterator of KnobsDicts or None.
-
-        Parameters
-        ----------
-        events : Iterator[Union[KnobsDict, None]]
-            An iterator yielding KnobsDict updates (or None for idle).
-        tail_time : float
-            Time to wait after finishing event playback to allow sound to finish.
-        idle_sleep_time : float
-            Time to sleep if the iterator yields None (idle).
-        inter_event_delay : float
-            Time to sleep systematically after each non-None event.
-        """
-        with self:
-            for event in events:
-                if event is None:
-                    time.sleep(idle_sleep_time)
-                    continue
-
-                self.update(event)
-
-                if inter_event_delay > 0:
-                    time.sleep(inter_event_delay)
-
-            time.sleep(tail_time)
-
-    def replay_events(self, control_events, *, tail_time=1.0):
-        self.play_events(ReplayEvents(control_events), tail_time=tail_time)
+    # Rendering events (playing recordings etc.) --------------------------------------
 
     def render_events(
         self,
@@ -764,7 +755,7 @@ class Synth(MutableMapping):
         file_format="wav",
         suffix_buffer_seconds=0.0,
     ):
-        """Render the recording to a file or return it processed by the egress function."""
+        """Render the control events to an audio file or return it via an egress function."""
         if not control_events:
             control_events = self.get_recording()
             if not control_events:
@@ -784,25 +775,12 @@ class Synth(MutableMapping):
         synth_output = self._synth_func(**raw_params).out()
         table_recorder = TableRec(synth_output, table=table).play()
 
+        def delay_func(dur):
+            server.recordOptions(dur=dur)
+            server.start()
+
         try:
-            for i, (event_time, updates) in enumerate(normalized):
-                next_time = (
-                    normalized[i + 1][TIME_IDX]
-                    if i + 1 < len(normalized)
-                    else total_duration
-                )
-                dur = next_time - event_time
-
-                for key, val in updates.items():
-                    if isinstance(val, dict):
-                        for attr in ["value", "time", "mul", "add"]:
-                            if attr in val:
-                                setattr(raw_params[key], attr, val[attr])
-                    else:
-                        raw_params[key].value = val
-
-                server.recordOptions(dur=dur)
-                server.start()
+            self._apply_event_sequence(normalized, delay_func, raw_params=raw_params)
         finally:
             table_recorder.stop()
 
@@ -824,6 +802,85 @@ class Synth(MutableMapping):
         else:
             raise ValueError("Invalid egress")
 
+    def play_events(
+        self,
+        events: Union[Iterator[Union[KnobsDict, None]], List[Tuple[float, KnobsDict]]],
+        *,
+        idle_sleep_time=0.01,
+        inter_event_delay=0,
+        tail_time=1.0,
+    ):
+        """
+        Play an event stream, applying updates from either:
+        - an iterator yielding KnobsDicts or None (real-time stream), or
+        - a list of (timestamp, KnobsDict) pairs (automatically wrapped).
+        """
+        # Auto-wrap if we detect a list of (timestamp, KnobsDict) format
+        if isinstance(events, list) and events and isinstance(events[0], tuple):
+            ts, ev = events[0]
+            if isinstance(ts, (int, float)) and isinstance(ev, dict):
+                events = ReplayEvents(events)
+
+        filtered_events = []
+        curr_time = 0.0
+        for e in events:
+            if e is not None:
+                filtered_events.append((curr_time, e))
+                curr_time += inter_event_delay
+            else:
+                time.sleep(idle_sleep_time)
+
+        def delay_func(dur):
+            time.sleep(dur)
+
+        with self:
+            self._apply_event_sequence(filtered_events, delay_func)
+            time.sleep(tail_time)
+
+    def replay_events(self, control_events, *, tail_time=1.0):
+        self.play_events(ReplayEvents(control_events), tail_time=tail_time)
+
+    def _apply_event_sequence(self, events, delay_func, raw_params=None):
+        """
+        Apply a sequence of events using a delay function.
+
+        Parameters
+        ----------
+        events : Iterable[Tuple[float, KnobsDict]]
+            Timestamped knob updates.
+        delay_func : Callable[[float], None]
+            Function to call to delay between events (e.g., time.sleep or offline record trigger).
+        raw_params : Optional[Dict[str, SigTo]]
+            If provided, updates will be applied to this dict instead of self.knobs.
+        """
+        if not events:
+            return
+
+        TIME_IDX = 0
+        base_time = events[0][TIME_IDX]
+        normalized = [(t - base_time, knobs) for t, knobs in events]
+
+        for i, (event_time, updates) in enumerate(normalized):
+            next_time = normalized[i + 1][TIME_IDX] if i + 1 < len(normalized) else None
+            dur = next_time - event_time if next_time is not None else None
+
+            for key, val in updates.items():
+                target = raw_params[key] if raw_params else self.knobs[key]
+                if isinstance(target, SigTo):
+                    if isinstance(val, dict):
+                        for attr in ['value', 'time', 'mul', 'add']:
+                            if attr in val:
+                                setattr(target, attr, val[attr])
+                    else:
+                        target.value = val
+                elif raw_params is None:
+                    self.knobs[key] = val
+
+            if dur is not None:
+                delay_func(dur)
+
+    # Context manager support ---------------------------------------------------------
+
     def __del__(self):
         if self._server is not None:
             self._server.stop()
@@ -834,6 +891,24 @@ class Synth(MutableMapping):
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.stop()
+
+    # Handling the decorator mechanisms -----------------------------------------------
+
+    def __new__(cls, synth_func=None, **kwargs):
+        # Case 1: Used directly as @Synth
+        if synth_func is not None and callable(synth_func):
+            instance = super().__new__(cls)
+            instance.__init__(synth_func, **kwargs)
+            return instance
+        # Case 2: Used with config as @Synth(knob_params=...)
+        else:
+
+            def decorator(func):
+                return cls(func, **kwargs)
+
+            return decorator
+
+    # MutableMapping interface --------------------------------------------------------
 
     @property
     def __signature__(self):
@@ -877,7 +952,7 @@ def synth(
 ):
     synth_kwargs = dict(
         {k: v for k, v in locals().items() if k not in {'synth_func', 'server_kwargs'}},
-        **server_kwargs
+        **server_kwargs,
     )
     if synth_func is None:
         return partial(Synth, **synth_kwargs)
