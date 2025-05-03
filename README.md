@@ -405,8 +405,10 @@ def complex_synth(freq=440, cutoff=2000, delay_time=0.25, num_voices=3):
     
     # Add a filter
     filt = MoogLP(harm, freq=cutoff, res=0.3)
+
+    # etc...
     
-    # Add delay
+```
 
 ## Hooking a Synth to Event Streams
 

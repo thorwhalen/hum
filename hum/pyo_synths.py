@@ -31,3 +31,4 @@ def simple_waveforms(freq=440, attack=0.01, waveform='sine'):
         'square': lambda freq, mul: LFO(freq=freq, type=1, mul=mul),
     }.get(waveform, Sine)
     return wave(freq=freq, mul=env)
+

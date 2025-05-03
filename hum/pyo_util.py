@@ -81,6 +81,112 @@ class PyoServer(Server):
         self.shutdown()
 
 
+_PLAY_REQUIRED = set()
+
+
+def _build_play_required():
+    import pyo
+
+    global _PLAY_REQUIRED
+
+    for name, cls in inspect.getmembers(pyo, inspect.isclass):
+        if issubclass(cls, PyoObject) and cls.__module__.startswith("pyo"):
+            if 'play' in cls.__dict__:
+                _PLAY_REQUIRED.add(cls.__name__)
+
+
+# You can call this manually if dynamic loading is desired
+def refresh_play_required_list():
+    _build_play_required()
+
+
+# Fallback manual list
+_MANUAL_FALLBACK = {
+    "Sine",
+    "Osc",
+    "Phasor",
+    "LFO",
+    "Adsr",
+    "Fader",
+    "Metro",
+    "Pattern",
+    "TrigEnv",
+    "Randi",
+    "Noise",
+    "Choice",
+    "Seq",
+    "TrigFunc",
+    "Counter",
+}
+
+
+def must_be_played(obj_or_cls) -> bool:
+    """
+    Returns True if the given pyo object or class needs `.play()` to produce sound.
+
+    >>> from pyo import Sine, Freeverb, Adsr
+    >>> must_be_played(Sine)
+    True
+    >>> must_be_played(Freeverb)
+    False
+    >>> must_be_played(Adsr)
+    True
+    """
+    cls = obj_or_cls if isinstance(obj_or_cls, type) else obj_or_cls.__class__
+    name = cls.__name__
+    if not _PLAY_REQUIRED:
+        _build_play_required()
+    return name in _PLAY_REQUIRED or name in _MANUAL_FALLBACK
+
+
+import ast
+import inspect
+
+
+class PyoPlayAnalyzer(ast.NodeVisitor):
+    def __init__(self):
+        self.objs_created = {}
+        self.play_calls = set()
+
+    def visit_Assign(self, node):
+        # Detect PyoObject instance creation: foo = Sine(...) or foo = Adsr(...)
+        if isinstance(node.value, ast.Call) and isinstance(node.value.func, ast.Name):
+            class_name = node.value.func.id
+            if class_name in _MANUAL_FALLBACK:
+                for target in node.targets:
+                    if isinstance(target, ast.Name):
+                        self.objs_created[target.id] = class_name
+        self.generic_visit(node)
+
+    def visit_Expr(self, node):
+        # Detect .play() calls like: foo.play()
+        if isinstance(node.value, ast.Call) and isinstance(
+            node.value.func, ast.Attribute
+        ):
+            if node.value.func.attr == "play":
+                if isinstance(node.value.func.value, ast.Name):
+                    self.play_calls.add(node.value.func.value.id)
+        self.generic_visit(node)
+
+
+def analyze_synth_func_play(func):
+    src = inspect.getsource(func)
+    tree = ast.parse(src)
+    analyzer = PyoPlayAnalyzer()
+    analyzer.visit(tree)
+
+    # Build the report
+    report = {}
+    for var, cls in analyzer.objs_created.items():
+        report[var] = {
+            "class": cls,
+            "must_be_played": True,
+            "play_called": var in analyzer.play_calls,
+        }
+
+    return report
+
+
 def round_event_times(events, round_to=0.001):
     """
     Round the times (d[0]) of events ([d, ...]) to the nearest multiple of round_to.
@@ -253,6 +359,37 @@ class Knobs(MutableMapping):
 # -------------------------------------------------------------------------------------
 # Synth helpers
 # -------------------------------------------------------------------------------------
+
+
+def add_default_dials(dials: Union[str, List[str]]):
+    def decorator(func):
+        func._default_dials = set(ensure_identifier_list(dials))
+        return func
+
+    return decorator
+
+
+def add_default_settings(settings: Union[str, List[str]]):
+    def decorator(func):
+        func._default_settings = set(ensure_identifier_list(settings))
+        return func
+
+    return decorator
+
+
+def add_synth_defaults(dials=None, settings=None):
+    """
+    Decorator to add default dials and settings to a synth function.
+    """
+
+    def decorator(func):
+        if dials is not None:
+            func._default_dials = set(ensure_identifier_list(dials))
+        if settings is not None:
+            func._default_settings = set(ensure_identifier_list(settings))
+        return func
+
+    return decorator
 
 
 # TODO: Deprecate if params_dict deprecates
@@ -579,6 +716,10 @@ class Synth(MutableMapping):
         self.output = None
         self._synth_func_params = synth_func_defaults(synth_func)
 
+        # if function has some default dials or settings, use them if not specified in Synth arguments
+        dials = dials or getattr(synth_func, "_default_dials", None)
+        settings = settings or getattr(synth_func, "_default_settings", None)
+
         self._dials, self._settings = _resolve_dials_and_settings(
             dials, settings, self._synth_func_params
         )
@@ -704,7 +845,14 @@ class Synth(MutableMapping):
         _initial_knob_params = {}
         for name, spec in self._synth_func_params.items():
             if name in self._dials:
-                _initial_knob_params[name] = dict_to_sigto(spec)
+                try:
+                    _initial_knob_params[name] = dict_to_sigto(spec)
+                except Exception as e:
+                    raise type(e)(
+                        f"Invalid initial value for knob '{name}': {spec}. "
+                        "Expected a number or a dictionary with 'value', 'time', 'mul', and/or 'add' keys. "
+                        f"Original error: {e}"
+                    )
             else:
                 _initial_knob_params[name] = spec
 
