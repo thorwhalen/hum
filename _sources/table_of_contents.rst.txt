@@ -10,6 +10,7 @@
    module_docs/hum/pyo_util
    module_docs/hum/pyo_util_examples
    module_docs/hum/scrap/belangeo_Degradation
+   module_docs/hum/synth_funcs
    module_docs/hum/util
    module_docs/hum/utils
    module_docs/hum/utils/date_ticks

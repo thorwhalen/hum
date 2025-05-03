@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hum.pyo_util &mdash; hum 1.0.4 documentation</title>
+  <title>hum.pyo_util &mdash; hum 1.0.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=71272d9f"></script>
+      <script src="../../_static/documentation_options.js?v=d55fa986"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -54,6 +54,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/pyo_util.html">hum.pyo_util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/pyo_util_examples.html">hum.pyo_util_examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/scrap/belangeo_Degradation.html">hum.scrap.belangeo_Degradation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/synth_funcs.html">hum.synth_funcs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/util.html">hum.util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/utils.html">hum.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/utils/date_ticks.html">hum.utils.date_ticks</a></li>
@@ -174,6 +175,118 @@
 
 
 
+<span class="n">_PLAY_REQUIRED</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_build_play_required</span><span class="p">():</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pyo</span>
+
+    <span class="k">global</span> <span class="n">_PLAY_REQUIRED</span>
+
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">pyo</span><span class="p">,</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">PyoObject</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__module__</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;pyo&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s1">&#39;play&#39;</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+                <span class="n">_PLAY_REQUIRED</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="c1"># You can call this manually if dynamic loading is desired</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">refresh_play_required_list</span><span class="p">():</span>
+    <span class="n">_build_play_required</span><span class="p">()</span>
+
+
+<span class="c1"># Fallback manual list</span>
+<span class="n">_MANUAL_FALLBACK</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Sine&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Osc&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Phasor&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LFO&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Adsr&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Fader&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Metro&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Pattern&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TrigEnv&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Randi&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Noise&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Choice&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Seq&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TrigFunc&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Counter&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="must_be_played">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.must_be_played">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">must_be_played</span><span class="p">(</span><span class="n">obj_or_cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns True if the given pyo object or class needs `.play()` to produce sound.</span>
+
+<span class="sd">    &gt;&gt;&gt; from pyo import Sine, Freeverb, Adsr</span>
+<span class="sd">    &gt;&gt;&gt; must_be_played(Sine)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; must_be_played(Freeverb)</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; must_be_played(Adsr)</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">cls</span> <span class="o">=</span> <span class="n">obj_or_cls</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj_or_cls</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="k">else</span> <span class="n">obj_or_cls</span><span class="o">.</span><span class="vm">__class__</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_PLAY_REQUIRED</span><span class="p">:</span>
+        <span class="n">_build_play_required</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_PLAY_REQUIRED</span> <span class="ow">or</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_MANUAL_FALLBACK</span></div>
+
+
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+
+
+<div class="viewcode-block" id="PyoPlayAnalyzer">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.PyoPlayAnalyzer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PyoPlayAnalyzer</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">NodeVisitor</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">objs_created</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">play_calls</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">visit_Assign</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="c1"># Detect PyoObject instance creation: foo = Sine(...) or foo = Adsr(...)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Call</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">func</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Name</span><span class="p">):</span>
+            <span class="n">class_name</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="n">id</span>
+            <span class="k">if</span> <span class="n">class_name</span> <span class="ow">in</span> <span class="n">_MANUAL_FALLBACK</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">targets</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Name</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">objs_created</span><span class="p">[</span><span class="n">target</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">class_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generic_visit</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">visit_Expr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="c1"># Detect .play() calls like: foo.play()</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Call</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">func</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Attribute</span>
+        <span class="p">):</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="n">attr</span> <span class="o">==</span> <span class="s2">&quot;play&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Name</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">play_calls</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generic_visit</span><span class="p">(</span><span class="n">node</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">analyze_synth_func_play</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="n">src</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getsource</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="n">tree</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+    <span class="n">analyzer</span> <span class="o">=</span> <span class="n">PyoPlayAnalyzer</span><span class="p">()</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">visit</span><span class="p">(</span><span class="n">tree</span><span class="p">)</span>
+
+    <span class="c1"># Build the report</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">var</span><span class="p">,</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">objs_created</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">report</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="bp">cls</span><span class="p">,</span>
+            <span class="s2">&quot;must_be_played&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;play_called&quot;</span><span class="p">:</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">play_calls</span><span class="p">,</span>
+        <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">report</span>
+
+
 <div class="viewcode-block" id="round_event_times">
 <a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.round_event_times">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">round_event_times</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">round_to</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
@@ -229,7 +342,7 @@
     <span class="c1"># Handle string input by extracting word sequences</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="c1"># Extract word sequences (consecutive alphanumeric chars + underscore)</span>
-        <span class="n">identifiers</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\w+&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">identifiers</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\w+&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
     <span class="c1"># Handle iterable input by converting to list</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
         <span class="n">identifiers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -358,6 +471,40 @@
 <span class="c1"># -------------------------------------------------------------------------------------</span>
 <span class="c1"># Synth helpers</span>
 <span class="c1"># -------------------------------------------------------------------------------------</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">add_default_dials</span><span class="p">(</span><span class="n">dials</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="n">func</span><span class="o">.</span><span class="n">_default_dials</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ensure_identifier_list</span><span class="p">(</span><span class="n">dials</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">func</span>
+
+    <span class="k">return</span> <span class="n">decorator</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">add_default_settings</span><span class="p">(</span><span class="n">settings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="n">func</span><span class="o">.</span><span class="n">_default_settings</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ensure_identifier_list</span><span class="p">(</span><span class="n">settings</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">func</span>
+
+    <span class="k">return</span> <span class="n">decorator</span>
+
+
+<div class="viewcode-block" id="add_synth_defaults">
+<a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.add_synth_defaults">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_synth_defaults</span><span class="p">(</span><span class="n">dials</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">settings</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Decorator to add default dials and settings to a synth function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">dials</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">func</span><span class="o">.</span><span class="n">_default_dials</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ensure_identifier_list</span><span class="p">(</span><span class="n">dials</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">settings</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">func</span><span class="o">.</span><span class="n">_default_settings</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ensure_identifier_list</span><span class="p">(</span><span class="n">settings</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">func</span>
+
+    <span class="k">return</span> <span class="n">decorator</span></div>
+
 
 
 <span class="c1"># TODO: Deprecate if params_dict deprecates</span>
@@ -710,6 +857,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_synth_func_params</span> <span class="o">=</span> <span class="n">synth_func_defaults</span><span class="p">(</span><span class="n">synth_func</span><span class="p">)</span>
 
+        <span class="c1"># if function has some default dials or settings, use them if not specified in Synth arguments</span>
+        <span class="n">dials</span> <span class="o">=</span> <span class="n">dials</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">synth_func</span><span class="p">,</span> <span class="s2">&quot;_default_dials&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="n">settings</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">synth_func</span><span class="p">,</span> <span class="s2">&quot;_default_settings&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_dials</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span> <span class="o">=</span> <span class="n">_resolve_dials_and_settings</span><span class="p">(</span>
             <span class="n">dials</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_synth_func_params</span>
         <span class="p">)</span>
@@ -838,7 +989,14 @@
         <span class="n">_initial_knob_params</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">spec</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_synth_func_params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dials</span><span class="p">:</span>
-                <span class="n">_initial_knob_params</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">dict_to_sigto</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">_initial_knob_params</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">dict_to_sigto</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Invalid initial value for knob &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">spec</span><span class="si">}</span><span class="s2">. &quot;</span>
+                        <span class="s2">&quot;Expected a number or a dictionary with &#39;value&#39;, &#39;time&#39;, &#39;mul&#39;, and/or &#39;add&#39; keys. &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;Original error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">_initial_knob_params</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">spec</span>
 

@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; hum 1.0.4 documentation</title>
+  <title>Index &mdash; hum 1.0.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=71272d9f"></script>
+      <script src="_static/documentation_options.js?v=d55fa986"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -54,6 +54,7 @@
 <li class="toctree-l1"><a class="reference internal" href="module_docs/hum/pyo_util.html">hum.pyo_util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_docs/hum/pyo_util_examples.html">hum.pyo_util_examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_docs/hum/scrap/belangeo_Degradation.html">hum.scrap.belangeo_Degradation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_docs/hum/synth_funcs.html">hum.synth_funcs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_docs/hum/util.html">hum.util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_docs/hum/utils.html">hum.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module_docs/hum/utils/date_ticks.html">hum.utils.date_ticks</a></li>
@@ -105,10 +106,12 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="module_docs/hum/pyo_util.html#hum.pyo_util.Appendable">Appendable (class in hum.pyo_util)</a>
+      <li><a href="module_docs/hum/pyo_util.html#hum.pyo_util.add_synth_defaults">add_synth_defaults() (in module hum.pyo_util)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="module_docs/hum/pyo_util.html#hum.pyo_util.Appendable">Appendable (class in hum.pyo_util)</a>
+</li>
       <li><a href="module_docs/hum/pyo_util.html#hum.pyo_util.auto_play">auto_play() (in module hum.pyo_util)</a>
 </li>
   </ul></td>
@@ -199,8 +202,6 @@
         <li><a href="module_docs/hum/pyo_util.html#module-hum.pyo_util">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     hum.pyo_util_examples
 
@@ -208,11 +209,20 @@
         <li><a href="module_docs/hum/pyo_util_examples.html#module-hum.pyo_util_examples">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     hum.scrap.belangeo_Degradation
 
       <ul>
         <li><a href="module_docs/hum/scrap/belangeo_Degradation.html#module-hum.scrap.belangeo_Degradation">module</a>
+</li>
+      </ul></li>
+      <li>
+    hum.synth_funcs
+
+      <ul>
+        <li><a href="module_docs/hum/synth_funcs.html#module-hum.synth_funcs">module</a>
 </li>
       </ul></li>
       <li>
@@ -299,6 +309,8 @@
 </li>
         <li><a href="module_docs/hum/scrap/belangeo_Degradation.html#module-hum.scrap.belangeo_Degradation">hum.scrap.belangeo_Degradation</a>
 </li>
+        <li><a href="module_docs/hum/synth_funcs.html#module-hum.synth_funcs">hum.synth_funcs</a>
+</li>
         <li><a href="module_docs/hum/util.html#module-hum.util">hum.util</a>
 </li>
         <li><a href="module_docs/hum/utils.html#module-hum.utils">hum.utils</a>
@@ -309,6 +321,10 @@
 </li>
       </ul></li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="module_docs/hum/pyo_util.html#hum.pyo_util.must_be_played">must_be_played() (in module hum.pyo_util)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="P">P</h2>
@@ -316,9 +332,11 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="module_docs/hum/pyo_util.html#hum.pyo_util.params_dict">params_dict() (in module hum.pyo_util)</a>
 </li>
+      <li><a href="module_docs/hum/pyo_util.html#hum.pyo_util.Synth.play_events">play_events() (hum.pyo_util.Synth method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="module_docs/hum/pyo_util.html#hum.pyo_util.Synth.play_events">play_events() (hum.pyo_util.Synth method)</a>
+      <li><a href="module_docs/hum/pyo_util.html#hum.pyo_util.PyoPlayAnalyzer">PyoPlayAnalyzer (class in hum.pyo_util)</a>
 </li>
       <li><a href="module_docs/hum/pyo_util.html#hum.pyo_util.PyoServer">PyoServer (class in hum.pyo_util)</a>
 </li>

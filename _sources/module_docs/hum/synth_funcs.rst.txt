@@ -1,0 +1,4 @@
+hum.synth_funcs
+===============
+.. automodule:: hum.synth_funcs
+   :members:

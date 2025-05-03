@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hum.examples.keyboard_control &mdash; hum 1.0.4 documentation</title>
+  <title>hum.examples.keyboard_control &mdash; hum 1.0.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=71272d9f"></script>
+      <script src="../../../_static/documentation_options.js?v=d55fa986"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -54,6 +54,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/pyo_util.html">hum.pyo_util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/pyo_util_examples.html">hum.pyo_util_examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/scrap/belangeo_Degradation.html">hum.scrap.belangeo_Degradation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/synth_funcs.html">hum.synth_funcs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/util.html">hum.util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/utils.html">hum.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/utils/date_ticks.html">hum.utils.date_ticks</a></li>
@@ -152,7 +153,7 @@
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg_mapping</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="c1"># If it&#39;s a file path</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">arg_mapping</span><span class="p">):</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">arg_mapping</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">arg_mapping</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
         <span class="c1"># Otherwise treat as JSON string</span>
         <span class="k">try</span><span class="p">:</span>
@@ -170,7 +171,7 @@
 <span class="sd">    Returns the initialized synth function that&#39;s ready to play sounds.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Try to detect if this is a Synth instance from hum.pyo_util</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">synth_func</span><span class="p">,</span> <span class="s1">&#39;start&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">synth_func</span><span class="p">,</span> <span class="s1">&#39;stop&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">synth_func</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">synth_func</span><span class="p">,</span> <span class="s2">&quot;stop&quot;</span><span class="p">):</span>
         <span class="c1"># This is likely a Synth instance, start it</span>
         <span class="n">synth_func</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">synth_func</span>
@@ -242,7 +243,7 @@
             <span class="p">)</span>
 
         <span class="c1"># Initialize the synth if it&#39;s a pyo synth</span>
-        <span class="k">if</span> <span class="s2">&quot;pyo_synths&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">callback_func</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">callback_func</span><span class="p">,</span> <span class="s1">&#39;start&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s2">&quot;pyo_synths&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">callback_func</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">callback_func</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initializing synth function: </span><span class="si">{</span><span class="n">callback_func</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">synth_instance</span> <span class="o">=</span> <span class="n">_initialize_pyo_synth</span><span class="p">(</span><span class="n">callback_func</span><span class="p">)</span>
@@ -267,19 +268,19 @@
             <span class="c1"># Special keys (arrows, esc, etc.)</span>
             <span class="c1"># Create a mapping for special keys that need specific names</span>
             <span class="n">special_keys</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;Key.esc&#39;</span><span class="p">:</span> <span class="s1">&#39;escape&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;Key.space&#39;</span><span class="p">:</span> <span class="s1">&#39;space&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;Key.enter&#39;</span><span class="p">:</span> <span class="s1">&#39;enter&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;Key.tab&#39;</span><span class="p">:</span> <span class="s1">&#39;tab&#39;</span><span class="p">,</span>
+                <span class="s2">&quot;Key.esc&quot;</span><span class="p">:</span> <span class="s2">&quot;escape&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Key.space&quot;</span><span class="p">:</span> <span class="s2">&quot;space&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Key.enter&quot;</span><span class="p">:</span> <span class="s2">&quot;enter&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Key.tab&quot;</span><span class="p">:</span> <span class="s2">&quot;tab&quot;</span><span class="p">,</span>
             <span class="p">}</span>
 
             <span class="n">key_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">key_str</span> <span class="ow">in</span> <span class="n">special_keys</span><span class="p">:</span>
                 <span class="n">key_char</span> <span class="o">=</span> <span class="n">special_keys</span><span class="p">[</span><span class="n">key_str</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">key_char</span> <span class="o">=</span> <span class="n">key_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;Key.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="n">key_char</span> <span class="o">=</span> <span class="n">key_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Key.&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 
-        <span class="n">key_info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="n">key_char</span><span class="p">,</span> <span class="s1">&#39;timestamp&#39;</span><span class="p">:</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span> <span class="s1">&#39;raw_key&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)}</span>
+        <span class="n">key_info</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="n">key_char</span><span class="p">,</span> <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span> <span class="s2">&quot;raw_key&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)}</span>
         <span class="n">key_events</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key_info</span><span class="p">)</span>
 
         <span class="c1"># Call the callback function if provided</span>
@@ -297,16 +298,16 @@
                         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mapping</span><span class="p">[</span><span class="n">key_char</span><span class="p">],</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
                             <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
                                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Playing freq=</span><span class="si">{</span><span class="n">mapping</span><span class="p">[</span><span class="n">key_char</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">callback_func</span><span class="p">,</span> <span class="s1">&#39;update&#39;</span><span class="p">):</span>
+                            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">callback_func</span><span class="p">,</span> <span class="s2">&quot;update&quot;</span><span class="p">):</span>
                                 <span class="c1"># This is likely a Synth instance</span>
-                                <span class="n">callback_func</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;freq&#39;</span><span class="p">:</span> <span class="n">mapping</span><span class="p">[</span><span class="n">key_char</span><span class="p">]})</span>
+                                <span class="n">callback_func</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;freq&quot;</span><span class="p">:</span> <span class="n">mapping</span><span class="p">[</span><span class="n">key_char</span><span class="p">]})</span>
                             <span class="k">else</span><span class="p">:</span>
                                 <span class="n">callback_func</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">mapping</span><span class="p">[</span><span class="n">key_char</span><span class="p">])</span>
                         <span class="c1"># If it&#39;s already a dict, pass it directly</span>
                         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mapping</span><span class="p">[</span><span class="n">key_char</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
                             <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
                                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Playing with params: </span><span class="si">{</span><span class="n">mapping</span><span class="p">[</span><span class="n">key_char</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">callback_func</span><span class="p">,</span> <span class="s1">&#39;update&#39;</span><span class="p">):</span>
+                            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">callback_func</span><span class="p">,</span> <span class="s2">&quot;update&quot;</span><span class="p">):</span>
                                 <span class="n">callback_func</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">mapping</span><span class="p">[</span><span class="n">key_char</span><span class="p">])</span>
                             <span class="k">else</span><span class="p">:</span>
                                 <span class="n">callback_func</span><span class="p">(</span><span class="o">**</span><span class="n">mapping</span><span class="p">[</span><span class="n">key_char</span><span class="p">])</span>
@@ -323,7 +324,7 @@
                         <span class="nb">print</span><span class="p">(</span>
                             <span class="sa">f</span><span class="s2">&quot;No mapping, calling with raw key: </span><span class="si">{</span><span class="n">key_info</span><span class="p">[</span><span class="s1">&#39;raw_key&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
                         <span class="p">)</span>
-                    <span class="n">callback_func</span><span class="p">(</span><span class="n">key_info</span><span class="p">[</span><span class="s1">&#39;raw_key&#39;</span><span class="p">])</span>
+                    <span class="n">callback_func</span><span class="p">(</span><span class="n">key_info</span><span class="p">[</span><span class="s2">&quot;raw_key&quot;</span><span class="p">])</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error in callback function: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
@@ -353,7 +354,7 @@
         <span class="n">listener</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
         <span class="c1"># Clean up synth instance if we created one</span>
-        <span class="k">if</span> <span class="n">synth_instance</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">synth_instance</span><span class="p">,</span> <span class="s1">&#39;stop&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">synth_instance</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">synth_instance</span><span class="p">,</span> <span class="s2">&quot;stop&quot;</span><span class="p">):</span>
             <span class="n">synth_instance</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
 
 
@@ -415,7 +416,7 @@
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Event: </span><span class="si">{</span><span class="n">event</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
                 <span class="c1"># Exit on specified exit key press</span>
-                <span class="k">if</span> <span class="n">event</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">args</span><span class="o">.</span><span class="n">exit_key</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">args</span><span class="o">.</span><span class="n">exit_key</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Quitting...&quot;</span><span class="p">)</span>
                     <span class="k">break</span>
     <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
