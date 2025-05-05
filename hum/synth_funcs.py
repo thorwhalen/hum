@@ -12,24 +12,23 @@ def pulse(freq=440, duty=0.5, volume=0.3):
     return LFO(freq=freq, sharp=duty, type=2, mul=volume)
 
 
-@add_synth_defaults(settings='type')
+@add_synth_defaults(settings="type")
 def noise(cutoff=1000, q=1, volume=0.2, type=0):
     noise = Noise(mul=volume)
     return Biquadx(noise, freq=cutoff, q=q, type=type, stages=2)
 
 
-@add_synth_defaults(dials='freq')
-def simple_waveforms(freq=440, attack=0.01, waveform='sine'):
+@add_synth_defaults(dials="freq")
+def simple_waveforms(freq=440, attack=0.01, waveform="sine"):
     env = Adsr(
         attack=attack, decay=0.1, sustain=0.8, release=0.1, dur=0, mul=0.5
     ).play()
     wave = {
-        'sine': Sine,
-        'triangle': lambda freq, mul: LFO(freq=freq, type=3, mul=mul),
-        'square': lambda freq, mul: LFO(freq=freq, type=1, mul=mul),
+        "sine": Sine,
+        "triangle": lambda freq, mul: LFO(freq=freq, type=3, mul=mul),
+        "square": lambda freq, mul: LFO(freq=freq, type=1, mul=mul),
     }.get(waveform, Sine)
     return wave(freq=freq, mul=env)
-
 
 
 @add_default_dials(["freq", "cutoff", "reso", "decay", "mult"])
@@ -39,7 +38,9 @@ def ankg_fm303(freq=110, cutoff=2000, reso=5, decay=0.5, mult=0.1, shape=1):
     mult_val = mult.value if isinstance(mult, SigTo) else mult
     freq_val = freq.value if isinstance(freq, SigTo) else freq
 
-    env = Adsr(attack=0.05, decay=decay_val, sustain=0.1, release=0.05, dur=0.2 + decay_val)
+    env = Adsr(
+        attack=0.05, decay=decay_val, sustain=0.1, release=0.05, dur=0.2 + decay_val
+    )
     env.play()  # This line is crucial
 
     env2 = env * mult_val
@@ -54,6 +55,7 @@ def ankg_fm303(freq=110, cutoff=2000, reso=5, decay=0.5, mult=0.1, shape=1):
 
     filt = Biquadx([wave, wave], freq=cutoff, q=reso, type=0, stages=2)
     return filt
+
 
 @add_synth_defaults(dials="IpulseHz")
 def intro_crunch_pulsar(IpulseHz=110):

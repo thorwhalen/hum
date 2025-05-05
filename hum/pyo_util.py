@@ -92,7 +92,7 @@ def _build_play_required():
 
     for name, cls in inspect.getmembers(pyo, inspect.isclass):
         if issubclass(cls, PyoObject) and cls.__module__.startswith("pyo"):
-            if 'play' in cls.__dict__:
+            if "play" in cls.__dict__:
                 _PLAY_REQUIRED.add(cls.__name__)
 
 
