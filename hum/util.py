@@ -280,6 +280,7 @@ def scale_snapper(
 
 # ----------------------------------------------------------------------------------
 
+
 def getmodulename(obj, default=""):
     """Get name of module of object"""
     return getattr(getmodule(obj), "__name__", default)

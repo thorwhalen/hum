@@ -1108,7 +1108,7 @@ class Synth(MutableMapping):
                     if not isinstance(val, dict):
                         val = self._value_trans[key](val)
                     else:
-                        if 'value' in val:
+                        if "value" in val:
                             val["value"] = self._value_trans[key](val["value"])
 
                 if isinstance(target, SigTo):
