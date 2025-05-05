@@ -17,11 +17,14 @@ def estimate_chunk_frequency(chk: Iterable, sr: int):
     # Find peaks in the FFT result
     peaks, _ = find_peaks(np.abs(yf[: N // 2]), height=0)
 
-    # Get the frequencies of the peaks
-    peak_freqs = xf[peaks]
+    if len(peaks) > 0:
+        # Get the frequencies of the peaks
+        peak_freqs = xf[peaks]
 
-    # Return the frequency with the highest amplitude
-    return peak_freqs[np.argmax(np.abs(yf[peaks]))]
+        # Return the frequency with the highest amplitude
+        return peak_freqs[np.argmax(np.abs(yf[peaks]))]
+    else:
+        return None
 
 
 def estimate_frequencies(wf: Iterable, sr: int, chunker: int | Callable):

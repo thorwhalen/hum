@@ -770,7 +770,9 @@ class Synth(MutableMapping):
 
         for k, v in updates.items():
             if self._has_value_trans and k in self._value_trans:
+                before_v = v
                 v = self._value_trans[k](v)
+                print(f"{before_v} -> {v}")
             if k in self._dials:
                 live_updates[k] = v
             elif k in self._settings:
@@ -1101,6 +1103,14 @@ class Synth(MutableMapping):
 
             for key, val in updates.items():
                 target = raw_params[key] if raw_params else self.knobs[key]
+
+                if self._has_value_trans:
+                    if not isinstance(val, dict):
+                        val = self._value_trans[key](val)
+                    else:
+                        if 'value' in val:
+                            val["value"] = self._value_trans[key](val["value"])
+
                 if isinstance(target, SigTo):
                     if isinstance(val, dict):
                         for attr in ["value", "time", "mul", "add"]:

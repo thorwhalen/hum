@@ -113,6 +113,10 @@ def round_numbers(items, round_to=0.001, *, index_of_item_number=None, egress=No
                 yield egress(item)
 
 
+# ----------------------------------------------------------------------------------
+# Frequency snappers
+# ----------------------------------------------------------------------------------
+
 from bisect import bisect_left
 from math import log2
 
@@ -162,6 +166,7 @@ class SnapToChromatic:
 
 DFLT_OCTAVE_RANGE = (0, 10)
 DFLT_TUNING = 440.0  # A4 tuning frequency
+DFLT_SCALE_MIDI_NOTES = (0, 2, 4, 5, 7, 9, 11)  # C major scale
 
 
 def tempered_semitone_frequencies(
@@ -201,9 +206,30 @@ def tempered_semitone_frequencies(
     return sorted(gen_freqs())
 
 
+def scale_frequencies(
+    scale: Iterable[Union[float, int]] = DFLT_SCALE_MIDI_NOTES,
+    *,
+    tuning=DFLT_TUNING,
+    octave_range=DFLT_OCTAVE_RANGE,
+):
+    """
+    Get frequencies for a given scale.
+
+    :param scale: A list of integers representing the scale.
+        For example, (0, 2, 4, 5, 7, 9, 11) corresponds to the C major scale.
+    :param tuning: The tuning frequency (default is 440 Hz).
+    :param octave_range: A tuple of two integers representing the range of octaves.
+    :return: A list of frequencies corresponding to the notes in the given scale.
+    """
+    chromatic_scale = tempered_semitone_frequencies(
+        tuning=tuning, octave_range=octave_range
+    )
+    return [chromatic_scale[i] for i in range(len(chromatic_scale)) if i % 12 in scale]
+
+
 # TODO: Add string_to_scale_map argument to convert string to midi note array scale
 def scale_snapper(
-    scale: Iterable[Union[float, int]] = (0, 2, 4, 5, 7, 9, 11),
+    scale: Iterable[Union[float, int]] = DFLT_SCALE_MIDI_NOTES,
     *,
     tuning=DFLT_TUNING,
     octave_range=DFLT_OCTAVE_RANGE,
@@ -245,16 +271,14 @@ def scale_snapper(
     493.8833...
 
     """
-    chromatic_scale = tempered_semitone_frequencies(
-        tuning=tuning, octave_range=octave_range
+    _scale_frequencies = scale_frequencies(
+        scale=scale, tuning=tuning, octave_range=octave_range
     )
-    # keep all elements of chromatic_scale that have index in midi_notes module 12
-    scale_frequencies = [
-        chromatic_scale[i] for i in range(len(chromatic_scale)) if i % 12 in scale
-    ]
     # create a ListSnapper object
-    return ListSnapper(scale_frequencies)
+    return ListSnapper(_scale_frequencies)
 
+
+# ----------------------------------------------------------------------------------
 
 def getmodulename(obj, default=""):
     """Get name of module of object"""
