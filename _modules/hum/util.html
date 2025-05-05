@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hum.util &mdash; hum 1.0.5 documentation</title>
+  <title>hum.util &mdash; hum 1.0.6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=d55fa986"></script>
+      <script src="../../_static/documentation_options.js?v=e2a723ec"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -92,7 +92,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">inspect</span><span class="w"> </span><span class="kn">import</span> <span class="n">getmodule</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">zip_longest</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
 
@@ -141,8 +141,32 @@
 
 
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
+<div class="viewcode-block" id="round_number">
+<a class="viewcode-back" href="../../module_docs/hum/util.html#hum.util.round_number">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">round_number</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="n">round_to</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Round a number to the nearest multiple of round_to.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">    - number: float, the number to round.</span>
+<span class="sd">    - round_to: float, the value to round to.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    - float, the rounded number.</span>
+
+<span class="sd">    &gt;&gt;&gt; round_number(1.234567, 0.01)</span>
+<span class="sd">    1.23</span>
+
+<span class="sd">    Note, the rounder rounds to nearest multiple of round_to, not to the nearest decimal place.</span>
+
+<span class="sd">    &gt;&gt;&gt; round_number(1.234567, 0.001)</span>
+<span class="sd">    1.235</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">digits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">round_to</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">number</span> <span class="o">/</span> <span class="n">round_to</span><span class="p">)</span> <span class="o">*</span> <span class="n">round_to</span><span class="p">,</span> <span class="n">digits</span><span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="round_numbers">
@@ -183,6 +207,161 @@
                 <span class="k">yield</span> <span class="n">item</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">yield</span> <span class="n">egress</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
+
+
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">bisect</span><span class="w"> </span><span class="kn">import</span> <span class="n">bisect_left</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">log2</span>
+
+
+<div class="viewcode-block" id="ListSnapper">
+<a class="viewcode-back" href="../../module_docs/hum/util.html#hum.util.ListSnapper">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ListSnapper</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Snap to the nearest value in a list.</span>
+
+<span class="sd">    &gt;&gt;&gt; snapper = ListSnapper([0, 1, 2, 3, 4, 5])</span>
+<span class="sd">    &gt;&gt;&gt; snapper(2.3)</span>
+<span class="sd">    2</span>
+<span class="sd">    &gt;&gt;&gt; snapper(2.7)</span>
+<span class="sd">    3</span>
+<span class="sd">    &gt;&gt;&gt; snapper(2.5)  # exactly the middle of 2 and 3; snaps to 2</span>
+<span class="sd">    2</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">snap_values</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">snap_values</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">snap_values</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">bisect_left</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">snap_values</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">snap_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">snap_values</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">snap_values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">before</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">snap_values</span><span class="p">[</span><span class="n">pos</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">after</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">snap_values</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">before</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">before</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">after</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">after</span></div>
+
+
+
+<div class="viewcode-block" id="SnapToChromatic">
+<a class="viewcode-back" href="../../module_docs/hum/util.html#hum.util.SnapToChromatic">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SnapToChromatic</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Snap to the nearest chromatic note in a tempered scale.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_tuning</span><span class="o">=</span><span class="mi">440</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_tuning</span> <span class="o">=</span> <span class="n">base_tuning</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Frequency must be positive&quot;</span><span class="p">)</span>
+        <span class="n">midi_note</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="mi">69</span> <span class="o">+</span> <span class="mi">12</span> <span class="o">*</span> <span class="n">log2</span><span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="mi">440</span><span class="p">))</span>
+        <span class="k">return</span> <span class="mi">440</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">**</span> <span class="p">((</span><span class="n">midi_note</span> <span class="o">-</span> <span class="mi">69</span><span class="p">)</span> <span class="o">/</span> <span class="mi">12</span><span class="p">)</span></div>
+
+
+
+<span class="n">DFLT_OCTAVE_RANGE</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">DFLT_TUNING</span> <span class="o">=</span> <span class="mf">440.0</span>  <span class="c1"># A4 tuning frequency</span>
+
+
+<div class="viewcode-block" id="tempered_semitone_frequencies">
+<a class="viewcode-back" href="../../module_docs/hum/util.html#hum.util.tempered_semitone_frequencies">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">tempered_semitone_frequencies</span><span class="p">(</span>
+    <span class="n">tuning</span><span class="o">=</span><span class="n">DFLT_TUNING</span><span class="p">,</span> <span class="n">octave_range</span><span class="o">=</span><span class="n">DFLT_OCTAVE_RANGE</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">5</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a sorted list of frequencies for a given tuning and octave range.</span>
+
+<span class="sd">    :param tuning: The tuning frequency (default is 440 Hz).</span>
+<span class="sd">        It corresponds to A4 (that is, the 69th MIDI note).</span>
+<span class="sd">    :param octave_range: A tuple of two integers representing the range of octaves.</span>
+
+<span class="sd">        The first integer is the starting octave (inclusive), and the second integer is the ending octave (exclusive).</span>
+<span class="sd">        For example, (0, 10) will generate frequencies from C0 to B9.</span>
+<span class="sd">        The default is (0, 10), which covers a wide range of frequencies.</span>
+<span class="sd">    :return: A sorted list of frequencies in the specified octave range. The first (i.e. .[0]) frequency will correspond to a C.</span>
+
+<span class="sd">    &gt;&gt;&gt; frequencies = tempered_semitone_frequencies()</span>
+<span class="sd">    &gt;&gt;&gt; len(frequencies)</span>
+<span class="sd">    120</span>
+<span class="sd">    &gt;&gt;&gt; frequencies  # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS</span>
+<span class="sd">    [8.1758, 8.66196, 9.17702, 9.72272, ..., 7040.0, 7458.62018, 7902.13282]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">octave_range</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;octave_range must be a tuple of two integers&quot;</span>
+    <span class="n">n_octave_divisions</span> <span class="o">=</span> <span class="mi">12</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">gen_freqs</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">octave</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">*</span><span class="n">octave_range</span><span class="p">):</span>
+            <span class="n">base_midi</span> <span class="o">=</span> <span class="n">n_octave_divisions</span> <span class="o">*</span> <span class="n">octave</span>
+            <span class="k">for</span> <span class="n">st</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_octave_divisions</span><span class="p">):</span>
+                <span class="n">midi_note</span> <span class="o">=</span> <span class="n">base_midi</span> <span class="o">+</span> <span class="n">st</span>
+                <span class="n">freq</span> <span class="o">=</span> <span class="n">tuning</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">**</span> <span class="p">((</span><span class="n">midi_note</span> <span class="o">-</span> <span class="mi">69</span><span class="p">)</span> <span class="o">/</span> <span class="n">n_octave_divisions</span><span class="p">)</span>
+                <span class="k">yield</span> <span class="nb">round</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">digits</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">gen_freqs</span><span class="p">())</span></div>
+
+
+
+<span class="c1"># TODO: Add string_to_scale_map argument to convert string to midi note array scale</span>
+<div class="viewcode-block" id="scale_snapper">
+<a class="viewcode-back" href="../../module_docs/hum/util.html#hum.util.scale_snapper">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">scale_snapper</span><span class="p">(</span>
+    <span class="n">scale</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">tuning</span><span class="o">=</span><span class="n">DFLT_TUNING</span><span class="p">,</span>
+    <span class="n">octave_range</span><span class="o">=</span><span class="n">DFLT_OCTAVE_RANGE</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Snap frequency to the nearest midi note of the midi_nodes list, modulo 12.</span>
+
+<span class="sd">    :param scale: A list of integers representing the scale.</span>
+<span class="sd">        For example, (0, 2, 4, 5, 7, 9, 11) (the default) corresponds to the C major scale.</span>
+<span class="sd">    :param tuning: The tuning frequency (default is 440 Hz).</span>
+<span class="sd">        It corresponds to A4 (that is, the 69th MIDI note).</span>
+<span class="sd">    :param octave_range: A tuple of two integers representing the range of octaves.</span>
+<span class="sd">        The first integer is the starting octave (inclusive), and the second integer is the ending octave (exclusive).</span>
+<span class="sd">        For example, (0, 10) will generate frequencies from C0 to B9.</span>
+<span class="sd">        The default is (0, 10), which covers a wide range of frequencies.</span>
+
+<span class="sd">    :return: A ListSnapper object that can be used to snap frequencies to the nearest note in the scale.</span>
+
+<span class="sd">    &gt;&gt;&gt; snapper = scale_snapper()</span>
+<span class="sd">    &gt;&gt;&gt; snapper(440.0)  # A4</span>
+<span class="sd">    440.0</span>
+
+<span class="sd">    If you&#39;re near that A4, `snapper` will snap to it:</span>
+
+<span class="sd">    &gt;&gt;&gt; snapper(441.0)</span>
+<span class="sd">    440.0</span>
+<span class="sd">    &gt;&gt;&gt; snapper(439.0)</span>
+<span class="sd">    440.0</span>
+
+<span class="sd">    But even if you&#39;re, say at A#, you&#39;ll still snap to A4 (since it&#39;s the closest note</span>
+<span class="sd">    of C major scale):</span>
+
+<span class="sd">    &gt;&gt;&gt; snapper(466.16)  # A#4</span>
+<span class="sd">    440.0</span>
+
+<span class="sd">    If you are slightly higher than A#, you&#39;ll snap to B4</span>
+
+<span class="sd">    &gt;&gt;&gt; snapper(467)  # doctest: +ELLIPSIS</span>
+<span class="sd">    493.8833...</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">chromatic_scale</span> <span class="o">=</span> <span class="n">tempered_semitone_frequencies</span><span class="p">(</span>
+        <span class="n">tuning</span><span class="o">=</span><span class="n">tuning</span><span class="p">,</span> <span class="n">octave_range</span><span class="o">=</span><span class="n">octave_range</span>
+    <span class="p">)</span>
+    <span class="c1"># keep all elements of chromatic_scale that have index in midi_notes module 12</span>
+    <span class="n">scale_frequencies</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">chromatic_scale</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">chromatic_scale</span><span class="p">))</span> <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">12</span> <span class="ow">in</span> <span class="n">scale</span>
+    <span class="p">]</span>
+    <span class="c1"># create a ListSnapper object</span>
+    <span class="k">return</span> <span class="n">ListSnapper</span><span class="p">(</span><span class="n">scale_frequencies</span><span class="p">)</span></div>
 
 
 

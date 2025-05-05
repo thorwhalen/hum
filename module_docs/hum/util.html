@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hum.util &mdash; hum 1.0.5 documentation</title>
+  <title>hum.util &mdash; hum 1.0.6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=d55fa986"></script>
+      <script src="../../_static/documentation_options.js?v=e2a723ec"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -59,9 +59,14 @@
 <li class="toctree-l1"><a class="reference internal" href="scrap/belangeo_Degradation.html">hum.scrap.belangeo_Degradation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="synth_funcs.html">hum.synth_funcs</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">hum.util</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#hum.util.ListSnapper"><code class="docutils literal notranslate"><span class="pre">ListSnapper</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hum.util.SnapToChromatic"><code class="docutils literal notranslate"><span class="pre">SnapToChromatic</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#hum.util.getmodulename"><code class="docutils literal notranslate"><span class="pre">getmodulename()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hum.util.round_number"><code class="docutils literal notranslate"><span class="pre">round_number()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#hum.util.round_numbers"><code class="docutils literal notranslate"><span class="pre">round_numbers()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hum.util.scale_snapper"><code class="docutils literal notranslate"><span class="pre">scale_snapper()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#hum.util.simple_chunker"><code class="docutils literal notranslate"><span class="pre">simple_chunker()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hum.util.tempered_semitone_frequencies"><code class="docutils literal notranslate"><span class="pre">tempered_semitone_frequencies()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">hum.utils</a></li>
@@ -96,10 +101,51 @@
   <section id="module-hum.util">
 <span id="hum-util"></span><h1>hum.util<a class="headerlink" href="#module-hum.util" title="Link to this heading"></a></h1>
 <p>A few general utils</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="hum.util.ListSnapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hum.util.</span></span><span class="sig-name descname"><span class="pre">ListSnapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">snap_values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/util.html#ListSnapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.util.ListSnapper" title="Link to this definition"></a></dt>
+<dd><p>Snap to the nearest value in a list.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">snapper</span> <span class="o">=</span> <span class="n">ListSnapper</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">snapper</span><span class="p">(</span><span class="mf">2.3</span><span class="p">)</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">snapper</span><span class="p">(</span><span class="mf">2.7</span><span class="p">)</span>
+<span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">snapper</span><span class="p">(</span><span class="mf">2.5</span><span class="p">)</span>  <span class="c1"># exactly the middle of 2 and 3; snaps to 2</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hum.util.SnapToChromatic">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hum.util.</span></span><span class="sig-name descname"><span class="pre">SnapToChromatic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_tuning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">440</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/util.html#SnapToChromatic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.util.SnapToChromatic" title="Link to this definition"></a></dt>
+<dd><p>Snap to the nearest chromatic note in a tempered scale.</p>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="hum.util.getmodulename">
 <span class="sig-prename descclassname"><span class="pre">hum.util.</span></span><span class="sig-name descname"><span class="pre">getmodulename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/util.html#getmodulename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.util.getmodulename" title="Link to this definition"></a></dt>
 <dd><p>Get name of module of object</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hum.util.round_number">
+<span class="sig-prename descclassname"><span class="pre">hum.util.</span></span><span class="sig-name descname"><span class="pre">round_number</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">round_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/util.html#round_number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.util.round_number" title="Link to this definition"></a></dt>
+<dd><p>Round a number to the nearest multiple of round_to.</p>
+<p>Parameters:
+- number: float, the number to round.
+- round_to: float, the value to round to.</p>
+<p>Returns:
+- float, the rounded number.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">round_number</span><span class="p">(</span><span class="mf">1.234567</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+<span class="go">1.23</span>
+</pre></div>
+</div>
+<p>Note, the rounder rounds to nearest multiple of round_to, not to the nearest decimal place.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">round_number</span><span class="p">(</span><span class="mf">1.234567</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">)</span>
+<span class="go">1.235</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -121,6 +167,52 @@
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">items</span> <span class="o">=</span> <span class="p">[(</span><span class="mf">1.234</span><span class="p">,</span> <span class="s1">&#39;one&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mf">3.14159</span><span class="p">,</span> <span class="s1">&#39;three&#39;</span><span class="p">)]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">round_numbers</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">round_to</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">index_of_item_number</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
 <span class="go">[[1.2, &#39;one&#39;], [3.1, &#39;three&#39;]]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hum.util.scale_snapper">
+<span class="sig-prename descclassname"><span class="pre">hum.util.</span></span><span class="sig-name descname"><span class="pre">scale_snapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0,</span> <span class="pre">2,</span> <span class="pre">4,</span> <span class="pre">5,</span> <span class="pre">7,</span> <span class="pre">9,</span> <span class="pre">11)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">440.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">octave_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">10)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/util.html#scale_snapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.util.scale_snapper" title="Link to this definition"></a></dt>
+<dd><p>Snap frequency to the nearest midi note of the midi_nodes list, modulo 12.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scale</strong> – A list of integers representing the scale.
+For example, (0, 2, 4, 5, 7, 9, 11) (the default) corresponds to the C major scale.</p></li>
+<li><p><strong>tuning</strong> – The tuning frequency (default is 440 Hz).
+It corresponds to A4 (that is, the 69th MIDI note).</p></li>
+<li><p><strong>octave_range</strong> – A tuple of two integers representing the range of octaves.
+The first integer is the starting octave (inclusive), and the second integer is the ending octave (exclusive).
+For example, (0, 10) will generate frequencies from C0 to B9.
+The default is (0, 10), which covers a wide range of frequencies.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A ListSnapper object that can be used to snap frequencies to the nearest note in the scale.</p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">snapper</span> <span class="o">=</span> <span class="n">scale_snapper</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">snapper</span><span class="p">(</span><span class="mf">440.0</span><span class="p">)</span>  <span class="c1"># A4</span>
+<span class="go">440.0</span>
+</pre></div>
+</div>
+<p>If you’re near that A4, <cite>snapper</cite> will snap to it:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">snapper</span><span class="p">(</span><span class="mf">441.0</span><span class="p">)</span>
+<span class="go">440.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">snapper</span><span class="p">(</span><span class="mf">439.0</span><span class="p">)</span>
+<span class="go">440.0</span>
+</pre></div>
+</div>
+<p>But even if you’re, say at A#, you’ll still snap to A4 (since it’s the closest note
+of C major scale):</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">snapper</span><span class="p">(</span><span class="mf">466.16</span><span class="p">)</span>  <span class="c1"># A#4</span>
+<span class="go">440.0</span>
+</pre></div>
+</div>
+<p>If you are slightly higher than A#, you’ll snap to B4</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">snapper</span><span class="p">(</span><span class="mi">467</span><span class="p">)</span>  
+<span class="go">493.8833...</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -152,6 +244,35 @@ even if they are fewer than <cite>chk_size</cite>. Defaults to True.</p></li>
 <span class="go">[(0, 1, 2), (3, 4, 5), (6, 7)]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">simple_chunker</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">),</span> <span class="mi">3</span><span class="p">,</span> <span class="n">include_tail</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 <span class="go">[(0, 1, 2), (3, 4, 5)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hum.util.tempered_semitone_frequencies">
+<span class="sig-prename descclassname"><span class="pre">hum.util.</span></span><span class="sig-name descname"><span class="pre">tempered_semitone_frequencies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tuning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">440.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">octave_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">10)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">digits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/hum/util.html#tempered_semitone_frequencies"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hum.util.tempered_semitone_frequencies" title="Link to this definition"></a></dt>
+<dd><p>Get a sorted list of frequencies for a given tuning and octave range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tuning</strong> – The tuning frequency (default is 440 Hz).
+It corresponds to A4 (that is, the 69th MIDI note).</p></li>
+<li><p><strong>octave_range</strong> – <p>A tuple of two integers representing the range of octaves.</p>
+<p>The first integer is the starting octave (inclusive), and the second integer is the ending octave (exclusive).
+For example, (0, 10) will generate frequencies from C0 to B9.
+The default is (0, 10), which covers a wide range of frequencies.</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A sorted list of frequencies in the specified octave range. The first (i.e. .[0]) frequency will correspond to a C.</p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">frequencies</span> <span class="o">=</span> <span class="n">tempered_semitone_frequencies</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">frequencies</span><span class="p">)</span>
+<span class="go">120</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">frequencies</span>  
+<span class="go">[8.1758, 8.66196, 9.17702, 9.72272, ..., 7040.0, 7458.62018, 7902.13282]</span>
 </pre></div>
 </div>
 </dd></dl>

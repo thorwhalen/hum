@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hum.pyo_util &mdash; hum 1.0.5 documentation</title>
+  <title>hum.pyo_util &mdash; hum 1.0.6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=d55fa986"></script>
+      <script src="../../_static/documentation_options.js?v=e2a723ec"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -104,6 +104,7 @@
     <span class="n">Set</span><span class="p">,</span>
     <span class="n">Tuple</span><span class="p">,</span>
     <span class="n">TypeVar</span><span class="p">,</span>
+    <span class="n">Mapping</span><span class="p">,</span>
     <span class="n">runtime_checkable</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">MutableMapping</span>
@@ -185,7 +186,7 @@
 
     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">pyo</span><span class="p">,</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">PyoObject</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__module__</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;pyo&quot;</span><span class="p">):</span>
-            <span class="k">if</span> <span class="s1">&#39;play&#39;</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;play&quot;</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
                 <span class="n">_PLAY_REQUIRED</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 
 
@@ -816,10 +817,12 @@
         <span class="n">settings</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">sr</span><span class="o">=</span><span class="n">DFLT_PYO_SR</span><span class="p">,</span>
         <span class="n">nchnls</span><span class="o">=</span><span class="n">DFLT_PYO_NCHNLS</span><span class="p">,</span>
+        <span class="n">value_trans</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">record_on_start</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">event_log_factory</span><span class="p">:</span> <span class="n">RecordFactory</span> <span class="o">=</span> <span class="nb">list</span><span class="p">,</span>  <span class="c1"># No argument factory that makes an Appendable</span>
         <span class="n">audio</span><span class="o">=</span><span class="s2">&quot;portaudio&quot;</span><span class="p">,</span>
         <span class="n">verbosity</span><span class="o">=</span><span class="n">DFLT_PYO_VERBOSITY</span><span class="p">,</span>
+        <span class="n">synth_func_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">server_kwargs</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -852,10 +855,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_server_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
             <span class="n">server_kwargs</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">nchnls</span><span class="o">=</span><span class="n">nchnls</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="n">verbosity</span><span class="p">,</span> <span class="n">audio</span><span class="o">=</span><span class="n">audio</span>
         <span class="p">)</span>
+        <span class="k">if</span> <span class="n">synth_func_kwargs</span><span class="p">:</span>
+            <span class="n">synth_func_attributes</span> <span class="o">=</span> <span class="n">synth_func</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">synth_func</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">synth_func</span><span class="p">,</span> <span class="o">**</span><span class="n">synth_func_kwargs</span><span class="p">)</span>
+            <span class="n">synth_func</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">synth_func_attributes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_synth_func_kwargs</span> <span class="o">=</span> <span class="n">synth_func_kwargs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_synth_func</span> <span class="o">=</span> <span class="n">synth_func</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_server</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_synth_func_params</span> <span class="o">=</span> <span class="n">synth_func_defaults</span><span class="p">(</span><span class="n">synth_func</span><span class="p">)</span>
+
+        <span class="k">assert</span> <span class="n">value_trans</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">value_trans</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">callable</span><span class="p">,</span> <span class="n">value_trans</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;value_trans must be a dict of callables. Was: </span><span class="si">{</span><span class="n">value_trans</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has_value_trans</span> <span class="o">=</span> <span class="n">value_trans</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_trans</span> <span class="o">=</span> <span class="n">value_trans</span>
 
         <span class="c1"># if function has some default dials or settings, use them if not specified in Synth arguments</span>
         <span class="n">dials</span> <span class="o">=</span> <span class="n">dials</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">synth_func</span><span class="p">,</span> <span class="s2">&quot;_default_dials&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -897,6 +912,8 @@
         <span class="n">rebuild_updates</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">updates</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_value_trans</span> <span class="ow">and</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_trans</span><span class="p">:</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_trans</span><span class="p">[</span><span class="n">k</span><span class="p">](</span><span class="n">v</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dials</span><span class="p">:</span>
                 <span class="n">live_updates</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
             <span class="k">elif</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span><span class="p">:</span>
@@ -1097,11 +1114,11 @@
                 <span class="sa">f</span><span class="s2">&quot;Failed to initialize synth function &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_synth_func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39;.</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;Perhaps some arguments were wrongly wrapped into SigTo.</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;Consider :</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;  * using the sigto_include argument to control which parameters are live.</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;  * using the sigto_exclude argument to control which parameters are not live.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;  * using the dials argument to control which parameters are live.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;  * using the settings argument to control which parameters are not live.</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;Alternatively, at function definition time, you can control this by:</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;  * using the @knob_params decorator to control which parameters are live.</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;  * using the @knob_exclude decorator to control which parameters are not live.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;  * using the @add_default_dials decorator to control which parameters are live.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;  * using the @add_default_settings decorator to control which parameters are not live.</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;Original error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
 
