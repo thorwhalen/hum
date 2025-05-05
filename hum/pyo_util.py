@@ -16,6 +16,7 @@ from typing import (
     Set,
     Tuple,
     TypeVar,
+    Mapping,
     runtime_checkable,
 )
 from collections.abc import MutableMapping
@@ -675,10 +676,12 @@ class Synth(MutableMapping):
         settings: Optional[Set[str]] = None,
         sr=DFLT_PYO_SR,
         nchnls=DFLT_PYO_NCHNLS,
+        value_trans: Optional[Dict[str, Callable]] = None,
         record_on_start: bool = True,
         event_log_factory: RecordFactory = list,  # No argument factory that makes an Appendable
         audio="portaudio",
         verbosity=DFLT_PYO_VERBOSITY,
+        synth_func_kwargs=None,
         **server_kwargs,
     ):
         """
@@ -711,10 +714,22 @@ class Synth(MutableMapping):
         self._server_kwargs = dict(
             server_kwargs, sr=sr, nchnls=nchnls, verbosity=verbosity, audio=audio
         )
+        if synth_func_kwargs:
+            synth_func_attributes = synth_func.__dict__.copy()
+            synth_func = partial(synth_func, **synth_func_kwargs)
+            synth_func.__dict__.update(synth_func_attributes)
+        self._synth_func_kwargs = synth_func_kwargs
         self._synth_func = synth_func
         self._server = None
         self.output = None
         self._synth_func_params = synth_func_defaults(synth_func)
+
+        assert value_trans is None or (
+            isinstance(value_trans, Mapping)
+            and all(map(callable, value_trans.values()))
+        ), f"value_trans must be a dict of callables. Was: {value_trans}"
+        self._has_value_trans = value_trans is not None
+        self._value_trans = value_trans
 
         # if function has some default dials or settings, use them if not specified in Synth arguments
         dials = dials or getattr(synth_func, "_default_dials", None)
@@ -754,6 +769,8 @@ class Synth(MutableMapping):
         rebuild_updates = {}
 
         for k, v in updates.items():
+            if self._has_value_trans and k in self._value_trans:
+                v = self._value_trans[k](v)
             if k in self._dials:
                 live_updates[k] = v
             elif k in self._settings:
@@ -939,11 +956,11 @@ class Synth(MutableMapping):
                 f"Failed to initialize synth function '{self._synth_func.__name__}'.\n"
                 f"Perhaps some arguments were wrongly wrapped into SigTo.\n"
                 f"Consider :\n"
-                f"  * using the sigto_include argument to control which parameters are live.\n"
-                f"  * using the sigto_exclude argument to control which parameters are not live.\n"
+                f"  * using the dials argument to control which parameters are live.\n"
+                f"  * using the settings argument to control which parameters are not live.\n"
                 f"Alternatively, at function definition time, you can control this by:\n"
-                f"  * using the @knob_params decorator to control which parameters are live.\n"
-                f"  * using the @knob_exclude decorator to control which parameters are not live.\n"
+                f"  * using the @add_default_dials decorator to control which parameters are live.\n"
+                f"  * using the @add_default_settings decorator to control which parameters are not live.\n"
                 f"Original error: {e}"
             ) from e
 
