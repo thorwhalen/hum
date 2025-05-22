@@ -14,6 +14,11 @@ import numpy as np
 T = TypeVar("T")
 
 
+def return_none(*args, **kwargs):
+    """Return None for any arguments."""
+    return None
+
+
 def simple_chunker(
     a: Iterable[T], chk_size: int, *, include_tail: bool = True
 ) -> Iterator[Tuple[T, ...]]:
