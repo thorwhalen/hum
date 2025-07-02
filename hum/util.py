@@ -125,6 +125,14 @@ def round_numbers(items, round_to=0.001, *, index_of_item_number=None, egress=No
 from bisect import bisect_left
 from math import log2
 
+# Import tonal.notes for string-based scale specifications
+try:
+    from tonal.notes import scale_params
+
+    _HAS_TONAL_NOTES = True
+except ImportError:
+    _HAS_TONAL_NOTES = False
+
 
 class ListSnapper:
     """
@@ -234,7 +242,7 @@ def scale_frequencies(
 
 # TODO: Add string_to_scale_map argument to convert string to midi note array scale
 def scale_snapper(
-    scale: Iterable[Union[float, int]] = DFLT_SCALE_MIDI_NOTES,
+    scale: Union[str, Iterable[Union[float, int]]] = DFLT_SCALE_MIDI_NOTES,
     *,
     tuning=DFLT_TUNING,
     octave_range=DFLT_OCTAVE_RANGE,
@@ -242,8 +250,11 @@ def scale_snapper(
     """
     Snap frequency to the nearest midi note of the midi_nodes list, modulo 12.
 
-    :param scale: A list of integers representing the scale.
-        For example, (0, 2, 4, 5, 7, 9, 11) (the default) corresponds to the C major scale.
+    :param scale: A scale specification. Can be either:
+        - A string representing a scale (e.g., "C major", "D# minor pentatonic", "blues")
+          which uses tonal.notes to get the MIDI notes, or
+        - An iterable of integers representing the scale as MIDI note numbers modulo 12.
+          For example, (0, 2, 4, 5, 7, 9, 11) corresponds to the C major scale.
     :param tuning: The tuning frequency (default is 440 Hz).
         It corresponds to A4 (that is, the 69th MIDI note).
     :param octave_range: A tuple of two integers representing the range of octaves.
@@ -275,7 +286,37 @@ def scale_snapper(
     >>> snapper(467)  # doctest: +ELLIPSIS
     493.8833...
 
+    Using string scale specifications:
+
+    >>> blues_snapper = scale_snapper("C blues")
+    >>> blues_snapper(440)  # doctest: +ELLIPSIS
+    466.1637...
+
+    >>> minor_snapper = scale_snapper("A minor")
+    >>> minor_snapper(440.0)  # A4 is in A minor
+    440.0
+
     """
+    # Handle string scale specifications using tonal.notes
+    if isinstance(scale, str):
+        if not _HAS_TONAL_NOTES:
+            raise ImportError(
+                "The 'tonal.notes' module is required for string scale specifications. "
+                "Please install it or use an iterable of MIDI note numbers instead."
+            )
+        # Use tonal.notes to get both root note and semitone pattern
+        root_midi, scale_pattern = scale_params(scale, midi_notes=True)
+
+        # If a root note is specified, we need to transpose the scale pattern
+        if root_midi is not None:
+            # Transpose the scale pattern to start from the specified root
+            # The pattern gives us intervals from root, so we add the root's offset from C
+            root_offset = root_midi - 60  # 60 is C4 (middle C)
+            scale = tuple((note + root_offset) % 12 for note in scale_pattern)
+        else:
+            # No root specified, use the pattern as-is (defaults to C)
+            scale = scale_pattern
+
     _scale_frequencies = scale_frequencies(
         scale=scale, tuning=tuning, octave_range=octave_range
     )
