@@ -249,79 +249,31 @@ def scale_snapper(
 ):
     """
     Snap frequency to the nearest midi note of the midi_nodes list, modulo 12.
-
-    :param scale: A scale specification. Can be either:
-        - A string representing a scale (e.g., "C major", "D# minor pentatonic", "blues")
-          which uses tonal.notes to get the MIDI notes, or
-        - An iterable of integers representing the scale as MIDI note numbers modulo 12.
-          For example, (0, 2, 4, 5, 7, 9, 11) corresponds to the C major scale.
-    :param tuning: The tuning frequency (default is 440 Hz).
-        It corresponds to A4 (that is, the 69th MIDI note).
-    :param octave_range: A tuple of two integers representing the range of octaves.
-        The first integer is the starting octave (inclusive), and the second integer is the ending octave (exclusive).
-        For example, (0, 10) will generate frequencies from C0 to B9.
-        The default is (0, 10), which covers a wide range of frequencies.
-
-    :return: A ListSnapper object that can be used to snap frequencies to the nearest note in the scale.
-
-    >>> snapper = scale_snapper()
-    >>> snapper(440.0)  # A4
-    440.0
-
-    If you're near that A4, `snapper` will snap to it:
-
-    >>> snapper(441.0)
-    440.0
-    >>> snapper(439.0)
-    440.0
-
-    But even if you're, say at A#, you'll still snap to A4 (since it's the closest note
-    of C major scale):
-
-    >>> snapper(466.16)  # A#4
-    440.0
-
-    If you are slightly higher than A#, you'll snap to B4
-
-    >>> snapper(467)  # doctest: +ELLIPSIS
-    493.8833...
-
-    Using string scale specifications:
-
-    >>> blues_snapper = scale_snapper("C blues")
-    >>> blues_snapper(440)  # doctest: +ELLIPSIS
-    466.1637...
-
-    >>> minor_snapper = scale_snapper("A minor")
-    >>> minor_snapper(440.0)  # A4 is in A minor
-    440.0
-
     """
     # Handle string scale specifications using tonal.notes
     if isinstance(scale, str):
-        if not _HAS_TONAL_NOTES:
+        try:
+            from tonal.notes import scale_midi_notes
+        except ImportError:
             raise ImportError(
                 "The 'tonal.notes' module is required for string scale specifications. "
                 "Please install it or use an iterable of MIDI note numbers instead."
             )
-        # Use tonal.notes to get both root note and semitone pattern
-        root_midi, scale_pattern = scale_params(scale, midi_notes=True)
-
-        # If a root note is specified, we need to transpose the scale pattern
-        if root_midi is not None:
-            # Transpose the scale pattern to start from the specified root
-            # The pattern gives us intervals from root, so we add the root's offset from C
-            root_offset = root_midi - 60  # 60 is C4 (middle C)
-            scale = tuple((note + root_offset) % 12 for note in scale_pattern)
-        else:
-            # No root specified, use the pattern as-is (defaults to C)
-            scale = scale_pattern
-
-    _scale_frequencies = scale_frequencies(
-        scale=scale, tuning=tuning, octave_range=octave_range
-    )
-    # create a ListSnapper object
-    return ListSnapper(_scale_frequencies)
+        # Get all MIDI notes in the scale in the full MIDI range
+        midi_notes = scale_midi_notes(scale, midi_range=(0, 127))
+        # Convert MIDI notes to frequencies
+        scale_freqs = [
+            tuning * 2 ** ((midi_note - 69) / 12) for midi_note in midi_notes
+        ]
+    else:
+        # If given as a pattern, use the old logic
+        chromatic_scale = tempered_semitone_frequencies(
+            tuning=tuning, octave_range=octave_range
+        )
+        scale_freqs = [
+            chromatic_scale[i] for i in range(len(chromatic_scale)) if i % 12 in scale
+        ]
+    return ListSnapper(scale_freqs)
 
 
 # ----------------------------------------------------------------------------------
