@@ -8,7 +8,8 @@ import time
 import json
 import os
 import importlib
-from typing import Dict, Any, Optional, Generator, Union, Callable
+from typing import Dict, Any, Optional, Union
+from collections.abc import Generator, Callable
 import argparse
 
 
@@ -49,7 +50,7 @@ def _load_callback_from_string(callback_path: str) -> Callable:
         )
 
 
-def _load_arg_mapping(arg_mapping: Union[str, Dict]) -> Dict:
+def _load_arg_mapping(arg_mapping: str | dict) -> dict:
     """
     Load argument mapping from a string (file path or JSON string) or return the dict directly.
 
@@ -65,7 +66,7 @@ def _load_arg_mapping(arg_mapping: Union[str, Dict]) -> Dict:
     if isinstance(arg_mapping, str):
         # If it's a file path
         if os.path.isfile(arg_mapping):
-            with open(arg_mapping, "r") as f:
+            with open(arg_mapping) as f:
                 return json.load(f)
         # Otherwise treat as JSON string
         try:
@@ -104,10 +105,10 @@ def _initialize_pyo_synth(synth_func):
 def keyboard_reader(
     read_rate: float = 0.1,
     exit_key: str = "escape",
-    callback: Optional[Union[Callable, str]] = None,
-    arg_mapping: Optional[Union[Dict, str]] = None,
+    callback: Callable | str | None = None,
+    arg_mapping: dict | str | None = None,
     debug: bool = False,
-) -> Generator[Optional[Dict[str, Any]], None, None]:
+) -> Generator[dict[str, Any] | None, None, None]:
     """
     Generator that yields keyboard events at specified intervals.
 

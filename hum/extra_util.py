@@ -1,6 +1,6 @@
 """Extra utils that require more dependencies"""
 
-from typing import Iterable, Callable
+from collections.abc import Iterable, Callable
 from functools import partial
 
 

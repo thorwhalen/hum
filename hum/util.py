@@ -4,7 +4,8 @@ A few general utils
 
 from warnings import warn
 from inspect import getmodule
-from typing import Iterable, Iterator, Tuple, TypeVar, Callable, Iterable, Union
+from typing import Tuple, TypeVar, Union
+from collections.abc import Iterable, Iterator, Callable, Iterable
 from itertools import zip_longest
 from functools import partial
 
@@ -21,7 +22,7 @@ def return_none(*args, **kwargs):
 
 def simple_chunker(
     a: Iterable[T], chk_size: int, *, include_tail: bool = True
-) -> Iterator[Tuple[T, ...]]:
+) -> Iterator[tuple[T, ...]]:
     """
     Chunks an iterable into non-overlapping chunks of size `chk_size`.
 
@@ -220,7 +221,7 @@ def tempered_semitone_frequencies(
 
 
 def scale_frequencies(
-    scale: Iterable[Union[float, int]] = DFLT_SCALE_MIDI_NOTES,
+    scale: Iterable[float | int] = DFLT_SCALE_MIDI_NOTES,
     *,
     tuning=DFLT_TUNING,
     octave_range=DFLT_OCTAVE_RANGE,
@@ -242,7 +243,7 @@ def scale_frequencies(
 
 # TODO: Add string_to_scale_map argument to convert string to midi note array scale
 def scale_snapper(
-    scale: Union[str, Iterable[Union[float, int]]] = DFLT_SCALE_MIDI_NOTES,
+    scale: str | Iterable[float | int] = DFLT_SCALE_MIDI_NOTES,
     *,
     tuning=DFLT_TUNING,
     octave_range=DFLT_OCTAVE_RANGE,

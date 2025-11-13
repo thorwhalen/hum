@@ -6,8 +6,6 @@ import tempfile
 import inspect
 from inspect import Signature, Parameter
 from typing import (
-    Iterator,
-    Callable,
     Optional,
     Union,
     Dict,
@@ -16,9 +14,9 @@ from typing import (
     Set,
     Tuple,
     TypeVar,
-    Mapping,
     runtime_checkable,
 )
+from collections.abc import Iterator, Callable, Mapping
 from collections.abc import MutableMapping
 import time
 
@@ -41,8 +39,8 @@ DFLT_TIME_TIME = 0.025  # default time of pyo.SigTo, but should we default to 0 
 
 T = TypeVar("T")
 
-KnobsValue = Union[float, SigTo, Dict[str, float]]
-KnobsDict = Dict[str, KnobsValue]
+KnobsValue = Union[float, SigTo, dict[str, float]]
+KnobsDict = dict[str, KnobsValue]
 Recorder = Callable[[float, KnobsDict], None]
 SigToValueType = Union[float, int, PyoObject]
 _sigto_value_types = set(SigToValueType.__args__)
@@ -203,11 +201,12 @@ def round_event_times(events, round_to=0.001):
     )
 
 
-from typing import Union, Iterable, List
+from typing import Union, List
+from collections.abc import Iterable
 import re
 
 
-def ensure_identifier_list(x: Union[str, Iterable[str]]) -> List[str]:
+def ensure_identifier_list(x: str | Iterable[str]) -> list[str]:
     """
     Convert input to a list of valid Python identifiers.
 
@@ -362,7 +361,7 @@ class Knobs(MutableMapping):
 # -------------------------------------------------------------------------------------
 
 
-def add_default_dials(dials: Union[str, List[str]]):
+def add_default_dials(dials: str | list[str]):
     def decorator(func):
         func._default_dials = set(ensure_identifier_list(dials))
         return func
@@ -370,7 +369,7 @@ def add_default_dials(dials: Union[str, List[str]]):
     return decorator
 
 
-def add_default_settings(settings: Union[str, List[str]]):
+def add_default_settings(settings: str | list[str]):
     def decorator(func):
         func._default_settings = set(ensure_identifier_list(settings))
         return func
@@ -445,7 +444,7 @@ def synth_func_defaults(func: Callable) -> dict:
     return dict(name_and_default_pairs())
 
 
-def dict_to_sigto(d: Union[float, dict]) -> SigTo:
+def dict_to_sigto(d: float | dict) -> SigTo:
     """Create a SigTo object from a parameter spec dictionary or a number."""
     if isinstance(d, dict):
         # TODO: Simplify?
@@ -462,7 +461,7 @@ def dict_to_sigto(d: Union[float, dict]) -> SigTo:
 RecordFactory = Callable[[], Appendable]
 
 
-def sigto_to_dict(sigto: SigTo) -> Dict[str, float]:
+def sigto_to_dict(sigto: SigTo) -> dict[str, float]:
     """
     Convert a SigTo object to a dictionary.
     """
@@ -672,11 +671,11 @@ class Synth(MutableMapping):
         self,
         synth_func,
         *,
-        dials: Optional[Set[str]] = None,
-        settings: Optional[Set[str]] = None,
+        dials: set[str] | None = None,
+        settings: set[str] | None = None,
         sr=DFLT_PYO_SR,
         nchnls=DFLT_PYO_NCHNLS,
-        value_trans: Optional[Dict[str, Callable]] = None,
+        value_trans: dict[str, Callable] | None = None,
         record_on_start: bool = True,
         event_log_factory: RecordFactory = list,  # No argument factory that makes an Appendable
         audio="portaudio",
@@ -1007,7 +1006,7 @@ class Synth(MutableMapping):
         server = Server(**offline_server_kwargs).boot()
         table = NewTable(length=total_duration)
 
-        all_keys = set(k for _, knobs in control_events for k in knobs)
+        all_keys = {k for _, knobs in control_events for k in knobs}
         raw_params = {k: SigTo(value=0, time=0.01) for k in all_keys}
         synth_output = self._synth_func(**raw_params).out()
         table_recorder = TableRec(synth_output, table=table).play()
@@ -1041,7 +1040,7 @@ class Synth(MutableMapping):
 
     def play_events(
         self,
-        events: Union[Iterator[Union[KnobsDict, None]], List[Tuple[float, KnobsDict]]],
+        events: Iterator[KnobsDict | None] | list[tuple[float, KnobsDict]],
         *,
         idle_sleep_time=0.01,
         inter_event_delay=0,
