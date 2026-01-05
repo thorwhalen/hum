@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hum.pyo_util &mdash; hum 1.0.9 documentation</title>
+  <title>hum.pyo_util &mdash; hum 1.0.11 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=0abd802e"></script>
+      <script src="../../_static/documentation_options.js?v=9306f2a9"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -94,8 +94,6 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">inspect</span><span class="w"> </span><span class="kn">import</span> <span class="n">Signature</span><span class="p">,</span> <span class="n">Parameter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Iterator</span><span class="p">,</span>
-    <span class="n">Callable</span><span class="p">,</span>
     <span class="n">Optional</span><span class="p">,</span>
     <span class="n">Union</span><span class="p">,</span>
     <span class="n">Dict</span><span class="p">,</span>
@@ -104,9 +102,9 @@
     <span class="n">Set</span><span class="p">,</span>
     <span class="n">Tuple</span><span class="p">,</span>
     <span class="n">TypeVar</span><span class="p">,</span>
-    <span class="n">Mapping</span><span class="p">,</span>
     <span class="n">runtime_checkable</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Mapping</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">MutableMapping</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
@@ -129,8 +127,8 @@
 
 <span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">)</span>
 
-<span class="n">KnobsValue</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">SigTo</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span>
-<span class="n">KnobsDict</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">KnobsValue</span><span class="p">]</span>
+<span class="n">KnobsValue</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">SigTo</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span>
+<span class="n">KnobsDict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">KnobsValue</span><span class="p">]</span>
 <span class="n">Recorder</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">float</span><span class="p">,</span> <span class="n">KnobsDict</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span>
 <span class="n">SigToValueType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">PyoObject</span><span class="p">]</span>
 <span class="n">_sigto_value_types</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">SigToValueType</span><span class="o">.</span><span class="n">__args__</span><span class="p">)</span>
@@ -306,13 +304,14 @@
 
 
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 
 
 <div class="viewcode-block" id="ensure_identifier_list">
 <a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.ensure_identifier_list">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">ensure_identifier_list</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ensure_identifier_list</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert input to a list of valid Python identifiers.</span>
 
@@ -474,7 +473,7 @@
 <span class="c1"># -------------------------------------------------------------------------------------</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">add_default_dials</span><span class="p">(</span><span class="n">dials</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_default_dials</span><span class="p">(</span><span class="n">dials</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
         <span class="n">func</span><span class="o">.</span><span class="n">_default_dials</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ensure_identifier_list</span><span class="p">(</span><span class="n">dials</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">func</span>
@@ -482,7 +481,7 @@
     <span class="k">return</span> <span class="n">decorator</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">add_default_settings</span><span class="p">(</span><span class="n">settings</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_default_settings</span><span class="p">(</span><span class="n">settings</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
         <span class="n">func</span><span class="o">.</span><span class="n">_default_settings</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ensure_identifier_list</span><span class="p">(</span><span class="n">settings</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">func</span>
@@ -571,7 +570,7 @@
 
 <div class="viewcode-block" id="dict_to_sigto">
 <a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.dict_to_sigto">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">dict_to_sigto</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">SigTo</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dict_to_sigto</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SigTo</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a SigTo object from a parameter spec dictionary or a number.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="c1"># TODO: Simplify?</span>
@@ -591,7 +590,7 @@
 
 <div class="viewcode-block" id="sigto_to_dict">
 <a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.sigto_to_dict">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">sigto_to_dict</span><span class="p">(</span><span class="n">sigto</span><span class="p">:</span> <span class="n">SigTo</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sigto_to_dict</span><span class="p">(</span><span class="n">sigto</span><span class="p">:</span> <span class="n">SigTo</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert a SigTo object to a dictionary.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -813,11 +812,11 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">synth_func</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">dials</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">settings</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dials</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">settings</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">sr</span><span class="o">=</span><span class="n">DFLT_PYO_SR</span><span class="p">,</span>
         <span class="n">nchnls</span><span class="o">=</span><span class="n">DFLT_PYO_NCHNLS</span><span class="p">,</span>
-        <span class="n">value_trans</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">value_trans</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">record_on_start</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">event_log_factory</span><span class="p">:</span> <span class="n">RecordFactory</span> <span class="o">=</span> <span class="nb">list</span><span class="p">,</span>  <span class="c1"># No argument factory that makes an Appendable</span>
         <span class="n">audio</span><span class="o">=</span><span class="s2">&quot;portaudio&quot;</span><span class="p">,</span>
@@ -1168,7 +1167,7 @@
         <span class="n">server</span> <span class="o">=</span> <span class="n">Server</span><span class="p">(</span><span class="o">**</span><span class="n">offline_server_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">boot</span><span class="p">()</span>
         <span class="n">table</span> <span class="o">=</span> <span class="n">NewTable</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="n">total_duration</span><span class="p">)</span>
 
-        <span class="n">all_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">knobs</span> <span class="ow">in</span> <span class="n">control_events</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">knobs</span><span class="p">)</span>
+        <span class="n">all_keys</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">knobs</span> <span class="ow">in</span> <span class="n">control_events</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">knobs</span><span class="p">}</span>
         <span class="n">raw_params</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">SigTo</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">all_keys</span><span class="p">}</span>
         <span class="n">synth_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_synth_func</span><span class="p">(</span><span class="o">**</span><span class="n">raw_params</span><span class="p">)</span><span class="o">.</span><span class="n">out</span><span class="p">()</span>
         <span class="n">table_recorder</span> <span class="o">=</span> <span class="n">TableRec</span><span class="p">(</span><span class="n">synth_output</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">play</span><span class="p">()</span>
@@ -1205,7 +1204,7 @@
 <a class="viewcode-back" href="../../module_docs/hum/pyo_util.html#hum.pyo_util.Synth.play_events">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">play_events</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">events</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterator</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">KnobsDict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]],</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">KnobsDict</span><span class="p">]]],</span>
+        <span class="n">events</span><span class="p">:</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">KnobsDict</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">KnobsDict</span><span class="p">]],</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">idle_sleep_time</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
         <span class="n">inter_event_delay</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>

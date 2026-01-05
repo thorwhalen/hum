@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hum.util &mdash; hum 1.0.9 documentation</title>
+  <title>hum.util &mdash; hum 1.0.11 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=0abd802e"></script>
+      <script src="../../_static/documentation_options.js?v=9306f2a9"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -92,7 +92,8 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">inspect</span><span class="w"> </span><span class="kn">import</span> <span class="n">getmodule</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">zip_longest</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
 
@@ -114,7 +115,7 @@
 <a class="viewcode-back" href="../../module_docs/hum/util.html#hum.util.simple_chunker">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">simple_chunker</span><span class="p">(</span>
     <span class="n">a</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">chk_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">include_tail</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Chunks an iterable into non-overlapping chunks of size `chk_size`.</span>
 
@@ -331,7 +332,7 @@
 <div class="viewcode-block" id="scale_frequencies">
 <a class="viewcode-back" href="../../module_docs/hum/util.html#hum.util.scale_frequencies">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">scale_frequencies</span><span class="p">(</span>
-    <span class="n">scale</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="n">DFLT_SCALE_MIDI_NOTES</span><span class="p">,</span>
+    <span class="n">scale</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">DFLT_SCALE_MIDI_NOTES</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">tuning</span><span class="o">=</span><span class="n">DFLT_TUNING</span><span class="p">,</span>
     <span class="n">octave_range</span><span class="o">=</span><span class="n">DFLT_OCTAVE_RANGE</span><span class="p">,</span>
@@ -356,7 +357,7 @@
 <div class="viewcode-block" id="scale_snapper">
 <a class="viewcode-back" href="../../module_docs/hum/util.html#hum.util.scale_snapper">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">scale_snapper</span><span class="p">(</span>
-    <span class="n">scale</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">DFLT_SCALE_MIDI_NOTES</span><span class="p">,</span>
+    <span class="n">scale</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">DFLT_SCALE_MIDI_NOTES</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">tuning</span><span class="o">=</span><span class="n">DFLT_TUNING</span><span class="p">,</span>
     <span class="n">octave_range</span><span class="o">=</span><span class="n">DFLT_OCTAVE_RANGE</span><span class="p">,</span>
