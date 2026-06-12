@@ -23,7 +23,6 @@ dependencies = [
     "matplotlib",
     "numpy",
     "recode",
-    "pyo",
     "scipy",
     "tonal",
 ]
@@ -35,6 +34,12 @@ text = "MIT"
 Homepage = "https://github.com/thorwhalen/hum"
 
 [project.optional-dependencies]
+# pyo (the audio engine) needs system libraries (portaudio, portmidi) and has no
+# universal wheels, so it is an opt-in extra: `pip install hum[audio]`. The
+# package imports without it; the Synth/synthesis modules require it.
+audio = [
+    "pyo",
+]
 testing = []
 
 [tool.ruff]
@@ -132,6 +137,12 @@ exclude_paths = [
     "scrap",
     "docsrc",
     "hum/scrap",
+    # The pyo-backed modules require the optional `audio` extra (system audio
+    # libs); skip them in the default (no-pyo) CI doctest collection.
+    "hum/pyo_util.py",
+    "hum/pyo_synths.py",
+    "hum/synth_funcs.py",
+    "hum/pyo_util_examples.py",
 ]
 test_on_windows = true
 

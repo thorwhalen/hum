@@ -1,8 +1,13 @@
 import time
+import os
 import pytest
+
+# The audio engine `pyo` is an optional extra (`pip install hum[audio]`); skip
+# this whole module at collection time when it is not installed (e.g. in CI).
+pytest.importorskip("pyo")
+
 from pyo import Sine
 import recode
-import os
 
 from hum.pyo_util import Synth, DFLT_PYO_SR, round_event_times
 from hum.extra_util import estimate_frequencies
