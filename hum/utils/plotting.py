@@ -37,7 +37,7 @@ def plot_wf(
         _ax.plot(
             offset_s + linspace(start=0, stop=len(wf) / float(sr), num=len(wf)),
             wf,
-            **kwargs
+            **kwargs,
         )
         plt.margins(x=0)
     else:
