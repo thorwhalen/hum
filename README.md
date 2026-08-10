@@ -32,15 +32,17 @@ Let's start with a simple sine wave synthesizer that demonstrates the basic func
 ```python
 import time
 from pyo import Sine
-import recode 
+import recode
 from hum.pyo_util import Synth, DFLT_PYO_SR, round_event_times
 from hum.extra_util import estimate_frequencies
 
 base_freq = 220
 
+
 # Make a synth that plays a simple sine wave
 def simple_sine(freq=base_freq):
     return Sine(freq=freq)
+
 
 s = Synth(simple_sine)
 
@@ -52,7 +54,7 @@ with s:
     time.sleep(1)  # let base_freq play for a second
     s(freq=freq_sequence[1])  # Change to 330 Hz
     time.sleep(1)  # play that for a second
-    s['freq'] = freq_sequence[2]  # Change to 440 Hz (alternative syntax)
+    s["freq"] = freq_sequence[2]  # Change to 440 Hz (alternative syntax)
     time.sleep(1)  # play that for a second
     # The context manager exits here, which stops the synth
 ```
@@ -72,12 +74,12 @@ expected_events = [
         0.0,
         {
             # First event contains the synth's initial parameters
-            'freq': {'value': 220, 'time': 0.025, 'mul': 1, 'add': 0},
+            "freq": {"value": 220, "time": 0.025, "mul": 1, "add": 0},
         },
     ),
-    (1.0, {'freq': 330.0}),  # Second event at 1.0 seconds
-    (2.0, {'freq': 440}),    # Third event at 2.0 seconds
-    (3.0, {}),               # Final event marks the end of recording
+    (1.0, {"freq": 330.0}),  # Second event at 1.0 seconds
+    (2.0, {"freq": 440}),  # Third event at 2.0 seconds
+    (3.0, {}),  # Final event marks the end of recording
 ]
 
 # Verify that we got what we expected
@@ -121,14 +123,17 @@ from pyo import LFO, Adsr, Sine
 from hum.pyo_util import Synth
 from time import sleep
 
+
 # Note that here we explicitly tell Synth what arguments are "dials" and what are "settings"
-@Synth(dials='freq', settings='waveform attack')
-def simple_waveform_synth(freq=440, attack=0.01, waveform='sine'):
-    env = Adsr(attack=attack, decay=0.1, sustain=0.8, release=0.1, dur=0, mul=0.5).play()
+@Synth(dials="freq", settings="waveform attack")
+def simple_waveform_synth(freq=440, attack=0.01, waveform="sine"):
+    env = Adsr(
+        attack=attack, decay=0.1, sustain=0.8, release=0.1, dur=0, mul=0.5
+    ).play()
     wave = {
-        'sine': Sine,
-        'triangle': lambda freq, mul: LFO(freq=freq, type=3, mul=mul),
-        'square': lambda freq, mul: LFO(freq=freq, type=1, mul=mul),
+        "sine": Sine,
+        "triangle": lambda freq, mul: LFO(freq=freq, type=3, mul=mul),
+        "square": lambda freq, mul: LFO(freq=freq, type=1, mul=mul),
     }.get(waveform, Sine)
     return wave(freq=freq, mul=env)
 ```
@@ -150,11 +155,11 @@ simple_waveform_synth(freq=440 * 3 / 2)  # Change to 660 Hz
 # The sound continues to play, but now at a different frequency
 
 # Change multiple parameters at once
-simple_waveform_synth(freq=440, waveform='triangle')
+simple_waveform_synth(freq=440, waveform="triangle")
 # Now playing a triangle wave at 440 Hz
 
 # Change the waveform and attack time
-simple_waveform_synth(waveform='square', attack=0.5)
+simple_waveform_synth(waveform="square", attack=0.5)
 # Note: You won't hear the change in attack time until the next note is played!
 
 # Stop the synth when done
@@ -168,7 +173,7 @@ Note that when you restart a synth, it retains its last state:
 simple_waveform_synth.start()  # Still has square waveform and attack=0.5
 
 # Change back to sine wave
-simple_waveform_synth(waveform='sine')  # Note the attack is still 0.5
+simple_waveform_synth(waveform="sine")  # Note the attack is still 0.5
 
 # Stop the synth when done
 simple_waveform_synth.stop()
@@ -185,25 +190,29 @@ from pyo import LFO, Adsr, Sine
 from hum.pyo_util import Synth
 from time import sleep
 
-@Synth(dials='freq', settings='waveform attack')
-def simple_waveform_synth(freq=440, attack=0.01, waveform='sine'):
-    env = Adsr(attack=attack, decay=0.1, sustain=0.8, release=0.1, dur=0, mul=0.5).play()
+
+@Synth(dials="freq", settings="waveform attack")
+def simple_waveform_synth(freq=440, attack=0.01, waveform="sine"):
+    env = Adsr(
+        attack=attack, decay=0.1, sustain=0.8, release=0.1, dur=0, mul=0.5
+    ).play()
     wave = {
-        'sine': Sine,
-        'triangle': lambda freq, mul: LFO(freq=freq, type=3, mul=mul),
-        'square': lambda freq, mul: LFO(freq=freq, type=1, mul=mul),
+        "sine": Sine,
+        "triangle": lambda freq, mul: LFO(freq=freq, type=3, mul=mul),
+        "square": lambda freq, mul: LFO(freq=freq, type=1, mul=mul),
     }.get(waveform, Sine)
     return wave(freq=freq, mul=env)
+
 
 with simple_waveform_synth as s:
     sleep(1)  # Play default settings for a second
     s(freq=440 * 3 / 2)  # Change to 660 Hz
-    sleep(1) 
-    s(freq=440, waveform='triangle')  # Change to triangle wave at 440 Hz
+    sleep(1)
+    s(freq=440, waveform="triangle")  # Change to triangle wave at 440 Hz
     sleep(0.5)  # Shorter wait this time
-    s(waveform='square', attack=0.5)  # Change to square wave with longer attack
+    s(waveform="square", attack=0.5)  # Change to square wave with longer attack
     sleep(2)  # Wait a bit longer
-    s(waveform='sine')  # Change back to sine wave (attack still 0.5)
+    s(waveform="sine")  # Change back to sine wave (attack still 0.5)
     sleep(1)  # Wait for the final change to be heard
 ```
 
@@ -220,18 +229,22 @@ This gives you a list of timestamped parameter changes:
 
 ```python
 [
-  (0,
-   {'freq': {'value': 440, 'time': 0.025, 'mul': 1, 'add': 0},
-    'attack': 0.01,
-    'waveform': 'sine'}),
-  (1.0052499771118164, {'freq': 660.0}),
-  (2.007974863052368, {'freq': 440, 'waveform': 'triangle'}),
-  (2.0084967613220215, {'waveform': 'triangle'}),
-  (2.515920877456665, {'waveform': 'square', 'attack': 0.5}),
-  (2.518988609313965, {'waveform': 'square', 'attack': 0.5}),
-  (4.524500846862793, {'waveform': 'sine'}),
-  (4.525563716888428, {'waveform': 'sine'}),
-  (5.528840780258179, {})
+    (
+        0,
+        {
+            "freq": {"value": 440, "time": 0.025, "mul": 1, "add": 0},
+            "attack": 0.01,
+            "waveform": "sine",
+        },
+    ),
+    (1.0052499771118164, {"freq": 660.0}),
+    (2.007974863052368, {"freq": 440, "waveform": "triangle"}),
+    (2.0084967613220215, {"waveform": "triangle"}),
+    (2.515920877456665, {"waveform": "square", "attack": 0.5}),
+    (2.518988609313965, {"waveform": "square", "attack": 0.5}),
+    (4.524500846862793, {"waveform": "sine"}),
+    (4.525563716888428, {"waveform": "sine"}),
+    (5.528840780258179, {}),
 ]
 ```
 
@@ -247,18 +260,22 @@ This gives you a cleaner view:
 
 ```python
 [
-  (0.0,
-   {'freq': {'value': 440, 'time': 0.025, 'mul': 1, 'add': 0},
-    'attack': 0.01,
-    'waveform': 'sine'}),
-  (1.0, {'freq': 660.0}),
-  (2.0, {'freq': 440, 'waveform': 'triangle'}),
-  (2.0, {'waveform': 'triangle'}),
-  (2.5, {'waveform': 'square', 'attack': 0.5}),
-  (2.5, {'waveform': 'square', 'attack': 0.5}),
-  (4.5, {'waveform': 'sine'}),
-  (4.5, {'waveform': 'sine'}),
-  (5.5, {})
+    (
+        0.0,
+        {
+            "freq": {"value": 440, "time": 0.025, "mul": 1, "add": 0},
+            "attack": 0.01,
+            "waveform": "sine",
+        },
+    ),
+    (1.0, {"freq": 660.0}),
+    (2.0, {"freq": 440, "waveform": "triangle"}),
+    (2.0, {"waveform": "triangle"}),
+    (2.5, {"waveform": "square", "attack": 0.5}),
+    (2.5, {"waveform": "square", "attack": 0.5}),
+    (4.5, {"waveform": "sine"}),
+    (4.5, {"waveform": "sine"}),
+    (5.5, {}),
 ]
 ```
 
@@ -272,19 +289,19 @@ events = [
     (
         0.0,
         {
-            'freq': {'value': 440, 'time': 0.025, 'mul': 1, 'add': 0},
-            'attack': 0.01,
-            'waveform': 'sine',
+            "freq": {"value": 440, "time": 0.025, "mul": 1, "add": 0},
+            "attack": 0.01,
+            "waveform": "sine",
         },
     ),
-    (1.0, {'freq': 660.0}),
-    (2.0, {'freq': 440, 'waveform': 'triangle'}),
-    (2.0, {'waveform': 'triangle'}),
-    (2.5, {'waveform': 'square', 'attack': 0.5}),
-    (2.5, {'waveform': 'square', 'attack': 0.5}),
-    (4.5, {'waveform': 'sine'}),
-    (4.5, {'waveform': 'sine'}),
-    (5.5, {}), 
+    (1.0, {"freq": 660.0}),
+    (2.0, {"freq": 440, "waveform": "triangle"}),
+    (2.0, {"waveform": "triangle"}),
+    (2.5, {"waveform": "square", "attack": 0.5}),
+    (2.5, {"waveform": "square", "attack": 0.5}),
+    (4.5, {"waveform": "sine"}),
+    (4.5, {"waveform": "sine"}),
+    (5.5, {}),
 ]
 ```
 
@@ -293,15 +310,18 @@ events = [
 You can replay any event sequence through a compatible synth:
 
 ```python
-@Synth(dials='freq', settings='waveform attack')
-def simple_waveform_synth(freq=440, attack=0.01, waveform='sine'):
-    env = Adsr(attack=attack, decay=0.1, sustain=0.8, release=0.1, dur=0, mul=0.5).play()
+@Synth(dials="freq", settings="waveform attack")
+def simple_waveform_synth(freq=440, attack=0.01, waveform="sine"):
+    env = Adsr(
+        attack=attack, decay=0.1, sustain=0.8, release=0.1, dur=0, mul=0.5
+    ).play()
     wave = {
-        'sine': Sine,
-        'triangle': lambda freq, mul: LFO(freq=freq, type=3, mul=mul),
-        'square': lambda freq, mul: LFO(freq=freq, type=1, mul=mul),
+        "sine": Sine,
+        "triangle": lambda freq, mul: LFO(freq=freq, type=3, mul=mul),
+        "square": lambda freq, mul: LFO(freq=freq, type=1, mul=mul),
     }.get(waveform, Sine)
     return wave(freq=freq, mul=env)
+
 
 # Replay the event sequence
 simple_waveform_synth.replay_events(events)
@@ -312,7 +332,7 @@ simple_waveform_synth.replay_events(events)
 You can render events to audio without real-time playback:
 
 ```python
-import recode 
+import recode
 
 # Render events to WAV format bytes
 wav_bytes = simple_waveform_synth.render_events(events)
@@ -321,7 +341,8 @@ wav_bytes = simple_waveform_synth.render_events(events)
 wf, sr = recode.decode_wav_bytes(wav_bytes)
 
 # Visualize the waveform
-from hum import disp_wf 
+from hum import disp_wf
+
 disp_wf(wf, sr)
 ```
 
@@ -336,10 +357,10 @@ from hum.pyo_util import ReplayEvents
 
 # Get your events, either from a recording or created manually
 events = [
-    (0.0, {'freq': {'value': 440, 'time': 0.025, 'mul': 1, 'add': 0}}),
-    (1.0, {'freq': 330.0}),
-    (2.0, {'freq': 440}),
-    (3.0, {})
+    (0.0, {"freq": {"value": 440, "time": 0.025, "mul": 1, "add": 0}}),
+    (1.0, {"freq": 330.0}),
+    (2.0, {"freq": 440}),
+    (3.0, {}),
 ]
 
 # Create a replay generator and iterate through it
@@ -359,7 +380,7 @@ You can manipulate event sequences programmatically:
 
 ```python
 # Create a modified version by changing timestamps
-faster_events = [(t/2, params) for t, params in events]
+faster_events = [(t / 2, params) for t, params in events]
 
 # Create a reversed sequence
 reversed_events = [(events[-1][0] - t, params) for t, params in events]
@@ -367,22 +388,24 @@ reversed_events = [(events[-1][0] - t, params) for t, params in events]
 # Combine sequences by appending
 melody = events + [(t + events[-1][0], params) for t, params in events]
 
+
 # Transpose a sequence by modifying frequency values
 def transpose(events, semitones):
-    factor = 2 ** (semitones/12)
+    factor = 2 ** (semitones / 12)
     result = []
     for t, params in events:
         new_params = params.copy()
-        if 'freq' in new_params:
-            if isinstance(new_params['freq'], dict):
-                new_params['freq'] = {
-                    k: v * factor if k == 'value' else v
-                    for k, v in new_params['freq'].items()
+        if "freq" in new_params:
+            if isinstance(new_params["freq"], dict):
+                new_params["freq"] = {
+                    k: v * factor if k == "value" else v
+                    for k, v in new_params["freq"].items()
                 }
             else:
-                new_params['freq'] = new_params['freq'] * factor
+                new_params["freq"] = new_params["freq"] * factor
         result.append((t, new_params))
     return result
+
 
 # Transpose up a perfect fifth (7 semitones)
 fifth_up = transpose(events, 7)
@@ -395,19 +418,19 @@ You can create more sophisticated synthesis graphs by combining Pyo objects:
 ```python
 from pyo import Sine, Delay, Chorus, Harmonizer, MoogLP
 
-@Synth(dials='freq cutoff', settings='delay_time num_voices')
+
+@Synth(dials="freq cutoff", settings="delay_time num_voices")
 def complex_synth(freq=440, cutoff=2000, delay_time=0.25, num_voices=3):
     # Create a sine oscillator
     osc = Sine(freq=freq, mul=0.3)
-    
+
     # Add harmonizer for multiple voices
     harm = Harmonizer(osc, transpo=[0, 7, 12][:num_voices], feedback=0.1)
-    
+
     # Add a filter
     filt = MoogLP(harm, freq=cutoff, res=0.3)
 
     # etc...
-    
 ```
 
 ## Hooking a Synth to Event Streams
@@ -458,23 +481,19 @@ key_mapping = {
     "g": 392.00,  # G4
     "h": 440.00,  # A4
     "j": 493.88,  # B4
-    "k": 523.25   # C5
+    "k": 523.25,  # C5
 }
 
 # Create a keyboard reader with the mapping
 reader = keyboard_reader(
-    callback=sine,
-    arg_mapping=key_mapping,
-    exit_key="escape",
-    read_rate=0.1,
-    debug=True
+    callback=sine, arg_mapping=key_mapping, exit_key="escape", read_rate=0.1, debug=True
 )
 
 # Process keyboard events
 for event in reader:
     if event:
         print(f"Key pressed: {event['key']}")
-    if event and event['key'] == 'escape':
+    if event and event["key"] == "escape":
         break
 ```
 
@@ -487,14 +506,11 @@ You can map keys to complex parameter dictionaries for more control:
 advanced_mapping = {
     "a": {"freq": 261.63, "waveform": "sine"},
     "s": {"freq": 293.66, "waveform": "triangle"},
-    "d": {"freq": 329.63, "waveform": "square", "attack": 0.2}
+    "d": {"freq": 329.63, "waveform": "square", "attack": 0.2},
 }
 
 # Use with a more complex synth
-reader = keyboard_reader(
-    callback=simple_waveform_synth,
-    arg_mapping=advanced_mapping
-)
+reader = keyboard_reader(callback=simple_waveform_synth, arg_mapping=advanced_mapping)
 ```
 
 ### How It Works Under the Hood

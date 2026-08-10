@@ -21,8 +21,8 @@ from pyo import Sine
 from hum.pyo_util import Synth
 
 s = Synth(lambda freq=220: Sine(freq=freq))
-with s:                 # context manager starts/stops the audio server
-    s(freq=330)         # change a knob in real time  (or  s['freq'] = 330)
+with s:  # context manager starts/stops the audio server
+    s(freq=330)  # change a knob in real time  (or  s['freq'] = 330)
 ```
 
 ## Dials vs settings
@@ -31,20 +31,20 @@ Decorate to declare which params are smoothly-interpolated **dials** vs
 graph-rebuilding **settings**:
 
 ```python
-@Synth(dials='freq', settings='waveform')
-def my_synth(freq=440, waveform='sine'):
-    ...
+@Synth(dials="freq", settings="waveform")
+def my_synth(freq=440, waveform="sine"): ...
 ```
 
 ## Record, replay, render
 
 ```python
-events = s.get_recording()                     # [(t, {param: value}), ...]
+events = s.get_recording()  # [(t, {param: value}), ...]
 from hum.pyo_util import round_event_times
+
 events = list(round_event_times(events, 0.1))  # tidy timestamps
 
-s.replay_events(events)                         # play them back
-wav_bytes = s.render_events(events)             # render to WAV bytes (no real-time)
+s.replay_events(events)  # play them back
+wav_bytes = s.render_events(events)  # render to WAV bytes (no real-time)
 ```
 
 Event sequences are plain data — transpose, reverse, concatenate, or time-scale
