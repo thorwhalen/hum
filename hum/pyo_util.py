@@ -812,6 +812,11 @@ class Synth(MutableMapping):
 
         This happens when non-SigTo parameters are updated, requiring a complete
         reconstruction of the synthesis graph.
+
+        Note: This method does NOT record events. Recording happens once, in
+        ``update()`` — the single logging chokepoint — which already includes
+        the rebuild (settings) updates in the event it records. Recording here
+        too produced near-duplicate events (issue #5).
         """
         # Stop current graph
         if self.output is not None:
@@ -853,10 +858,6 @@ class Synth(MutableMapping):
             ) from e
 
         self.output.out()
-
-        # Record rebuild if recording is active
-        if self._recording:
-            self._record_update(rebuild_updates)
 
     @property
     def _initial_knob_params(self):

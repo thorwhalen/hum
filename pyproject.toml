@@ -84,6 +84,7 @@ convention = "google"
 minversion = "6.0"
 testpaths = [
     "tests",
+    "hum/tests",
 ]
 doctest_optionflags = [
     "NORMALIZE_WHITESPACE",
