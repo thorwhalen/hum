@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hum.examples.keyboard_control &mdash; hum 1.0.13 documentation</title>
+  <title>hum.examples.keyboard_control &mdash; hum 1.0.14 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=0086fcda"></script>
+      <script src="../../../_static/documentation_options.js?v=cb0f6c17"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -25,7 +25,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="hum.examples.pyo_util_examples" href="pyo_util_examples.html" />
-    <link rel="prev" title="hum" href="../../hum.html" /> 
+    <link rel="prev" title="hum.event_params" href="../event_params.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -50,6 +50,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../hum.html">hum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../event_params.html">hum.event_params</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">hum.examples.keyboard_control</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#hum.examples.keyboard_control.keyboard_reader"><code class="docutils literal notranslate"><span class="pre">keyboard_reader()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#hum.examples.keyboard_control.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
@@ -121,8 +122,8 @@ a path to a JSON file, or a JSON string.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">reader</span> <span class="o">=</span> <span class="n">keyboard_reader</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="k">if</span> <span class="n">event</span><span class="p">:</span>
-<span class="gp">... </span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Key pressed: </span><span class="si">{</span><span class="n">event</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="gp">... </span>    <span class="k">if</span> <span class="n">event</span> <span class="ow">and</span> <span class="n">event</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;escape&#39;</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Key pressed: </span><span class="si">{</span><span class="n">event</span><span class="p">[</span><span class="s1">'key'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="n">event</span> <span class="ow">and</span> <span class="n">event</span><span class="p">[</span><span class="s1">'key'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'escape'</span><span class="p">:</span>
 <span class="gp">... </span>        <span class="k">break</span>
 </pre></div>
 </div>
@@ -140,7 +141,7 @@ a path to a JSON file, or a JSON string.</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../../hum.html" class="btn btn-neutral float-left" title="hum" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../event_params.html" class="btn btn-neutral float-left" title="hum.event_params" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="pyo_util_examples.html" class="btn btn-neutral float-right" title="hum.examples.pyo_util_examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

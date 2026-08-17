@@ -3,6 +3,7 @@
    :caption: Contents:
 
    module_docs/hum
+   module_docs/hum/event_params
    module_docs/hum/examples/keyboard_control
    module_docs/hum/examples/pyo_util_examples
    module_docs/hum/extra_util

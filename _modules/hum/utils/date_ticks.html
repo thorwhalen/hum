@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hum.utils.date_ticks &mdash; hum 1.0.13 documentation</title>
+  <title>hum.utils.date_ticks &mdash; hum 1.0.14 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=0086fcda"></script>
+      <script src="../../../_static/documentation_options.js?v=cb0f6c17"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -47,6 +47,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum.html">hum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/event_params.html">hum.event_params</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/examples/keyboard_control.html">hum.examples.keyboard_control</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/examples/pyo_util_examples.html">hum.examples.pyo_util_examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/extra_util.html">hum.extra_util</a></li>
@@ -86,25 +87,25 @@
            <div itemprop="articleBody">
              
   <h1>Source code for hum.utils.date_ticks</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Date utils</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span> <span class="k">as</span> <span class="n">dt</span>
 
 <span class="n">unit_str_to_unit_in_seconds</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;day&quot;</span><span class="p">:</span> <span class="mi">3600</span> <span class="o">*</span> <span class="mi">24</span><span class="p">,</span>
-    <span class="s2">&quot;hour&quot;</span><span class="p">:</span> <span class="mi">3600</span><span class="p">,</span>
-    <span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="mi">3600</span><span class="p">,</span>
-    <span class="s2">&quot;minute&quot;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span>
-    <span class="s2">&quot;mn&quot;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span>
-    <span class="s2">&quot;second&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="s2">&quot;millisecond&quot;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">,</span>
-    <span class="s2">&quot;ms&quot;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">,</span>
-    <span class="s2">&quot;microsecond&quot;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">,</span>
-    <span class="s2">&quot;us&quot;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">,</span>
+    <span class="s2">"day"</span><span class="p">:</span> <span class="mi">3600</span> <span class="o">*</span> <span class="mi">24</span><span class="p">,</span>
+    <span class="s2">"hour"</span><span class="p">:</span> <span class="mi">3600</span><span class="p">,</span>
+    <span class="s2">"h"</span><span class="p">:</span> <span class="mi">3600</span><span class="p">,</span>
+    <span class="s2">"minute"</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span>
+    <span class="s2">"mn"</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span>
+    <span class="s2">"second"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">"s"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">"millisecond"</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">,</span>
+    <span class="s2">"ms"</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">,</span>
+    <span class="s2">"microsecond"</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">,</span>
+    <span class="s2">"us"</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">,</span>
 <span class="p">}</span>
 
 <span class="n">unit_in_seconds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
@@ -123,14 +124,14 @@
 <span class="p">)</span>
 
 <span class="n">strftime_format_for_unit</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">30</span><span class="p">:</span> <span class="s2">&quot;%y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span>  <span class="c1"># month</span>
-    <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">7</span><span class="p">:</span> <span class="s2">&quot;%b </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span>  <span class="c1"># week</span>
-    <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">24</span><span class="p">:</span> <span class="s2">&quot;%b </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span>  <span class="c1"># day</span>
-    <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">-%H:%M&quot;</span><span class="p">,</span>  <span class="c1"># hour</span>
-    <span class="mi">60</span><span class="p">:</span> <span class="s2">&quot;%H:%M:%S&quot;</span><span class="p">,</span>  <span class="c1"># minute</span>
-    <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;%M:%S.</span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">,</span>  <span class="c1"># second</span>
-    <span class="mf">1e-3</span><span class="p">:</span> <span class="s2">&quot;%S&#39;&#39;</span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">,</span>  <span class="c1"># millisecond</span>
-    <span class="mf">1e-6</span><span class="p">:</span> <span class="s2">&quot;%S&#39;&#39;</span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">,</span>  <span class="c1"># microsecond</span>
+    <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">30</span><span class="p">:</span> <span class="s2">"%y-%m-</span><span class="si">%d</span><span class="s2">"</span><span class="p">,</span>  <span class="c1"># month</span>
+    <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">7</span><span class="p">:</span> <span class="s2">"%b </span><span class="si">%d</span><span class="s2">"</span><span class="p">,</span>  <span class="c1"># week</span>
+    <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">24</span><span class="p">:</span> <span class="s2">"%b </span><span class="si">%d</span><span class="s2">"</span><span class="p">,</span>  <span class="c1"># day</span>
+    <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span><span class="p">:</span> <span class="s2">"</span><span class="si">%d</span><span class="s2">-%H:%M"</span><span class="p">,</span>  <span class="c1"># hour</span>
+    <span class="mi">60</span><span class="p">:</span> <span class="s2">"%H:%M:%S"</span><span class="p">,</span>  <span class="c1"># minute</span>
+    <span class="mi">1</span><span class="p">:</span> <span class="s2">"%M:%S.</span><span class="si">%f</span><span class="s2">"</span><span class="p">,</span>  <span class="c1"># second</span>
+    <span class="mf">1e-3</span><span class="p">:</span> <span class="s2">"%S''</span><span class="si">%f</span><span class="s2">"</span><span class="p">,</span>  <span class="c1"># millisecond</span>
+    <span class="mf">1e-6</span><span class="p">:</span> <span class="s2">"%S''</span><span class="si">%f</span><span class="s2">"</span><span class="p">,</span>  <span class="c1"># microsecond</span>
 <span class="p">}</span>
 
 
@@ -143,17 +144,17 @@
 <div class="viewcode-block" id="largest_unit_that_changes_at_every_tick">
 <a class="viewcode-back" href="../../../module_docs/hum/utils/date_ticks.html#hum.utils.date_ticks.largest_unit_that_changes_at_every_tick">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">largest_unit_that_changes_at_every_tick</span><span class="p">(</span><span class="n">ticks</span><span class="p">,</span> <span class="n">ticks_unit</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Returns the largest time unit for which each time tick changes.</span>
 <span class="sd">    :param ticks: The list of ticks</span>
 <span class="sd">    :param ticks_unit: The unit of the elements of ticks, expressed in seconds. For example, if the list</span>
 <span class="sd">        contains hours, unit=3600, if minutes, unit=60, if seconds unit=1,</span>
 <span class="sd">        if milliseconds unit=0.001.</span>
-<span class="sd">            Note: You can also use a string to express the unit, as long as it&#39;s recognized by the</span>
+<span class="sd">            Note: You can also use a string to express the unit, as long as it's recognized by the</span>
 <span class="sd">            unit_str_to_unit_in_seconds dict. Keys recognized:</span>
-<span class="sd">            [&#39;day&#39;, &#39;hour&#39;, &#39;h&#39;, &#39;minute&#39;, &#39;mn&#39;, &#39;second&#39;, &#39;s&#39;, &#39;millisecond&#39;, &#39;ms&#39;, &#39;microsecond&#39;, &#39;us&#39;]</span>
+<span class="sd">            ['day', 'hour', 'h', 'minute', 'mn', 'second', 's', 'millisecond', 'ms', 'microsecond', 'us']</span>
 <span class="sd">    :return:</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">ticks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ticks</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ticks_unit</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">ticks_unit</span> <span class="o">=</span> <span class="n">unit_str_to_unit_in_seconds</span><span class="p">[</span><span class="n">ticks_unit</span><span class="p">]</span>
@@ -174,19 +175,19 @@
 <div class="viewcode-block" id="strftime_with_precision">
 <a class="viewcode-back" href="../../../module_docs/hum/utils/date_ticks.html#hum.utils.date_ticks.strftime_with_precision">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">strftime_with_precision</span><span class="p">(</span><span class="n">tick</span><span class="p">,</span> <span class="nb">format</span><span class="p">,</span> <span class="n">sub_secs_precision</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Returns a formatted string for a datetime (tick).</span>
 <span class="sd">    :param tick: The datetime for this tick</span>
 <span class="sd">    :param format: The formatting string</span>
 <span class="sd">    :param sub_secs_precision: Number of digits to used for sub-seconds.</span>
-<span class="sd">        If None, will choose it &quot;smartly/dynamically&quot;</span>
+<span class="sd">        If None, will choose it "smartly/dynamically"</span>
 <span class="sd">    :return: Formatted string</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">t</span> <span class="o">=</span> <span class="n">tick</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span>
-    <span class="n">is_us</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%f</span><span class="s2">&quot;</span> <span class="ow">in</span> <span class="nb">format</span>
+    <span class="n">is_us</span> <span class="o">=</span> <span class="s2">"</span><span class="si">%f</span><span class="s2">"</span> <span class="ow">in</span> <span class="nb">format</span>
     <span class="k">if</span> <span class="n">is_us</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">sub_secs_precision</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">while</span> <span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span>
+            <span class="k">while</span> <span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"0"</span><span class="p">:</span>
                 <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="k">while</span> <span class="ow">not</span> <span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
                 <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>

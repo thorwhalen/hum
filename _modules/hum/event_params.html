@@ -1,0 +1,339 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hum.event_params &mdash; hum 1.0.14 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=cb0f6c17"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            hum
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum.html">hum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/event_params.html">hum.event_params</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/examples/keyboard_control.html">hum.examples.keyboard_control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/examples/pyo_util_examples.html">hum.examples.pyo_util_examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/extra_util.html">hum.extra_util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/pyo_synths.html">hum.pyo_synths</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/pyo_util.html">hum.pyo_util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/pyo_util_examples.html">hum.pyo_util_examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/scrap/belangeo_Degradation.html">hum.scrap.belangeo_Degradation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/synth_funcs.html">hum.synth_funcs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/util.html">hum.util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/utils.html">hum.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/utils/date_ticks.html">hum.utils.date_ticks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/hum/utils/plotting.html">hum.utils.plotting</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">hum</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">hum.event_params</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for hum.event_params</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Partition a recorded control-event stream into dials and settings.</span>
+
+<span class="sd">A ``Synth`` records *every* parameter it knows about: its first recorded event is</span>
+<span class="sd">a full snapshot of the initial state, so a recording always mentions the</span>
+<span class="sd">*settings* (structural, non-live parameters such as a waveform name) alongside</span>
+<span class="sd">the *dials* (live, continuously-controllable parameters such as a frequency).</span>
+
+<span class="sd">When such a recording is rendered offline, only the dials may be driven by a</span>
+<span class="sd">control signal. Wrapping a setting in one hands the synth function a signal</span>
+<span class="sd">object where it expected a plain value -- a synth that uses a setting as a dict</span>
+<span class="sd">key then fails with ``TypeError: unhashable type``, and one that merely compares</span>
+<span class="sd">it misbehaves silently.</span>
+
+<span class="sd">:func:`plan_render_params` computes that split. It is deliberately free of any</span>
+<span class="sd">``pyo`` import so the rule can be reasoned about -- and tested -- without the</span>
+<span class="sd">optional audio engine installed.</span>
+<span class="sd">"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Any</span><span class="p">,</span>
+    <span class="n">Dict</span><span class="p">,</span>
+    <span class="n">FrozenSet</span><span class="p">,</span>
+    <span class="n">Iterable</span><span class="p">,</span>
+    <span class="n">List</span><span class="p">,</span>
+    <span class="n">Mapping</span><span class="p">,</span>
+    <span class="n">NamedTuple</span><span class="p">,</span>
+    <span class="n">Sequence</span><span class="p">,</span>
+    <span class="n">Tuple</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"RenderParamPlan"</span><span class="p">,</span> <span class="s2">"RenderParamWarning"</span><span class="p">,</span> <span class="s2">"plan_render_params"</span><span class="p">]</span>
+
+
+<span class="n">ControlEvent</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>
+
+
+<div class="viewcode-block" id="RenderParamWarning">
+<a class="viewcode-back" href="../../module_docs/hum/event_params.html#hum.event_params.RenderParamWarning">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RenderParamWarning</span><span class="p">(</span><span class="ne">UserWarning</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Raised (as a warning) when a recorded event cannot be honored on render."""</span></div>
+
+
+
+<div class="viewcode-block" id="RenderParamPlan">
+<a class="viewcode-back" href="../../module_docs/hum/event_params.html#hum.event_params.RenderParamPlan">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RenderParamPlan</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""How a recorded control-event stream maps onto a single render graph.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dial_keys : frozenset of str</span>
+<span class="sd">        The dials actually mentioned by the recording. These -- and only these --</span>
+<span class="sd">        get a live control signal.</span>
+<span class="sd">    settings_values : dict</span>
+<span class="sd">        Settings values baked into the graph at build time.</span>
+<span class="sd">    dial_events : list of (float, dict)</span>
+<span class="sd">        The event stream with every non-dial key removed. Timestamps and event</span>
+<span class="sd">        count are preserved (an event may become empty), so render timing is</span>
+<span class="sd">        unaffected by the filtering.</span>
+<span class="sd">    ignored_settings_changes : list of (float, dict)</span>
+<span class="sd">        Settings changes that appeared *after* the initial snapshot and were</span>
+<span class="sd">        dropped. A single offline graph cannot express the rebuild they need.</span>
+<span class="sd">    unknown_keys : frozenset of str</span>
+<span class="sd">        Recorded keys that are neither a dial nor a setting; also dropped.</span>
+<span class="sd">    """</span>
+
+    <span class="n">dial_keys</span><span class="p">:</span> <span class="n">FrozenSet</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">settings_values</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="n">dial_events</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ControlEvent</span><span class="p">]</span>
+    <span class="n">ignored_settings_changes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ControlEvent</span><span class="p">]</span>
+    <span class="n">unknown_keys</span><span class="p">:</span> <span class="n">FrozenSet</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="plan_render_params">
+<a class="viewcode-back" href="../../module_docs/hum/event_params.html#hum.event_params.plan_render_params">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">plan_render_params</span><span class="p">(</span>
+    <span class="n">control_events</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">ControlEvent</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dials</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="n">settings</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="n">settings_defaults</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">warn_on_ignored</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RenderParamPlan</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Split a recorded control-event stream into dials to drive and settings to bake.</span>
+
+<span class="sd">    Settings are taken from the recording's *initial snapshot* (its first event),</span>
+<span class="sd">    falling back to ``settings_defaults`` for any setting the recording never</span>
+<span class="sd">    mentions. Settings changes later in the stream are dropped with a warning:</span>
+<span class="sd">    honoring one would require rebuilding the synthesis graph mid-render, which a</span>
+<span class="sd">    single offline render cannot express. (This mirrors the live path, where such</span>
+<span class="sd">    a change rebuilds the graph.)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    control_events : sequence of (timestamp, updates)</span>
+<span class="sd">        The recorded stream, oldest first.</span>
+<span class="sd">    dials : iterable of str</span>
+<span class="sd">        Names of the live parameters.</span>
+<span class="sd">    settings : iterable of str</span>
+<span class="sd">        Names of the structural parameters.</span>
+<span class="sd">    settings_defaults : mapping, optional</span>
+<span class="sd">        Fallback values for settings absent from the recording -- typically the</span>
+<span class="sd">        synth function's own parameter defaults.</span>
+<span class="sd">    warn_on_ignored : bool</span>
+<span class="sd">        Whether to emit :class:`RenderParamWarning` for dropped keys.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    RenderParamPlan</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    A recording of one dial (``freq``) and one setting (``waveform``). The</span>
+<span class="sd">    setting is baked from the initial snapshot, never wrapped as a dial:</span>
+
+<span class="sd">    &gt;&gt;&gt; events = [(0.0, {'freq': 440, 'waveform': 'sine'}), (1.0, {'freq': 660})]</span>
+<span class="sd">    &gt;&gt;&gt; plan = plan_render_params(events, dials={'freq'}, settings={'waveform'})</span>
+<span class="sd">    &gt;&gt;&gt; sorted(plan.dial_keys)</span>
+<span class="sd">    ['freq']</span>
+<span class="sd">    &gt;&gt;&gt; plan.settings_values</span>
+<span class="sd">    {'waveform': 'sine'}</span>
+<span class="sd">    &gt;&gt;&gt; plan.dial_events</span>
+<span class="sd">    [(0.0, {'freq': 440}), (1.0, {'freq': 660})]</span>
+
+<span class="sd">    A setting the recording never mentions falls back to its default:</span>
+
+<span class="sd">    &gt;&gt;&gt; plan = plan_render_params(</span>
+<span class="sd">    ...     [(0.0, {'freq': 440})],</span>
+<span class="sd">    ...     dials={'freq'},</span>
+<span class="sd">    ...     settings={'waveform'},</span>
+<span class="sd">    ...     settings_defaults={'freq': 440, 'waveform': 'sine'},</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; plan.settings_values</span>
+<span class="sd">    {'waveform': 'sine'}</span>
+
+<span class="sd">    A settings change *after* the initial snapshot is dropped (with a warning),</span>
+<span class="sd">    and the event keeps its slot so the render timing does not shift:</span>
+
+<span class="sd">    &gt;&gt;&gt; import warnings</span>
+<span class="sd">    &gt;&gt;&gt; with warnings.catch_warnings(record=True) as caught:</span>
+<span class="sd">    ...     warnings.simplefilter('always')</span>
+<span class="sd">    ...     plan = plan_render_params(</span>
+<span class="sd">    ...         [(0.0, {'freq': 440, 'waveform': 'sine'}), (1.0, {'waveform': 'square'})],</span>
+<span class="sd">    ...         dials={'freq'},</span>
+<span class="sd">    ...         settings={'waveform'},</span>
+<span class="sd">    ...     )</span>
+<span class="sd">    &gt;&gt;&gt; plan.settings_values</span>
+<span class="sd">    {'waveform': 'sine'}</span>
+<span class="sd">    &gt;&gt;&gt; plan.dial_events</span>
+<span class="sd">    [(0.0, {'freq': 440}), (1.0, {})]</span>
+<span class="sd">    &gt;&gt;&gt; plan.ignored_settings_changes</span>
+<span class="sd">    [(1.0, {'waveform': 'square'})]</span>
+<span class="sd">    &gt;&gt;&gt; len(caught), issubclass(caught[0].category, RenderParamWarning)</span>
+<span class="sd">    (1, True)</span>
+<span class="sd">    """</span>
+    <span class="n">dials</span><span class="p">,</span> <span class="n">settings</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">dials</span><span class="p">),</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+    <span class="n">settings_defaults</span> <span class="o">=</span> <span class="n">settings_defaults</span> <span class="ow">or</span> <span class="p">{}</span>
+
+    <span class="n">recorded_keys</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">updates</span> <span class="ow">in</span> <span class="n">control_events</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">updates</span><span class="p">}</span>
+    <span class="n">dial_keys</span> <span class="o">=</span> <span class="n">recorded_keys</span> <span class="o">&amp;</span> <span class="n">dials</span>
+    <span class="n">unknown_keys</span> <span class="o">=</span> <span class="n">recorded_keys</span> <span class="o">-</span> <span class="n">dials</span> <span class="o">-</span> <span class="n">settings</span>
+
+    <span class="n">initial_snapshot</span> <span class="o">=</span> <span class="n">control_events</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">control_events</span> <span class="k">else</span> <span class="p">{}</span>
+    <span class="n">settings_values</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">k</span><span class="p">:</span> <span class="n">initial_snapshot</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">initial_snapshot</span> <span class="k">else</span> <span class="n">settings_defaults</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">initial_snapshot</span> <span class="ow">or</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">settings_defaults</span>
+    <span class="p">}</span>
+
+    <span class="n">dial_events</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">updates</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">dial_keys</span><span class="p">})</span>
+        <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">updates</span> <span class="ow">in</span> <span class="n">control_events</span>
+    <span class="p">]</span>
+    <span class="n">ignored_settings_changes</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">ignored</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">updates</span> <span class="ow">in</span> <span class="n">control_events</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">ignored</span> <span class="o">:=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">updates</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">settings</span><span class="p">})</span>
+    <span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">warn_on_ignored</span><span class="p">:</span>
+        <span class="n">_warn_about_dropped_keys</span><span class="p">(</span><span class="n">ignored_settings_changes</span><span class="p">,</span> <span class="n">unknown_keys</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">RenderParamPlan</span><span class="p">(</span>
+        <span class="n">dial_keys</span><span class="o">=</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">dial_keys</span><span class="p">),</span>
+        <span class="n">settings_values</span><span class="o">=</span><span class="n">settings_values</span><span class="p">,</span>
+        <span class="n">dial_events</span><span class="o">=</span><span class="n">dial_events</span><span class="p">,</span>
+        <span class="n">ignored_settings_changes</span><span class="o">=</span><span class="n">ignored_settings_changes</span><span class="p">,</span>
+        <span class="n">unknown_keys</span><span class="o">=</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">unknown_keys</span><span class="p">),</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_warn_about_dropped_keys</span><span class="p">(</span>
+    <span class="n">ignored_settings_changes</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">ControlEvent</span><span class="p">],</span>
+    <span class="n">unknown_keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Warn about recorded keys that the render cannot honor."""</span>
+    <span class="k">if</span> <span class="n">ignored_settings_changes</span><span class="p">:</span>
+        <span class="n">changed</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+            <span class="p">{</span><span class="n">k</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">updates</span> <span class="ow">in</span> <span class="n">ignored_settings_changes</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">updates</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Ignoring </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ignored_settings_changes</span><span class="p">)</span><span class="si">}</span><span class="s2"> mid-stream change(s) to "</span>
+            <span class="sa">f</span><span class="s2">"settings </span><span class="si">{</span><span class="n">changed</span><span class="si">}</span><span class="s2">: a single offline render builds one synthesis "</span>
+            <span class="sa">f</span><span class="s2">"graph, so only the settings of the initial snapshot are honored. "</span>
+            <span class="sa">f</span><span class="s2">"Split the recording and render each segment separately if you need "</span>
+            <span class="sa">f</span><span class="s2">"the change."</span><span class="p">,</span>
+            <span class="n">RenderParamWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="n">unknown_keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">unknown_keys</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">unknown_keys</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Ignoring recorded key(s) </span><span class="si">{</span><span class="n">unknown_keys</span><span class="si">}</span><span class="s2">: they are neither a dial "</span>
+            <span class="sa">f</span><span class="s2">"nor a setting of the synth function."</span><span class="p">,</span>
+            <span class="n">RenderParamWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

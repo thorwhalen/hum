@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hum.utils.plotting &mdash; hum 1.0.13 documentation</title>
+  <title>hum.utils.plotting &mdash; hum 1.0.14 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=0086fcda"></script>
+      <script src="../../../_static/documentation_options.js?v=cb0f6c17"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/toggleprompt.js?v=d7ede5d2"></script>
@@ -47,6 +47,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum.html">hum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/event_params.html">hum.event_params</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/examples/keyboard_control.html">hum.examples.keyboard_control</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/examples/pyo_util_examples.html">hum.examples.pyo_util_examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../module_docs/hum/extra_util.html">hum.extra_util</a></li>
@@ -86,9 +87,9 @@
            <div itemprop="articleBody">
              
   <h1>Source code for hum.utils.plotting</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Plot utils</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">inspect</span><span class="w"> </span><span class="kn">import</span> <span class="n">getmodule</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pylab</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
@@ -103,9 +104,9 @@
 
 <div class="viewcode-block" id="getmodulename">
 <a class="viewcode-back" href="../../../module_docs/hum/utils/plotting.html#hum.utils.plotting.getmodulename">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">getmodulename</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get name of module of object&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">getmodule</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span> <span class="s2">&quot;__name__&quot;</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span></div>
+<span class="k">def</span><span class="w"> </span><span class="nf">getmodulename</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Get name of module of object"""</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">getmodule</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span> <span class="s2">"__name__"</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span></div>
 
 
 
@@ -149,7 +150,7 @@
 <div class="viewcode-block" id="disp_wf">
 <a class="viewcode-back" href="../../../module_docs/hum/utils/plotting.html#hum.utils.plotting.disp_wf">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">disp_wf</span><span class="p">(</span><span class="n">wf</span><span class="p">,</span> <span class="n">sr</span><span class="o">=</span><span class="n">DFLT_SR</span><span class="p">,</span> <span class="n">autoplay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">wf_plot_func</span><span class="o">=</span><span class="n">plot_wf</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Display waveform in Jupyter notebook</span>
 
 <span class="sd">    Parameters</span>
@@ -163,18 +164,18 @@
 <span class="sd">    wf_plot_func : function, optional</span>
 <span class="sd">        Function to plot the waveform, by default plot_wf (other example: plt.specgram)</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">wf</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
-        <span class="c1"># if it&#39;s a RIFF file, decode it as WAV</span>
-        <span class="k">if</span> <span class="n">wf</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;RIFF&quot;</span><span class="p">:</span>
+        <span class="c1"># if it's a RIFF file, decode it as WAV</span>
+        <span class="k">if</span> <span class="n">wf</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">"RIFF"</span><span class="p">:</span>
             <span class="c1"># Decode the WAV bytes</span>
             <span class="n">wav_bytes</span> <span class="o">=</span> <span class="n">wf</span>
             <span class="n">wf</span><span class="p">,</span> <span class="n">sr</span> <span class="o">=</span> <span class="n">decode_wav_bytes</span><span class="p">(</span><span class="n">wav_bytes</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported audio format. Only WAV bytes are supported.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Unsupported audio format. Only WAV bytes are supported."</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">wf_plot_func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">getmodulename</span><span class="p">(</span><span class="n">wf_plot_func</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;matplotlib&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">getmodulename</span><span class="p">(</span><span class="n">wf_plot_func</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"matplotlib"</span><span class="p">):</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">DFLT_FIGSIZE_FOR_WF_PLOTS</span><span class="p">)</span>
         <span class="n">wf_plot_func</span><span class="p">(</span><span class="n">wf</span><span class="p">,</span> <span class="n">sr</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
