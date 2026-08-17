@@ -11,76 +11,13 @@ milliseconds later), yielding near-duplicate events like::
     (2.0084, {'waveform': 'triangle'}),   # <-- duplicate
 
 These tests run fully headless: no pyo server is booted and no real pyo
-objects are created. When pyo is not installed at all (e.g. CI), a minimal
-fake ``pyo`` module is injected just for this module, then cleaned up so the
-import-safety tests still observe the real no-pyo environment.
+objects are created. When pyo is not installed at all (e.g. CI), the shared
+``pyo_util`` fixture (see ``conftest.py``) injects a minimal fake ``pyo``
+module, then cleans it up so the import-safety tests still observe the real
+no-pyo environment.
 """
 
-import importlib
-import importlib.machinery
-import importlib.util
-import sys
-import types
-
 import pytest
-
-HAS_PYO = importlib.util.find_spec("pyo") is not None
-
-
-def _make_fake_pyo_module():
-    """A minimal stand-in for pyo: just the names hum.pyo_util needs at import."""
-    fake_pyo = types.ModuleType("pyo")
-    # A real spec so importlib.util.find_spec("pyo") keeps working on this fake.
-    fake_pyo.__spec__ = importlib.machinery.ModuleSpec("pyo", loader=None)
-
-    class PyoObject:
-        pass
-
-    class SigTo(PyoObject):
-        def __init__(self, value=0, time=0.025, init=None, mul=1, add=0):
-            self.value, self.time, self.mul, self.add = value, time, mul, add
-
-    class Server:
-        def __init__(self, *args, **kwargs):
-            pass
-
-        def boot(self):
-            return self
-
-        def start(self):
-            return self
-
-        def stop(self):
-            return self
-
-        def shutdown(self):
-            return self
-
-    fake_pyo.PyoObject = PyoObject
-    fake_pyo.SigTo = SigTo
-    fake_pyo.Server = Server
-    return fake_pyo
-
-
-@pytest.fixture(scope="module")
-def pyo_util():
-    """Import hum.pyo_util — with real pyo when available, else a minimal fake."""
-    if HAS_PYO:
-        yield importlib.import_module("hum.pyo_util")
-        return
-
-    # No pyo installed (the CI case): inject a fake, import, then clean up so
-    # other tests (notably test_import_safety) see the pristine environment.
-    sys.modules["pyo"] = _make_fake_pyo_module()
-    try:
-        yield importlib.import_module("hum.pyo_util")
-    finally:
-        sys.modules.pop("pyo", None)
-        sys.modules.pop("hum.pyo_util", None)
-        import hum
-
-        if hasattr(hum, "pyo_util"):
-            delattr(hum, "pyo_util")
 
 
 @pytest.fixture
