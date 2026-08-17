@@ -13,6 +13,19 @@ The fake mirrors the two real behaviours these tests depend on:
   SigTo-wrapped *setting* into ``TypeError: unhashable type: 'SigTo'`` inside a
   synth function that uses the setting as a dict key (issue #7).
 - ``NewTable.save`` writes a real file, since ``render_events`` reads it back.
+
+Two fixtures, and the difference matters:
+
+- :func:`pyo_util` uses the **real** engine when it is installed. Use it for
+  tests that only need the module's pure logic, so they exercise the real thing
+  where they can.
+- :func:`fake_pyo_util` **always** uses the fake. Use it for any test that
+  *drives* the synthesis graph (``render_events``), because the fake's stand-in
+  output object is not a real ``PyoObject``: ``pyo.TableRec`` type-checks its
+  input (``pyoArgsAssert(self, "otn", ...)``) and rejects it. Such a test would
+  pass in CI, where there is no pyo, and fail on a developer machine that ran
+  the documented full-verify command ``pip install -e ".[audio]"`` -- the worst
+  kind of failure, since CI can never see it.
 """
 
 import importlib
@@ -20,6 +33,7 @@ import importlib.machinery
 import importlib.util
 import sys
 import types
+from contextlib import contextmanager
 
 import pytest
 
@@ -90,6 +104,40 @@ def make_fake_pyo_module():
     return fake_pyo
 
 
+def _restore_hum_pyo_util_attribute(module):
+    """Keep the ``hum.pyo_util`` *attribute* consistent with ``sys.modules``.
+
+    Importing a submodule sets it as an attribute of its package, so undoing an
+    import means undoing that too -- otherwise ``test_import_safety`` observes a
+    ``hum`` that has already reached into the audio engine.
+    """
+    import hum
+
+    if module is not None:
+        hum.pyo_util = module
+    elif "pyo_util" in vars(hum):
+        delattr(hum, "pyo_util")
+
+
+@contextmanager
+def _pyo_util_backed_by_fake():
+    """Import ``hum.pyo_util`` against a fake ``pyo``, then restore the environment."""
+    saved = {
+        name: sys.modules[name]
+        for name in ("pyo", "hum.pyo_util")
+        if name in sys.modules
+    }
+    sys.modules["pyo"] = make_fake_pyo_module()
+    sys.modules.pop("hum.pyo_util", None)
+    try:
+        yield importlib.import_module("hum.pyo_util")
+    finally:
+        sys.modules.pop("pyo", None)
+        sys.modules.pop("hum.pyo_util", None)
+        sys.modules.update(saved)
+        _restore_hum_pyo_util_attribute(saved.get("hum.pyo_util"))
+
+
 @pytest.fixture(scope="module")
 def pyo_util():
     """Import hum.pyo_util -- with real pyo when available, else a minimal fake."""
@@ -99,13 +147,16 @@ def pyo_util():
 
     # No pyo installed (the CI case): inject a fake, import, then clean up so
     # other tests (notably test_import_safety) see the pristine environment.
-    sys.modules["pyo"] = make_fake_pyo_module()
-    try:
-        yield importlib.import_module("hum.pyo_util")
-    finally:
-        sys.modules.pop("pyo", None)
-        sys.modules.pop("hum.pyo_util", None)
-        import hum
+    with _pyo_util_backed_by_fake() as module:
+        yield module
 
-        if hasattr(hum, "pyo_util"):
-            delattr(hum, "pyo_util")
+
+@pytest.fixture
+def fake_pyo_util():
+    """Import hum.pyo_util against the fake pyo, *even when real pyo is installed*.
+
+    For tests that drive the synthesis graph rather than just its pure logic --
+    see this module's docstring for why the real engine cannot serve them.
+    """
+    with _pyo_util_backed_by_fake() as module:
+        yield module

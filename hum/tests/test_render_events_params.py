@@ -16,10 +16,16 @@ The other half of the fix -- easy to miss -- is that the *event stream* handed t
 ``_apply_event_sequence`` must be filtered too: it looks every key up in
 ``raw_params``, which is now dial-only, so a settings key would ``KeyError``.
 
+A third thing the split has to get right, found in review: the *fallback* for a
+setting the recording never mentions must be the synth function's own defaults,
+not ``Synth._synth_func_params`` -- which is live state that ``_rebuild_graph``
+overwrites with the current values. Using it made an offline render depend on
+what the session happened to do beforehand.
+
 The first group of tests below exercises the split logic directly through the
 pyo-free ``hum.event_params`` helper, so they run (and gate) in CI, where pyo is
-not installed. The second group drives ``render_events`` end to end against a
-fake pyo, reproducing the reported crash.
+not installed. The remaining groups drive ``render_events`` end to end against a
+fake pyo, reproducing the reported crash and pinning the fallback source.
 """
 
 import pytest
@@ -136,8 +142,17 @@ WAVEFORMS = {"sine": 0, "square": 1, "triangle": 2}
 
 
 @pytest.fixture
-def synth_and_calls(pyo_util):
-    """A Synth whose synth function uses its setting as a dict key (issue #7)."""
+def synth_factory(fake_pyo_util):
+    """Build Synths whose synth function uses its setting as a dict key (issue #7).
+
+    Uses ``fake_pyo_util``, not ``pyo_util``: these tests drive the render graph,
+    and a real ``pyo.TableRec`` rejects the fake output object below. See
+    ``conftest.py`` for the full reason.
+
+    Returns ``(make_synth, calls)`` -- a factory rather than a single instance,
+    because pinning the settings fallback needs a *fresh* Synth to compare a
+    *used* one against.
+    """
     calls = []
 
     class FakeOutput:
@@ -153,7 +168,17 @@ def synth_and_calls(pyo_util):
         calls.append({"freq": freq, "waveform": waveform})
         return FakeOutput()
 
-    return pyo_util.Synth(synth_func, dials="freq", settings="waveform"), calls
+    def make_synth():
+        return fake_pyo_util.Synth(synth_func, dials="freq", settings="waveform")
+
+    return make_synth, calls
+
+
+@pytest.fixture
+def synth_and_calls(synth_factory):
+    """A single fresh Synth from :func:`synth_factory`, plus its call log."""
+    make_synth, calls = synth_factory
+    return make_synth(), calls
 
 
 def test_render_events_passes_settings_through_as_plain_values(
@@ -185,3 +210,47 @@ def test_render_events_survives_a_mid_stream_settings_change(synth_and_calls, tm
 
     assert audio
     assert calls[0]["waveform"] == "sine"
+
+
+# --- the settings fallback must be the function's defaults, not the live state --------
+
+
+def test_the_synth_functions_defaults_survive_a_live_settings_change(synth_factory):
+    # `_synth_func_params` is live state -- `_rebuild_graph` writes the current
+    # values into it, and the initial `Knobs` shares the very dict object. The
+    # defaults a render falls back to must be a separate, pristine copy.
+    make_synth, _ = synth_factory
+    synth = make_synth()
+    defaults_before = dict(synth._synth_func_defaults)
+
+    synth.update({"waveform": "square"})  # a settings change -> _rebuild_graph
+
+    assert synth._synth_func_params["waveform"] == "square"  # live state moved
+    assert synth._synth_func_defaults == defaults_before  # the defaults did not
+    assert synth._synth_func_defaults["waveform"] == "sine"
+
+
+def test_render_of_a_dial_only_stream_does_not_depend_on_session_history(
+    synth_factory, tmp_path
+):
+    # Rendering must be a pure function of the event stream. Falling back to
+    # `_synth_func_params` baked whatever the session last happened to be set
+    # to, so a dial-only stream (exactly what a client that pre-filters its
+    # events sends) rendered 'square' on a used Synth and 'sine' on a fresh one
+    # -- silently, and with no way to reproduce it from the events alone.
+    make_synth, calls = synth_factory
+    dial_only_events = [(0.0, {"freq": 440}), (1.0, {"freq": 660})]
+
+    used = make_synth()
+    used.update({"waveform": "square"})  # a live settings change, then reuse
+    calls.clear()
+    used.render_events(dial_only_events, output_filepath=str(tmp_path / "used.wav"))
+    waveform_from_used = calls[-1]["waveform"]
+
+    calls.clear()
+    fresh = make_synth()
+    fresh.render_events(dial_only_events, output_filepath=str(tmp_path / "fresh.wav"))
+    waveform_from_fresh = calls[-1]["waveform"]
+
+    assert waveform_from_used == waveform_from_fresh
+    assert waveform_from_used == "sine"  # the synth function's own default

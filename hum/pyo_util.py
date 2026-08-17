@@ -723,6 +723,13 @@ class Synth(MutableMapping):
         self._server = None
         self.output = None
         self._synth_func_params = synth_func_defaults(synth_func)
+        # `_synth_func_params` is *live state*, not a record of the defaults:
+        # `_rebuild_graph` writes the current values into it, and the initial
+        # `Knobs` below shares the very dict object. So it cannot answer "what
+        # does the synth function itself default to?" -- a question an offline
+        # render has to ask (see `render_events`). Keep a pristine copy that
+        # nothing mutates.
+        self._synth_func_defaults = dict(self._synth_func_params)
 
         assert value_trans is None or (
             isinstance(value_trans, Mapping)
@@ -998,12 +1005,17 @@ class Synth(MutableMapping):
         Only *dials* are driven by a live control signal (``SigTo``). *Settings* --
         the structural parameters that require a graph rebuild -- are baked into
         the single render graph from the recording's initial snapshot, falling
-        back to the synth function's own defaults for settings the recording
-        never mentions. Wrapping a setting in a ``SigTo`` (as this method used to
-        do for every recorded key) hands the synth function a signal object where
-        it expected a plain value, which breaks any synth that uses a setting as
-        a dict key (``TypeError: unhashable type: 'SigTo'``) and silently
-        misbehaves in one that merely compares it.
+        back to the synth function's own defaults (``_synth_func_defaults``, the
+        pristine copy -- *not* the live ``_synth_func_params``, which tracks the
+        current session state) for settings the recording never mentions.
+        Rendering is therefore a pure function of the event stream: the same
+        stream renders identically on a fresh and on a long-used ``Synth``.
+
+        Wrapping a setting in a ``SigTo`` (as this method used to do for every
+        recorded key) hands the synth function a signal object where it expected
+        a plain value, which breaks any synth that uses a setting as a dict key
+        (``TypeError: unhashable type: 'SigTo'``) and silently misbehaves in one
+        that merely compares it.
 
         A settings change *later* in the stream is dropped with a
         :class:`hum.event_params.RenderParamWarning`: a single offline render
@@ -1030,7 +1042,7 @@ class Synth(MutableMapping):
             control_events,
             dials=self._dials,
             settings=self._settings,
-            settings_defaults=self._synth_func_params,
+            settings_defaults=self._synth_func_defaults,
         )
         raw_params = {k: SigTo(value=0, time=0.01) for k in plan.dial_keys}
         synth_output = self._synth_func(**raw_params, **plan.settings_values).out()
