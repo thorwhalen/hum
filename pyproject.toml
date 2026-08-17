@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "hum"
-version = "1.0.14"
+version = "1.0.15"
 description = "A python synthesizer for creating and manipulating audio signals."
 readme = "README.md"
 requires-python = ">=3.10"
