@@ -21,6 +21,7 @@ from collections.abc import MutableMapping
 import time
 
 from hum.util import round_numbers
+from hum.event_params import plan_render_params
 
 from pyo import PyoObject
 from pyo import *  # TODO: change to be explicit object imports
@@ -722,6 +723,13 @@ class Synth(MutableMapping):
         self._server = None
         self.output = None
         self._synth_func_params = synth_func_defaults(synth_func)
+        # `_synth_func_params` is *live state*, not a record of the defaults:
+        # `_rebuild_graph` writes the current values into it, and the initial
+        # `Knobs` below shares the very dict object. So it cannot answer "what
+        # does the synth function itself default to?" -- a question an offline
+        # render has to ask (see `render_events`). Keep a pristine copy that
+        # nothing mutates.
+        self._synth_func_defaults = dict(self._synth_func_params)
 
         assert value_trans is None or (
             isinstance(value_trans, Mapping)
@@ -992,7 +1000,30 @@ class Synth(MutableMapping):
         file_format="wav",
         suffix_buffer_seconds=0.0,
     ):
-        """Render the control events to an audio file or return it via an egress function."""
+        """Render the control events to an audio file or return it via an egress function.
+
+        Only *dials* are driven by a live control signal (``SigTo``). *Settings* --
+        the structural parameters that require a graph rebuild -- are baked into
+        the single render graph from the recording's initial snapshot, falling
+        back to the synth function's own defaults (``_synth_func_defaults``, the
+        pristine copy -- *not* the live ``_synth_func_params``, which tracks the
+        current session state) for settings the recording never mentions.
+        Rendering is therefore a pure function of the event stream: the same
+        stream renders identically on a fresh and on a long-used ``Synth``.
+
+        Wrapping a setting in a ``SigTo`` (as this method used to do for every
+        recorded key) hands the synth function a signal object where it expected
+        a plain value, which breaks any synth that uses a setting as a dict key
+        (``TypeError: unhashable type: 'SigTo'``) and silently misbehaves in one
+        that merely compares it.
+
+        A settings change *later* in the stream is dropped with a
+        :class:`hum.event_params.RenderParamWarning`: a single offline render
+        builds one graph, so it cannot express the rebuild that the live path
+        performs via ``_rebuild_graph``. Split the recording and render each
+        segment separately if you need the change. Dropped events keep their slot
+        in the stream, so render timing is unaffected.
+        """
         if not control_events:
             control_events = self.get_recording()
             if not control_events:
@@ -1007,17 +1038,26 @@ class Synth(MutableMapping):
         server = Server(**offline_server_kwargs).boot()
         table = NewTable(length=total_duration)
 
-        all_keys = {k for _, knobs in control_events for k in knobs}
-        raw_params = {k: SigTo(value=0, time=0.01) for k in all_keys}
-        synth_output = self._synth_func(**raw_params).out()
+        plan = plan_render_params(
+            control_events,
+            dials=self._dials,
+            settings=self._settings,
+            settings_defaults=self._synth_func_defaults,
+        )
+        raw_params = {k: SigTo(value=0, time=0.01) for k in plan.dial_keys}
+        synth_output = self._synth_func(**raw_params, **plan.settings_values).out()
         table_recorder = TableRec(synth_output, table=table).play()
 
         def delay_func(dur):
             server.recordOptions(dur=dur)
             server.start()
 
+        # Drive dials only: `_apply_event_sequence` looks every key up in
+        # `raw_params`, which is now dial-only, so a settings key would KeyError.
+        dial_events = [(t - base_time, knobs) for t, knobs in plan.dial_events]
+
         try:
-            self._apply_event_sequence(normalized, delay_func, raw_params=raw_params)
+            self._apply_event_sequence(dial_events, delay_func, raw_params=raw_params)
         finally:
             table_recorder.stop()
 
