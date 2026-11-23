@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "built_at": "2026-11-23T05:37:53Z",
+  "package": {
+    "name": "hum",
+    "version": "1.0.15",
+    "display_name": "hum",
+    "source": "pyproject.toml"
+  },
+  "git": {
+    "available": true,
+    "commit": "dc932c3e7df85fd3261673db2a0bb032069ff22e",
+    "short_commit": "dc932c3",
+    "branch": "master",
+    "tags": [],
+    "dirty": false,
+    "remote_url": "https://github.com/thorwhalen/hum",
+    "commit_url": "https://github.com/thorwhalen/hum/commit/dc932c3e7df85fd3261673db2a0bb032069ff22e",
+    "error": null
+  },
+  "ci": {
+    "provider": "github",
+    "repository": "thorwhalen/hum",
+    "sha": "dc932c3e7df85fd3261673db2a0bb032069ff22e",
+    "sha_in_history": true,
+    "ref": "refs/heads/master",
+    "ref_name": "master",
+    "run_id": "45118791050",
+    "run_url": "https://github.com/thorwhalen/hum/actions/runs/45118791050",
+    "server_url": "https://github.com"
+  },
+  "tools": {
+    "epythet": "0.2.23",
+    "sphinx": "9.1.1",
+    "docutils": "0.22.4",
+    "python": "3.12.16"
+  },
+  "config": {
+    "theme": "auto",
+    "html_theme": "furo",
+    "accent": "#486300",
+    "mode": "auto",
+    "api_generator": "autosummary",
+    "ignore": [
+      "tests/",
+      "scrap/",
+      "examples/"
+    ],
+    "agent_outputs": true,
+    "aggregates": [
+      "md"
+    ],
+    "ai_artifacts": true,
+    "provenance": true,
+    "docs_dir": "docsrc"
+  },
+  "site": {
+    "modules_documented": 7,
+    "objects_documented": 22
+  },
+  "pypi": {
+    "checked": true,
+    "latest": "1.0.16",
+    "relation": "behind",
+    "error": null
+  },
+  "reproduce": "git clone https://github.com/thorwhalen/hum && cd hum\ngit checkout dc932c3e7df85fd3261673db2a0bb032069ff22e\npip install \"epythet==0.2.23\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
+  "warnings": [],
+  "alignment": {
+    "aligned": false,
+    "notes": [
+      "The documented version (1.0.15) is behind the latest release on PyPI (1.0.16): `pip install hum` gives newer code than these docs describe."
+    ]
+  }
+}

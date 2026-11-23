@@ -1,0 +1,28 @@
+hum.util
+========
+
+.. automodule:: hum.util
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      getmodulename
+      return_none
+      round_number
+      round_numbers
+      scale_frequencies
+      scale_snapper
+      simple_chunker
+      tempered_semitone_frequencies
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ListSnapper
+      ModuleNotFoundErrorNiceMessage
+      ModuleNotFoundIgnore
+      SnapToChromatic
+   

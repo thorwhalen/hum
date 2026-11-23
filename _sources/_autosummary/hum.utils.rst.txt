@@ -1,0 +1,14 @@
+hum.utils
+=========
+
+.. automodule:: hum.utils
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   date_ticks
+   plotting

@@ -1,0 +1,17 @@
+hum.utils.date\_ticks
+=====================
+
+.. automodule:: hum.utils.date_ticks
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      largest_unit_that_changes_at_every_tick
+      str_ticks
+      strftime_format_for_ticks
+      strftime_with_precision
+      unit_aligned_ticks
+      utc_datetime_from_val_and_unit
+   

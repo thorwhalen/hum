@@ -1,183 +1,928 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<link rel="alternate" type="text/markdown" href="index.html.md">
+<link rel="describedby" href="llms.txt" type="text/markdown">
+<link rel="alternate" type="text/markdown" href="index.html.md">
+<link rel="describedby" href="llms.txt"><link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="API reference" href="api.html">
+
+    <!-- Generated with Sphinx 9.1.1 and Furo 2025.12.19 -->
+        <title>hum</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d75fae25" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx_autodoc_typehints.css?v=057ac668" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
 
 
-<!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
-<head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to hum’s documentation! &mdash; hum 1.0.14 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
-      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
-
+<style>
+  body {
+    --color-code-background: #f0f0f0;
+  --color-code-foreground: black;
+  --color-brand-primary: #486300;
+  --color-brand-content: #486300;
   
-      <script src="_static/jquery.js?v=5d32c60e"></script>
-      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=cb0f6c17"></script>
-      <script src="_static/doctools.js?v=fd6eb6e6"></script>
-      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
-      <script src="_static/toggleprompt.js?v=d7ede5d2"></script>
-      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="_static/copybutton.js?v=f281be69"></script>
-    <script src="_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="hum" href="module_docs/hum.html" /> 
-</head>
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #a4c665;
+  --color-brand-content: #a4c665;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #a4c665;
+  --color-brand-content: #a4c665;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
 
-          
-          
-          <a href="#" class="icon icon-home">
-            hum
-          </a>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum.html">hum</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum/event_params.html">hum.event_params</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum/examples/keyboard_control.html">hum.examples.keyboard_control</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum/examples/pyo_util_examples.html">hum.examples.pyo_util_examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum/extra_util.html">hum.extra_util</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum/pyo_synths.html">hum.pyo_synths</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum/pyo_util.html">hum.pyo_util</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum/pyo_util_examples.html">hum.pyo_util_examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum/scrap/belangeo_Degradation.html">hum.scrap.belangeo_Degradation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum/synth_funcs.html">hum.synth_funcs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum/util.html">hum.util</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum/utils.html">hum.utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum/utils/date_ticks.html">hum.utils.date_ticks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum/utils/plotting.html">hum.utils.plotting</a></li>
-</ul>
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
 
-        </div>
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">hum</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Welcome to hum’s documentation!</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  <section id="welcome-to-hum-s-documentation">
-<h1>Welcome to hum’s documentation!<a class="headerlink" href="#welcome-to-hum-s-documentation" title="Link to this heading"></a></h1>
-<div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum.html">hum</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum/event_params.html">hum.event_params</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/hum/event_params.html#hum.event_params.RenderParamPlan"><code class="docutils literal notranslate"><span class="pre">RenderParamPlan</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/hum/event_params.html#hum.event_params.RenderParamWarning"><code class="docutils literal notranslate"><span class="pre">RenderParamWarning</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/hum/event_params.html#hum.event_params.plan_render_params"><code class="docutils literal notranslate"><span class="pre">plan_render_params()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum/examples/keyboard_control.html">hum.examples.keyboard_control</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/hum/examples/keyboard_control.html#hum.examples.keyboard_control.keyboard_reader"><code class="docutils literal notranslate"><span class="pre">keyboard_reader()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/hum/examples/keyboard_control.html#hum.examples.keyboard_control.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum/examples/pyo_util_examples.html">hum.examples.pyo_util_examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum/extra_util.html">hum.extra_util</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum/pyo_synths.html">hum.pyo_synths</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum/pyo_util.html">hum.pyo_util</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum/pyo_util_examples.html">hum.pyo_util_examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum/scrap/belangeo_Degradation.html">hum.scrap.belangeo_Degradation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum/synth_funcs.html">hum.synth_funcs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum/util.html">hum.util</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/hum/util.html#hum.util.ListSnapper"><code class="docutils literal notranslate"><span class="pre">ListSnapper</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/hum/util.html#hum.util.SnapToChromatic"><code class="docutils literal notranslate"><span class="pre">SnapToChromatic</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/hum/util.html#hum.util.getmodulename"><code class="docutils literal notranslate"><span class="pre">getmodulename()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/hum/util.html#hum.util.return_none"><code class="docutils literal notranslate"><span class="pre">return_none()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/hum/util.html#hum.util.round_number"><code class="docutils literal notranslate"><span class="pre">round_number()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/hum/util.html#hum.util.round_numbers"><code class="docutils literal notranslate"><span class="pre">round_numbers()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/hum/util.html#hum.util.scale_frequencies"><code class="docutils literal notranslate"><span class="pre">scale_frequencies()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/hum/util.html#hum.util.scale_snapper"><code class="docutils literal notranslate"><span class="pre">scale_snapper()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/hum/util.html#hum.util.simple_chunker"><code class="docutils literal notranslate"><span class="pre">simple_chunker()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/hum/util.html#hum.util.tempered_semitone_frequencies"><code class="docutils literal notranslate"><span class="pre">tempered_semitone_frequencies()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum/utils.html">hum.utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum/utils/date_ticks.html">hum.utils.date_ticks</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/hum/utils/date_ticks.html#hum.utils.date_ticks.largest_unit_that_changes_at_every_tick"><code class="docutils literal notranslate"><span class="pre">largest_unit_that_changes_at_every_tick()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/hum/utils/date_ticks.html#hum.utils.date_ticks.strftime_with_precision"><code class="docutils literal notranslate"><span class="pre">strftime_with_precision()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="module_docs/hum/utils/plotting.html">hum.utils.plotting</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/hum/utils/plotting.html#hum.utils.plotting.disp_wf"><code class="docutils literal notranslate"><span class="pre">disp_wf()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="module_docs/hum/utils/plotting.html#hum.utils.plotting.getmodulename"><code class="docutils literal notranslate"><span class="pre">getmodulename()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</div>
-</section>
-<section id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h1>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
-</ul>
-<p>Release: 1.0.14</p>
-<p>Last change: Aug 17, 2026</p>
-</section>
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
 
 
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="module_docs/hum.html" class="btn btn-neutral float-right" title="hum" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
     </div>
+    <div class="header-center">
+      <a href="#"><div class="brand">hum</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="#">
+  
+  <span class="sidebar-brand-text">hum</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="_autosummary/hum.html">hum</a><input aria-label="Toggle navigation of hum" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/hum.event_params.html">hum.event_params</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/hum.extra_util.html">hum.extra_util</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/hum.util.html">hum.util</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autosummary/hum.utils.html">hum.utils</a><input aria-label="Toggle navigation of hum.utils" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/hum.utils.date_ticks.html">hum.utils.date_ticks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autosummary/hum.utils.plotting.html">hum.utils.plotting</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ai-agents.html">For AI agents</a></li>
+</ul>
 
-  <hr/>
+</div>
+</div>
 
-  <div role="contentinfo">
-    <p></p>
-  </div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="_sources/index.md.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <!-- generated by epythet -->
+<section id="hum">
+<h1>hum<a class="headerlink" href="#hum" title="Link to this heading">¶</a></h1>
+<p>A Python synthesizer for creating and manipulating audio signals: play a sound, change its knobs while it plays, record every change, and replay or render the recording to an audio file.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>hum
+</pre></div>
+</div>
+<p>Some functionality depends on <a class="reference external" href="https://belangeo.github.io/pyo/download.html">pyo</a>, which itself requires some tools (namely <a class="reference external" href="https://www.portaudio.com/">portaudio</a> and <a class="reference external" href="https://github.com/PortMidi/portmidi">Portmidi</a>) that <em>may</em> have to be installed manually. The examples below need pyo and an audio output device.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">Synth</span></code> class is a powerful wrapper around Pyo’s audio engine, providing:</p>
+<ol class="arabic simple">
+<li><p><strong>Real-time parameter control</strong> - Change audio parameters (knobs) during playback</p></li>
+<li><p><strong>Event recording</strong> - Automatically record all parameter changes with timestamps</p></li>
+<li><p><strong>Event playback</strong> - Replay recorded events exactly as they happened</p></li>
+<li><p><strong>Event rendering</strong> - Convert recorded events into audio files</p></li>
+<li><p><strong>Context manager</strong> - Clean resource management with <code class="docutils literal notranslate"><span class="pre">with</span></code> statements</p></li>
+</ol>
+</section>
+<section id="getting-started-with-synth">
+<h2>Getting Started with Synth<a class="headerlink" href="#getting-started-with-synth" title="Link to this heading">¶</a></h2>
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">hum.pyo_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">Synth</span>
+</pre></div>
+</div>
+</section>
+<section id="simple-synth-test">
+<h2>Simple Synth Test<a class="headerlink" href="#simple-synth-test" title="Link to this heading">¶</a></h2>
+<p>Let’s start with a simple sine wave synthesizer that demonstrates the basic functionality:</p>
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyo</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sine</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">recode</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hum.pyo_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">Synth</span><span class="p">,</span> <span class="n">DFLT_PYO_SR</span><span class="p">,</span> <span class="n">round_event_times</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hum.extra_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">estimate_frequencies</span>
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+<span class="n">base_freq</span> <span class="o">=</span> <span class="mi">220</span>
 
-</footer>
+
+<span class="c1"># Make a synth that plays a simple sine wave</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">simple_sine</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">base_freq</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Sine</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">freq</span><span class="p">)</span>
+
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">Synth</span><span class="p">(</span><span class="n">simple_sine</span><span class="p">)</span>
+
+<span class="c1"># Define a sequence of frequencies to play</span>
+<span class="n">freq_sequence</span> <span class="o">=</span> <span class="p">[</span><span class="n">base_freq</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">base_freq</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">base_freq</span> <span class="o">*</span> <span class="mi">2</span><span class="p">]</span>
+
+<span class="c1"># Play the frequencies in sequence</span>
+<span class="k">with</span> <span class="n">s</span><span class="p">:</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># let base_freq play for a second</span>
+    <span class="n">s</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">freq_sequence</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># Change to 330 Hz</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># play that for a second</span>
+    <span class="n">s</span><span class="p">[</span><span class="s2">"freq"</span><span class="p">]</span> <span class="o">=</span> <span class="n">freq_sequence</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>  <span class="c1"># Change to 440 Hz (alternative syntax)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># play that for a second</span>
+    <span class="c1"># The context manager exits here, which stops the synth</span>
+</pre></div>
+</div>
+<p>After playing the synth, you can retrieve the recorded events:</p>
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get the recorded events</span>
+<span class="n">events</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get_recording</span><span class="p">()</span>
+
+<span class="c1"># Round timestamps for better readability</span>
+<span class="n">events</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">round_event_times</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">round_to</span><span class="o">=</span><span class="mf">0.1</span><span class="p">))</span>
+
+<span class="c1"># These are the events we expect to see:</span>
+<span class="n">expected_events</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span>
+        <span class="mf">0.0</span><span class="p">,</span>
+        <span class="p">{</span>
+            <span class="c1"># First event contains the synth's initial parameters</span>
+            <span class="s2">"freq"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"value"</span><span class="p">:</span> <span class="mi">220</span><span class="p">,</span> <span class="s2">"time"</span><span class="p">:</span> <span class="mf">0.025</span><span class="p">,</span> <span class="s2">"mul"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"add"</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+        <span class="p">},</span>
+    <span class="p">),</span>
+    <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="p">{</span><span class="s2">"freq"</span><span class="p">:</span> <span class="mf">330.0</span><span class="p">}),</span>  <span class="c1"># Second event at 1.0 seconds</span>
+    <span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="p">{</span><span class="s2">"freq"</span><span class="p">:</span> <span class="mi">440</span><span class="p">}),</span>  <span class="c1"># Third event at 2.0 seconds</span>
+    <span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="p">{}),</span>  <span class="c1"># Final event marks the end of recording</span>
+<span class="p">]</span>
+
+<span class="c1"># Verify that we got what we expected</span>
+<span class="k">assert</span> <span class="n">events</span> <span class="o">==</span> <span class="n">expected_events</span>
+</pre></div>
+</div>
+<p>You can render these events to audio:</p>
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Render events to WAV format bytes</span>
+<span class="n">wav_bytes</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">render_events</span><span class="p">(</span><span class="n">events</span><span class="p">)</span>
+
+<span class="c1"># Decode and verify the WAV bytes</span>
+<span class="n">wf</span><span class="p">,</span> <span class="n">sr</span> <span class="o">=</span> <span class="n">recode</span><span class="o">.</span><span class="n">decode_wav_bytes</span><span class="p">(</span><span class="n">wav_bytes</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">sr</span> <span class="o">==</span> <span class="n">DFLT_PYO_SR</span>
+<span class="n">total_duration</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">wf</span><span class="p">)</span> <span class="o">/</span> <span class="n">sr</span>
+<span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">total_duration</span> <span class="o">-</span> <span class="mf">3.0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.1</span>
+</pre></div>
+</div>
+<p>This simple example demonstrates the core functionality of the <code class="docutils literal notranslate"><span class="pre">Synth</span></code> class:</p>
+<ul class="simple">
+<li><p>Creating a synthesizer with a function that returns a Pyo object</p></li>
+<li><p>Playing the synth with real-time parameter changes</p></li>
+<li><p>Recording parameter changes as events</p></li>
+<li><p>Rendering events to audio</p></li>
+</ul>
+</section>
+<section id="interactive-usage-in-a-repl">
+<h2>Interactive Usage in a REPL<a class="headerlink" href="#interactive-usage-in-a-repl" title="Link to this heading">¶</a></h2>
+<p>For more interactive work, you can use the <code class="docutils literal notranslate"><span class="pre">Synth</span></code> class in a REPL environment. This allows you to experiment with different parameters in real-time.</p>
+<section id="parameter-types-dials-vs-settings">
+<h3>Parameter Types: Dials vs Settings<a class="headerlink" href="#parameter-types-dials-vs-settings" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">Synth</span></code> class distinguishes between two types of parameters:</p>
+<ol class="arabic simple">
+<li><p><strong>Dials</strong> - Real-time controllable parameters that use <code class="docutils literal notranslate"><span class="pre">pyo.SigTo</span></code> for smooth transitions</p></li>
+<li><p><strong>Settings</strong> - Parameters that require rebuilding the synthesis graph when changed</p></li>
+</ol>
+<p>By default, all parameters are treated as dials. You can specify which parameters should be dials or settings using the decorator syntax:</p>
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyo</span><span class="w"> </span><span class="kn">import</span> <span class="n">LFO</span><span class="p">,</span> <span class="n">Adsr</span><span class="p">,</span> <span class="n">Sine</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hum.pyo_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">Synth</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">sleep</span>
+
+
+<span class="c1"># Note that here we explicitly tell Synth what arguments are "dials" and what are "settings"</span>
+<span class="nd">@Synth</span><span class="p">(</span><span class="n">dials</span><span class="o">=</span><span class="s2">"freq"</span><span class="p">,</span> <span class="n">settings</span><span class="o">=</span><span class="s2">"waveform attack"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">simple_waveform_synth</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="mi">440</span><span class="p">,</span> <span class="n">attack</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">waveform</span><span class="o">=</span><span class="s2">"sine"</span><span class="p">):</span>
+    <span class="n">env</span> <span class="o">=</span> <span class="n">Adsr</span><span class="p">(</span>
+        <span class="n">attack</span><span class="o">=</span><span class="n">attack</span><span class="p">,</span> <span class="n">decay</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">sustain</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">release</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">dur</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mul</span><span class="o">=</span><span class="mf">0.5</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">play</span><span class="p">()</span>
+    <span class="n">wave</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">"sine"</span><span class="p">:</span> <span class="n">Sine</span><span class="p">,</span>
+        <span class="s2">"triangle"</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">freq</span><span class="p">,</span> <span class="n">mul</span><span class="p">:</span> <span class="n">LFO</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">freq</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">mul</span><span class="o">=</span><span class="n">mul</span><span class="p">),</span>
+        <span class="s2">"square"</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">freq</span><span class="p">,</span> <span class="n">mul</span><span class="p">:</span> <span class="n">LFO</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">freq</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mul</span><span class="o">=</span><span class="n">mul</span><span class="p">),</span>
+    <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span> <span class="n">Sine</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wave</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">freq</span><span class="p">,</span> <span class="n">mul</span><span class="o">=</span><span class="n">env</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In this example:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">freq</span></code> is a dial - It changes smoothly in real-time</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">waveform</span></code> and <code class="docutils literal notranslate"><span class="pre">attack</span></code> are settings - Changing them rebuilds the synth</p></li>
+</ul>
+</section>
+<section id="interactive-control">
+<h3>Interactive Control<a class="headerlink" href="#interactive-control" title="Link to this heading">¶</a></h3>
+<p>For interactive control in a REPL, you need to explicitly start and stop the synth:</p>
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start the synth (begins making sound)</span>
+<span class="n">simple_waveform_synth</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+<span class="c1"># Change the frequency</span>
+<span class="n">simple_waveform_synth</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="mi">440</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># Change to 660 Hz</span>
+<span class="c1"># The sound continues to play, but now at a different frequency</span>
+
+<span class="c1"># Change multiple parameters at once</span>
+<span class="n">simple_waveform_synth</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="mi">440</span><span class="p">,</span> <span class="n">waveform</span><span class="o">=</span><span class="s2">"triangle"</span><span class="p">)</span>
+<span class="c1"># Now playing a triangle wave at 440 Hz</span>
+
+<span class="c1"># Change the waveform and attack time</span>
+<span class="n">simple_waveform_synth</span><span class="p">(</span><span class="n">waveform</span><span class="o">=</span><span class="s2">"square"</span><span class="p">,</span> <span class="n">attack</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="c1"># Note: You won't hear the change in attack time until the next note is played!</span>
+
+<span class="c1"># Stop the synth when done</span>
+<span class="n">simple_waveform_synth</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Note that when you restart a synth, it retains its last state:</p>
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start the synth again - it will use the last parameter values</span>
+<span class="n">simple_waveform_synth</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>  <span class="c1"># Still has square waveform and attack=0.5</span>
+
+<span class="c1"># Change back to sine wave</span>
+<span class="n">simple_waveform_synth</span><span class="p">(</span><span class="n">waveform</span><span class="o">=</span><span class="s2">"sine"</span><span class="p">)</span>  <span class="c1"># Note the attack is still 0.5</span>
+
+<span class="c1"># Stop the synth when done</span>
+<span class="n">simple_waveform_synth</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p><strong>Warning</strong>: Always remember to stop your synths when done to avoid resource issues. Using the context manager approach is recommended for automatic cleanup.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="precomputed-knob-changes">
+<h2>Precomputed Knob Changes<a class="headerlink" href="#precomputed-knob-changes" title="Link to this heading">¶</a></h2>
+<p>Instead of interactive control, you can also precompute a sequence of parameter changes:</p>
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyo</span><span class="w"> </span><span class="kn">import</span> <span class="n">LFO</span><span class="p">,</span> <span class="n">Adsr</span><span class="p">,</span> <span class="n">Sine</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hum.pyo_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">Synth</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">sleep</span>
+
+
+<span class="nd">@Synth</span><span class="p">(</span><span class="n">dials</span><span class="o">=</span><span class="s2">"freq"</span><span class="p">,</span> <span class="n">settings</span><span class="o">=</span><span class="s2">"waveform attack"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">simple_waveform_synth</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="mi">440</span><span class="p">,</span> <span class="n">attack</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">waveform</span><span class="o">=</span><span class="s2">"sine"</span><span class="p">):</span>
+    <span class="n">env</span> <span class="o">=</span> <span class="n">Adsr</span><span class="p">(</span>
+        <span class="n">attack</span><span class="o">=</span><span class="n">attack</span><span class="p">,</span> <span class="n">decay</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">sustain</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">release</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">dur</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mul</span><span class="o">=</span><span class="mf">0.5</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">play</span><span class="p">()</span>
+    <span class="n">wave</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">"sine"</span><span class="p">:</span> <span class="n">Sine</span><span class="p">,</span>
+        <span class="s2">"triangle"</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">freq</span><span class="p">,</span> <span class="n">mul</span><span class="p">:</span> <span class="n">LFO</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">freq</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">mul</span><span class="o">=</span><span class="n">mul</span><span class="p">),</span>
+        <span class="s2">"square"</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">freq</span><span class="p">,</span> <span class="n">mul</span><span class="p">:</span> <span class="n">LFO</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">freq</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mul</span><span class="o">=</span><span class="n">mul</span><span class="p">),</span>
+    <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span> <span class="n">Sine</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wave</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">freq</span><span class="p">,</span> <span class="n">mul</span><span class="o">=</span><span class="n">env</span><span class="p">)</span>
+
+
+<span class="k">with</span> <span class="n">simple_waveform_synth</span> <span class="k">as</span> <span class="n">s</span><span class="p">:</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Play default settings for a second</span>
+    <span class="n">s</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="mi">440</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># Change to 660 Hz</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">s</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="mi">440</span><span class="p">,</span> <span class="n">waveform</span><span class="o">=</span><span class="s2">"triangle"</span><span class="p">)</span>  <span class="c1"># Change to triangle wave at 440 Hz</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>  <span class="c1"># Shorter wait this time</span>
+    <span class="n">s</span><span class="p">(</span><span class="n">waveform</span><span class="o">=</span><span class="s2">"square"</span><span class="p">,</span> <span class="n">attack</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>  <span class="c1"># Change to square wave with longer attack</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># Wait a bit longer</span>
+    <span class="n">s</span><span class="p">(</span><span class="n">waveform</span><span class="o">=</span><span class="s2">"sine"</span><span class="p">)</span>  <span class="c1"># Change back to sine wave (attack still 0.5)</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Wait for the final change to be heard</span>
+</pre></div>
+</div>
+</section>
+<section id="recording-and-analyzing-events">
+<h2>Recording and Analyzing Events<a class="headerlink" href="#recording-and-analyzing-events" title="Link to this heading">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">Synth</span></code> class automatically records all parameter changes with timestamps:</p>
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get the recorded events after playing</span>
+<span class="n">events</span> <span class="o">=</span> <span class="n">simple_waveform_synth</span><span class="o">.</span><span class="n">get_recording</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This gives you a list of timestamped parameter changes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+    <span class="p">(</span>
+        <span class="mi">0</span><span class="p">,</span>
+        <span class="p">{</span>
+            <span class="s2">"freq"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"value"</span><span class="p">:</span> <span class="mi">440</span><span class="p">,</span> <span class="s2">"time"</span><span class="p">:</span> <span class="mf">0.025</span><span class="p">,</span> <span class="s2">"mul"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"add"</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+            <span class="s2">"attack"</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+            <span class="s2">"waveform"</span><span class="p">:</span> <span class="s2">"sine"</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">),</span>
+    <span class="p">(</span><span class="mf">1.0052499771118164</span><span class="p">,</span> <span class="p">{</span><span class="s2">"freq"</span><span class="p">:</span> <span class="mf">660.0</span><span class="p">}),</span>
+    <span class="p">(</span><span class="mf">2.007974863052368</span><span class="p">,</span> <span class="p">{</span><span class="s2">"freq"</span><span class="p">:</span> <span class="mi">440</span><span class="p">,</span> <span class="s2">"waveform"</span><span class="p">:</span> <span class="s2">"triangle"</span><span class="p">}),</span>
+    <span class="p">(</span><span class="mf">2.0084967613220215</span><span class="p">,</span> <span class="p">{</span><span class="s2">"waveform"</span><span class="p">:</span> <span class="s2">"triangle"</span><span class="p">}),</span>
+    <span class="p">(</span><span class="mf">2.515920877456665</span><span class="p">,</span> <span class="p">{</span><span class="s2">"waveform"</span><span class="p">:</span> <span class="s2">"square"</span><span class="p">,</span> <span class="s2">"attack"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">}),</span>
+    <span class="p">(</span><span class="mf">2.518988609313965</span><span class="p">,</span> <span class="p">{</span><span class="s2">"waveform"</span><span class="p">:</span> <span class="s2">"square"</span><span class="p">,</span> <span class="s2">"attack"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">}),</span>
+    <span class="p">(</span><span class="mf">4.524500846862793</span><span class="p">,</span> <span class="p">{</span><span class="s2">"waveform"</span><span class="p">:</span> <span class="s2">"sine"</span><span class="p">}),</span>
+    <span class="p">(</span><span class="mf">4.525563716888428</span><span class="p">,</span> <span class="p">{</span><span class="s2">"waveform"</span><span class="p">:</span> <span class="s2">"sine"</span><span class="p">}),</span>
+    <span class="p">(</span><span class="mf">5.528840780258179</span><span class="p">,</span> <span class="p">{}),</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>You can round the timestamps for better readability:</p>
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">hum.pyo_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">round_event_times</span>
+
+<span class="n">events</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">round_event_times</span><span class="p">(</span><span class="n">simple_waveform_synth</span><span class="o">.</span><span class="n">get_recording</span><span class="p">(),</span> <span class="mf">0.1</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>This gives you a cleaner view:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+    <span class="p">(</span>
+        <span class="mf">0.0</span><span class="p">,</span>
+        <span class="p">{</span>
+            <span class="s2">"freq"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"value"</span><span class="p">:</span> <span class="mi">440</span><span class="p">,</span> <span class="s2">"time"</span><span class="p">:</span> <span class="mf">0.025</span><span class="p">,</span> <span class="s2">"mul"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"add"</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+            <span class="s2">"attack"</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+            <span class="s2">"waveform"</span><span class="p">:</span> <span class="s2">"sine"</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">),</span>
+    <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="p">{</span><span class="s2">"freq"</span><span class="p">:</span> <span class="mf">660.0</span><span class="p">}),</span>
+    <span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="p">{</span><span class="s2">"freq"</span><span class="p">:</span> <span class="mi">440</span><span class="p">,</span> <span class="s2">"waveform"</span><span class="p">:</span> <span class="s2">"triangle"</span><span class="p">}),</span>
+    <span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="p">{</span><span class="s2">"waveform"</span><span class="p">:</span> <span class="s2">"triangle"</span><span class="p">}),</span>
+    <span class="p">(</span><span class="mf">2.5</span><span class="p">,</span> <span class="p">{</span><span class="s2">"waveform"</span><span class="p">:</span> <span class="s2">"square"</span><span class="p">,</span> <span class="s2">"attack"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">}),</span>
+    <span class="p">(</span><span class="mf">2.5</span><span class="p">,</span> <span class="p">{</span><span class="s2">"waveform"</span><span class="p">:</span> <span class="s2">"square"</span><span class="p">,</span> <span class="s2">"attack"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">}),</span>
+    <span class="p">(</span><span class="mf">4.5</span><span class="p">,</span> <span class="p">{</span><span class="s2">"waveform"</span><span class="p">:</span> <span class="s2">"sine"</span><span class="p">}),</span>
+    <span class="p">(</span><span class="mf">4.5</span><span class="p">,</span> <span class="p">{</span><span class="s2">"waveform"</span><span class="p">:</span> <span class="s2">"sine"</span><span class="p">}),</span>
+    <span class="p">(</span><span class="mf">5.5</span><span class="p">,</span> <span class="p">{}),</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="composing-with-event-sequences">
+<h2>Composing with Event Sequences<a class="headerlink" href="#composing-with-event-sequences" title="Link to this heading">¶</a></h2>
+<p>You can create, edit, or manipulate event sequences directly:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Manually define an event sequence</span>
+<span class="n">events</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span>
+        <span class="mf">0.0</span><span class="p">,</span>
+        <span class="p">{</span>
+            <span class="s2">"freq"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"value"</span><span class="p">:</span> <span class="mi">440</span><span class="p">,</span> <span class="s2">"time"</span><span class="p">:</span> <span class="mf">0.025</span><span class="p">,</span> <span class="s2">"mul"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"add"</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+            <span class="s2">"attack"</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+            <span class="s2">"waveform"</span><span class="p">:</span> <span class="s2">"sine"</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">),</span>
+    <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="p">{</span><span class="s2">"freq"</span><span class="p">:</span> <span class="mf">660.0</span><span class="p">}),</span>
+    <span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="p">{</span><span class="s2">"freq"</span><span class="p">:</span> <span class="mi">440</span><span class="p">,</span> <span class="s2">"waveform"</span><span class="p">:</span> <span class="s2">"triangle"</span><span class="p">}),</span>
+    <span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="p">{</span><span class="s2">"waveform"</span><span class="p">:</span> <span class="s2">"triangle"</span><span class="p">}),</span>
+    <span class="p">(</span><span class="mf">2.5</span><span class="p">,</span> <span class="p">{</span><span class="s2">"waveform"</span><span class="p">:</span> <span class="s2">"square"</span><span class="p">,</span> <span class="s2">"attack"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">}),</span>
+    <span class="p">(</span><span class="mf">2.5</span><span class="p">,</span> <span class="p">{</span><span class="s2">"waveform"</span><span class="p">:</span> <span class="s2">"square"</span><span class="p">,</span> <span class="s2">"attack"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">}),</span>
+    <span class="p">(</span><span class="mf">4.5</span><span class="p">,</span> <span class="p">{</span><span class="s2">"waveform"</span><span class="p">:</span> <span class="s2">"sine"</span><span class="p">}),</span>
+    <span class="p">(</span><span class="mf">4.5</span><span class="p">,</span> <span class="p">{</span><span class="s2">"waveform"</span><span class="p">:</span> <span class="s2">"sine"</span><span class="p">}),</span>
+    <span class="p">(</span><span class="mf">5.5</span><span class="p">,</span> <span class="p">{}),</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<section id="replaying-events">
+<h3>Replaying Events<a class="headerlink" href="#replaying-events" title="Link to this heading">¶</a></h3>
+<p>You can replay any event sequence through a compatible synth:</p>
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@Synth</span><span class="p">(</span><span class="n">dials</span><span class="o">=</span><span class="s2">"freq"</span><span class="p">,</span> <span class="n">settings</span><span class="o">=</span><span class="s2">"waveform attack"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">simple_waveform_synth</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="mi">440</span><span class="p">,</span> <span class="n">attack</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">waveform</span><span class="o">=</span><span class="s2">"sine"</span><span class="p">):</span>
+    <span class="n">env</span> <span class="o">=</span> <span class="n">Adsr</span><span class="p">(</span>
+        <span class="n">attack</span><span class="o">=</span><span class="n">attack</span><span class="p">,</span> <span class="n">decay</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">sustain</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">release</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">dur</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mul</span><span class="o">=</span><span class="mf">0.5</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">play</span><span class="p">()</span>
+    <span class="n">wave</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">"sine"</span><span class="p">:</span> <span class="n">Sine</span><span class="p">,</span>
+        <span class="s2">"triangle"</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">freq</span><span class="p">,</span> <span class="n">mul</span><span class="p">:</span> <span class="n">LFO</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">freq</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">mul</span><span class="o">=</span><span class="n">mul</span><span class="p">),</span>
+        <span class="s2">"square"</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">freq</span><span class="p">,</span> <span class="n">mul</span><span class="p">:</span> <span class="n">LFO</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">freq</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mul</span><span class="o">=</span><span class="n">mul</span><span class="p">),</span>
+    <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">waveform</span><span class="p">,</span> <span class="n">Sine</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wave</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">freq</span><span class="p">,</span> <span class="n">mul</span><span class="o">=</span><span class="n">env</span><span class="p">)</span>
+
+
+<span class="c1"># Replay the event sequence</span>
+<span class="n">simple_waveform_synth</span><span class="o">.</span><span class="n">replay_events</span><span class="p">(</span><span class="n">events</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="rendering-events-to-audio">
+<h3>Rendering Events to Audio<a class="headerlink" href="#rendering-events-to-audio" title="Link to this heading">¶</a></h3>
+<p>You can render events to audio without real-time playback:</p>
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">recode</span>
+
+<span class="c1"># Render events to WAV format bytes</span>
+<span class="n">wav_bytes</span> <span class="o">=</span> <span class="n">simple_waveform_synth</span><span class="o">.</span><span class="n">render_events</span><span class="p">(</span><span class="n">events</span><span class="p">)</span>
+
+<span class="c1"># Decode the WAV bytes for analysis or saving</span>
+<span class="n">wf</span><span class="p">,</span> <span class="n">sr</span> <span class="o">=</span> <span class="n">recode</span><span class="o">.</span><span class="n">decode_wav_bytes</span><span class="p">(</span><span class="n">wav_bytes</span><span class="p">)</span>
+
+<span class="c1"># Visualize the waveform</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hum</span><span class="w"> </span><span class="kn">import</span> <span class="n">disp_wf</span>
+
+<span class="n">disp_wf</span><span class="p">(</span><span class="n">wf</span><span class="p">,</span> <span class="n">sr</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="advanced-features">
+<h2>Advanced Features<a class="headerlink" href="#advanced-features" title="Link to this heading">¶</a></h2>
+<section id="replayevents-class">
+<h3>ReplayEvents Class<a class="headerlink" href="#replayevents-class" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">ReplayEvents</span></code> class is a utility for replaying timestamped events with proper timing:</p>
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">hum.pyo_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReplayEvents</span>
+
+<span class="c1"># Get your events, either from a recording or created manually</span>
+<span class="n">events</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="p">{</span><span class="s2">"freq"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"value"</span><span class="p">:</span> <span class="mi">440</span><span class="p">,</span> <span class="s2">"time"</span><span class="p">:</span> <span class="mf">0.025</span><span class="p">,</span> <span class="s2">"mul"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"add"</span><span class="p">:</span> <span class="mi">0</span><span class="p">}}),</span>
+    <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="p">{</span><span class="s2">"freq"</span><span class="p">:</span> <span class="mf">330.0</span><span class="p">}),</span>
+    <span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="p">{</span><span class="s2">"freq"</span><span class="p">:</span> <span class="mi">440</span><span class="p">}),</span>
+    <span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="p">{}),</span>
+<span class="p">]</span>
+
+<span class="c1"># Create a replay generator and iterate through it</span>
+<span class="k">for</span> <span class="n">knob_update</span> <span class="ow">in</span> <span class="n">ReplayEvents</span><span class="p">(</span><span class="n">events</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Update: </span><span class="si">{</span><span class="n">knob_update</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="c1"># Do something with each update</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">ReplayEvents</span></code> class supports options like:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">emit_none</span></code>: If True, yields None to simulate time passing</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">time_scale</span></code>: Speed up or slow down playback (e.g., 2.0 for twice as fast)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ensure_sorted</span></code>: Sort events by timestamp before playback</p></li>
+</ul>
+</section>
+<section id="event-manipulation-and-composition">
+<h3>Event Manipulation and Composition<a class="headerlink" href="#event-manipulation-and-composition" title="Link to this heading">¶</a></h3>
+<p>You can manipulate event sequences programmatically:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a modified version by changing timestamps</span>
+<span class="n">faster_events</span> <span class="o">=</span> <span class="p">[(</span><span class="n">t</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">params</span> <span class="ow">in</span> <span class="n">events</span><span class="p">]</span>
+
+<span class="c1"># Create a reversed sequence</span>
+<span class="n">reversed_events</span> <span class="o">=</span> <span class="p">[(</span><span class="n">events</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">t</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">params</span> <span class="ow">in</span> <span class="n">events</span><span class="p">]</span>
+
+<span class="c1"># Combine sequences by appending</span>
+<span class="n">melody</span> <span class="o">=</span> <span class="n">events</span> <span class="o">+</span> <span class="p">[(</span><span class="n">t</span> <span class="o">+</span> <span class="n">events</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">params</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">params</span> <span class="ow">in</span> <span class="n">events</span><span class="p">]</span>
+
+
+<span class="c1"># Transpose a sequence by modifying frequency values</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">transpose</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">semitones</span><span class="p">):</span>
+    <span class="n">factor</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">**</span> <span class="p">(</span><span class="n">semitones</span> <span class="o">/</span> <span class="mi">12</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">params</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
+        <span class="n">new_params</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">"freq"</span> <span class="ow">in</span> <span class="n">new_params</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_params</span><span class="p">[</span><span class="s2">"freq"</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">new_params</span><span class="p">[</span><span class="s2">"freq"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="o">*</span> <span class="n">factor</span> <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s2">"value"</span> <span class="k">else</span> <span class="n">v</span>
+                    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">new_params</span><span class="p">[</span><span class="s2">"freq"</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">new_params</span><span class="p">[</span><span class="s2">"freq"</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_params</span><span class="p">[</span><span class="s2">"freq"</span><span class="p">]</span> <span class="o">*</span> <span class="n">factor</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">t</span><span class="p">,</span> <span class="n">new_params</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="c1"># Transpose up a perfect fifth (7 semitones)</span>
+<span class="n">fifth_up</span> <span class="o">=</span> <span class="n">transpose</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="complex-synthesis-graphs">
+<h3>Complex Synthesis Graphs<a class="headerlink" href="#complex-synthesis-graphs" title="Link to this heading">¶</a></h3>
+<p>You can create more sophisticated synthesis graphs by combining Pyo objects:</p>
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyo</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sine</span><span class="p">,</span> <span class="n">Delay</span><span class="p">,</span> <span class="n">Chorus</span><span class="p">,</span> <span class="n">Harmonizer</span><span class="p">,</span> <span class="n">MoogLP</span>
+
+
+<span class="nd">@Synth</span><span class="p">(</span><span class="n">dials</span><span class="o">=</span><span class="s2">"freq cutoff"</span><span class="p">,</span> <span class="n">settings</span><span class="o">=</span><span class="s2">"delay_time num_voices"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">complex_synth</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="mi">440</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">delay_time</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">num_voices</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+    <span class="c1"># Create a sine oscillator</span>
+    <span class="n">osc</span> <span class="o">=</span> <span class="n">Sine</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">freq</span><span class="p">,</span> <span class="n">mul</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+    <span class="c1"># Add harmonizer for multiple voices</span>
+    <span class="n">harm</span> <span class="o">=</span> <span class="n">Harmonizer</span><span class="p">(</span><span class="n">osc</span><span class="p">,</span> <span class="n">transpo</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">12</span><span class="p">][:</span><span class="n">num_voices</span><span class="p">],</span> <span class="n">feedback</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+
+    <span class="c1"># Add a filter</span>
+    <span class="n">filt</span> <span class="o">=</span> <span class="n">MoogLP</span><span class="p">(</span><span class="n">harm</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="n">cutoff</span><span class="p">,</span> <span class="n">res</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+    <span class="c1"># etc...</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="hooking-a-synth-to-event-streams">
+<h2>Hooking a Synth to Event Streams<a class="headerlink" href="#hooking-a-synth-to-event-streams" title="Link to this heading">¶</a></h2>
+<p>You can connect your synths to external event sources like keyboards, sensors, or algorithmic generators. This allows you to create interactive instruments or audio installations.</p>
+<section id="keyboard-control-integration">
+<h3>Keyboard Control Integration<a class="headerlink" href="#keyboard-control-integration" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">keyboard_control.py</span></code> module provides a way to connect keyboard events to your synths, creating an interactive musical instrument controlled by your computer keyboard.</p>
+<p>The module works by:</p>
+<ol class="arabic simple">
+<li><p>Detecting keyboard events using the <code class="docutils literal notranslate"><span class="pre">pynput</span></code> library</p></li>
+<li><p>Mapping keys to synth parameters using a configurable dictionary</p></li>
+<li><p>Calling your synth function with the mapped parameters when keys are pressed</p></li>
+<li><p>Supporting multiple callback patterns and configuration options</p></li>
+</ol>
+</section>
+<section id="command-line-usage">
+<h3>Command Line Usage<a class="headerlink" href="#command-line-usage" title="Link to this heading">¶</a></h3>
+<p>The simplest way to try keyboard control is through the command line:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>hum.examples.keyboard_control<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--callback<span class="w"> </span><span class="s2">"hum.pyo_synths:sine"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--arg-mapping<span class="w"> </span><span class="s1">'{"q":130.81,"w":146.83,"e":164.81,"r":174.61,"t":196.00,"y":220.00,"u":246.94,"i":261.63,"o":293.66,"p":329.63,"a":261.63,"s":293.66,"d":329.63,"f":349.23,"g":392.00,"h":440.00,"j":493.88,"k":523.25,"l":587.33,"z":523.25,"x":587.33,"c":659.25,"v":698.46,"b":783.99,"n":880.00,"m":987.77}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--debug
+</pre></div>
+</div>
+<p>This creates a two-octave piano keyboard layout on your QWERTY keyboard, where:</p>
+<ul class="simple">
+<li><p>The top two rows (Q-P and A-L) form the white keys</p></li>
+<li><p>The bottom row (Z-M) forms the black keys</p></li>
+<li><p>Each key is mapped to a specific frequency in Hz</p></li>
+</ul>
+</section>
+<section id="programmatic-usage">
+<h3>Programmatic Usage<a class="headerlink" href="#programmatic-usage" title="Link to this heading">¶</a></h3>
+<p>You can also use the keyboard control module in your own code:</p>
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">hum.examples.keyboard_control</span><span class="w"> </span><span class="kn">import</span> <span class="n">keyboard_reader</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hum.pyo_synths</span><span class="w"> </span><span class="kn">import</span> <span class="n">sine</span>  <span class="c1"># A pre-defined sine wave synth</span>
+
+<span class="c1"># Define a mapping from keys to frequencies</span>
+<span class="n">key_mapping</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"a"</span><span class="p">:</span> <span class="mf">261.63</span><span class="p">,</span>  <span class="c1"># C4</span>
+    <span class="s2">"s"</span><span class="p">:</span> <span class="mf">293.66</span><span class="p">,</span>  <span class="c1"># D4</span>
+    <span class="s2">"d"</span><span class="p">:</span> <span class="mf">329.63</span><span class="p">,</span>  <span class="c1"># E4</span>
+    <span class="s2">"f"</span><span class="p">:</span> <span class="mf">349.23</span><span class="p">,</span>  <span class="c1"># F4</span>
+    <span class="s2">"g"</span><span class="p">:</span> <span class="mf">392.00</span><span class="p">,</span>  <span class="c1"># G4</span>
+    <span class="s2">"h"</span><span class="p">:</span> <span class="mf">440.00</span><span class="p">,</span>  <span class="c1"># A4</span>
+    <span class="s2">"j"</span><span class="p">:</span> <span class="mf">493.88</span><span class="p">,</span>  <span class="c1"># B4</span>
+    <span class="s2">"k"</span><span class="p">:</span> <span class="mf">523.25</span><span class="p">,</span>  <span class="c1"># C5</span>
+<span class="p">}</span>
+
+<span class="c1"># Create a keyboard reader with the mapping</span>
+<span class="n">reader</span> <span class="o">=</span> <span class="n">keyboard_reader</span><span class="p">(</span>
+    <span class="n">callback</span><span class="o">=</span><span class="n">sine</span><span class="p">,</span> <span class="n">arg_mapping</span><span class="o">=</span><span class="n">key_mapping</span><span class="p">,</span> <span class="n">exit_key</span><span class="o">=</span><span class="s2">"escape"</span><span class="p">,</span> <span class="n">read_rate</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="c1"># Process keyboard events</span>
+<span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">event</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Key pressed: </span><span class="si">{</span><span class="n">event</span><span class="p">[</span><span class="s1">'key'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">event</span> <span class="ow">and</span> <span class="n">event</span><span class="p">[</span><span class="s2">"key"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"escape"</span><span class="p">:</span>
+        <span class="k">break</span>
+</pre></div>
+</div>
+</section>
+<section id="advanced-mapping">
+<h3>Advanced Mapping<a class="headerlink" href="#advanced-mapping" title="Link to this heading">¶</a></h3>
+<p>You can map keys to complex parameter dictionaries for more control:</p>
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Map keys to multiple parameters</span>
+<span class="n">advanced_mapping</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"a"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"freq"</span><span class="p">:</span> <span class="mf">261.63</span><span class="p">,</span> <span class="s2">"waveform"</span><span class="p">:</span> <span class="s2">"sine"</span><span class="p">},</span>
+    <span class="s2">"s"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"freq"</span><span class="p">:</span> <span class="mf">293.66</span><span class="p">,</span> <span class="s2">"waveform"</span><span class="p">:</span> <span class="s2">"triangle"</span><span class="p">},</span>
+    <span class="s2">"d"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"freq"</span><span class="p">:</span> <span class="mf">329.63</span><span class="p">,</span> <span class="s2">"waveform"</span><span class="p">:</span> <span class="s2">"square"</span><span class="p">,</span> <span class="s2">"attack"</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">},</span>
+<span class="p">}</span>
+
+<span class="c1"># Use with a more complex synth</span>
+<span class="n">reader</span> <span class="o">=</span> <span class="n">keyboard_reader</span><span class="p">(</span><span class="n">callback</span><span class="o">=</span><span class="n">simple_waveform_synth</span><span class="p">,</span> <span class="n">arg_mapping</span><span class="o">=</span><span class="n">advanced_mapping</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="how-it-works-under-the-hood">
+<h3>How It Works Under the Hood<a class="headerlink" href="#how-it-works-under-the-hood" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">keyboard_control.py</span></code> module:</p>
+<ol class="arabic simple">
+<li><p>Registers a callback function with the <code class="docutils literal notranslate"><span class="pre">pynput</span></code> library to capture key presses</p></li>
+<li><p>Processes the raw key data into a standardized format</p></li>
+<li><p>Looks up the key in the mapping dictionary to find associated parameters</p></li>
+<li><p>Calls the synth callback in the appropriate way based on its type:</p>
+<ul class="simple">
+<li><p>If it’s a <code class="docutils literal notranslate"><span class="pre">Synth</span></code> instance, uses the <code class="docutils literal notranslate"><span class="pre">update</span></code> method</p></li>
+<li><p>If it’s a regular function, calls it with the mapped parameters</p></li>
+</ul>
+</li>
+<li><p>Yields events in a generator pattern for processing in your code</p></li>
+</ol>
+<p>This flexible design allows you to use keyboard control with any type of synth function or parameter mapping, making it easy to create interactive audio experiences.</p>
+</section>
+</section>
+<section id="use-cases">
+<h2>Use Cases<a class="headerlink" href="#use-cases" title="Link to this heading">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">Synth</span></code> and keyboard control tools can be used for:</p>
+<ol class="arabic simple">
+<li><p><strong>Interactive Music Creation</strong> - Build synthesizers and play them with your keyboard</p></li>
+<li><p><strong>Sound Design</strong> - Experiment with different parameters in real-time</p></li>
+<li><p><strong>Education</strong> - Demonstrate audio concepts with interactive examples</p></li>
+<li><p><strong>Algorithmic Composition</strong> - Create and manipulate event sequences programmatically</p></li>
+<li><p><strong>Audio Prototyping</strong> - Quickly test audio ideas before implementing them in other systems</p></li>
+<li><p><strong>Game Audio</strong> - Create dynamic sound effects that respond to game events</p></li>
+<li><p><strong>Installation Art</strong> - Build interactive audio installations</p></li>
+<li><p><strong>Live Performance</strong> - Control audio in real-time for live shows</p></li>
+</ol>
+</section>
+<section id="tips-and-best-practices">
+<h2>Tips and Best Practices<a class="headerlink" href="#tips-and-best-practices" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p><strong>Use Context Managers</strong> - The <code class="docutils literal notranslate"><span class="pre">with</span></code> statement ensures proper cleanup</p></li>
+<li><p><strong>Round Timestamps</strong> - Use <code class="docutils literal notranslate"><span class="pre">round_event_times</span></code> for readable event sequences</p></li>
+<li><p><strong>Resource Management</strong> - Always stop synths when done to free audio resources</p></li>
+<li><p><strong>Separate Concerns</strong> - Use dials for real-time control and settings for structural changes</p></li>
+<li><p><strong>Start Simple</strong> - Build up complexity gradually as you get comfortable with the system</p></li>
+<li><p><strong>Use Generators</strong> - The functional approach to audio processing is powerful and flexible</p></li>
+<li><p><strong>Test with Rendering</strong> - Use <code class="docutils literal notranslate"><span class="pre">render_events</span></code> to test your sequences without real-time playback</p></li>
+<li><p><strong>Documentation</strong> - Document your synth functions with docstrings and examples</p></li>
+</ol>
+</section>
+<section id="under-the-hood">
+<h2>Under the Hood<a class="headerlink" href="#under-the-hood" title="Link to this heading">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">Synth</span></code> class works by:</p>
+<ol class="arabic simple">
+<li><p>Converting parameters to Pyo’s <code class="docutils literal notranslate"><span class="pre">SigTo</span></code> objects for smooth transitions</p></li>
+<li><p>Managing a Pyo server for audio processing</p></li>
+<li><p>Recording all parameter changes with timestamps</p></li>
+<li><p>Managing the underlying synthesis graph rebuilding when necessary</p></li>
+<li><p>Handling event serialization and deserialization</p></li>
+</ol>
+<p>The <code class="docutils literal notranslate"><span class="pre">keyboard_control</span></code> module:</p>
+<ol class="arabic simple">
+<li><p>Uses non-blocking event detection to capture keystrokes</p></li>
+<li><p>Processes key events into a consistent format</p></li>
+<li><p>Maps keys to synth parameters using configurable dictionaries</p></li>
+<li><p>Handles different types of callback functions adaptively</p></li>
+</ol>
+<p class="epythet-aggregates">This documentation as a single file: <a href="hum.md">hum.md</a> (Markdown, for agents).</p>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+<p class="epythet-provenance" style="font-size:.8em;opacity:.65;margin-top:2.5em;text-align:right">built 2026-11-23 05:37 UTC from <a href="https://github.com/thorwhalen/hum/commit/dc932c3e7df85fd3261673db2a0bb032069ff22e">dc932c3</a> (master) · hum 1.0.15 · <a href="about-this-build.html">about this build</a></p>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="api.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">API reference</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            Made with 
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">hum</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#getting-started-with-synth">Getting Started with Synth</a></li>
+<li><a class="reference internal" href="#simple-synth-test">Simple Synth Test</a></li>
+<li><a class="reference internal" href="#interactive-usage-in-a-repl">Interactive Usage in a REPL</a><ul>
+<li><a class="reference internal" href="#parameter-types-dials-vs-settings">Parameter Types: Dials vs Settings</a></li>
+<li><a class="reference internal" href="#interactive-control">Interactive Control</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#precomputed-knob-changes">Precomputed Knob Changes</a></li>
+<li><a class="reference internal" href="#recording-and-analyzing-events">Recording and Analyzing Events</a></li>
+<li><a class="reference internal" href="#composing-with-event-sequences">Composing with Event Sequences</a><ul>
+<li><a class="reference internal" href="#replaying-events">Replaying Events</a></li>
+<li><a class="reference internal" href="#rendering-events-to-audio">Rendering Events to Audio</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced-features">Advanced Features</a><ul>
+<li><a class="reference internal" href="#replayevents-class">ReplayEvents Class</a></li>
+<li><a class="reference internal" href="#event-manipulation-and-composition">Event Manipulation and Composition</a></li>
+<li><a class="reference internal" href="#complex-synthesis-graphs">Complex Synthesis Graphs</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#hooking-a-synth-to-event-streams">Hooking a Synth to Event Streams</a><ul>
+<li><a class="reference internal" href="#keyboard-control-integration">Keyboard Control Integration</a></li>
+<li><a class="reference internal" href="#command-line-usage">Command Line Usage</a></li>
+<li><a class="reference internal" href="#programmatic-usage">Programmatic Usage</a></li>
+<li><a class="reference internal" href="#advanced-mapping">Advanced Mapping</a></li>
+<li><a class="reference internal" href="#how-it-works-under-the-hood">How It Works Under the Hood</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#use-cases">Use Cases</a></li>
+<li><a class="reference internal" href="#tips-and-best-practices">Tips and Best Practices</a></li>
+<li><a class="reference internal" href="#under-the-hood">Under the Hood</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
         </div>
       </div>
-    </section>
+      
+      
+    </aside>
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
-</body>
+</div><script src="_static/documentation_options.js?v=d71aa3ef"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=fd10adb8"></script>
+    </body>
 </html>

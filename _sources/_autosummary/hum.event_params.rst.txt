@@ -1,0 +1,24 @@
+hum.event\_params
+=================
+
+.. automodule:: hum.event_params
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      plan_render_params
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      RenderParamPlan
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+   
+      RenderParamWarning
+   

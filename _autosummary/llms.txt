@@ -1,0 +1,18 @@
+# hum
+
+> A python synthesizer for creating and manipulating audio signals.
+
+
+## Pages in this subsection
+
+- [hum](hum.html.md): Tools to create and manipulate audio.
+- [hum.event_params](hum.event_params.html.md): Partition a recorded control-event stream into dials and settings.
+- [hum.extra_util](hum.extra_util.html.md): Extra utils that require more dependencies
+- [hum.util](hum.util.html.md): A few general utils
+- [hum.utils](hum.utils.html.md): General utils
+- [hum.utils.date_ticks](hum.utils.date_ticks.html.md): | &#96;largest_unit_that_changes_at_every_tick&#96;(...)   | Returns the largest time unit for which each ti...
+- [hum.utils.plotting](hum.utils.plotting.html.md): | &#96;disp_wf&#96;(wf&#91;, sr, autoplay, wf_plot_func&#93;)   | Display waveform in Jupyter notebook   |
+
+## Optional
+
+- [Top-level llms.txt](../llms.txt): Complete documentation index.

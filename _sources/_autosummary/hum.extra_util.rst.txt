@@ -1,0 +1,13 @@
+hum.extra\_util
+===============
+
+.. automodule:: hum.extra_util
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      estimate_chunk_frequency
+      estimate_frequencies
+   

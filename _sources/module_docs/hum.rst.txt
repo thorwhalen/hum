@@ -1,4 +1,0 @@
-hum
-===
-.. automodule:: hum
-   :members:

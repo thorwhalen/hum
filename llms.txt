@@ -1,0 +1,26 @@
+# hum
+
+> A python synthesizer for creating and manipulating audio signals.
+
+
+## Pages
+
+- [hum](index.html.md): A Python synthesizer for creating and manipulating audio signals: play a sound, change its knobs whi...
+- [API reference](api.html.md): | &#96;hum&#96;   | Tools to create and manipulate audio.   |
+- [hum](_autosummary/hum.html.md): Tools to create and manipulate audio.
+- [hum.event_params](_autosummary/hum.event_params.html.md): Partition a recorded control-event stream into dials and settings.
+- [hum.extra_util](_autosummary/hum.extra_util.html.md): Extra utils that require more dependencies
+- [hum.util](_autosummary/hum.util.html.md): A few general utils
+- [hum.utils](_autosummary/hum.utils.html.md): General utils
+- [hum.utils.date_ticks](_autosummary/hum.utils.date_ticks.html.md): | &#96;largest_unit_that_changes_at_every_tick&#96;(...)   | Returns the largest time unit for which each ti...
+- [hum.utils.plotting](_autosummary/hum.utils.plotting.html.md): | &#96;disp_wf&#96;(wf&#91;, sr, autoplay, wf_plot_func&#93;)   | Display waveform in Jupyter notebook   |
+- [For AI agents](ai-agents.html.md): &#96;hum&#96; ships artifacts for coding agents alongside its code. This page lists
+- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-11-23 05:37 UTC&#42;&#42; from commit &lt;a href="https://github.com/tho...
+
+## Optional
+
+- [hum.md](hum.md): Complete documentation in a single file.
+
+## Build
+
+- [build_info.json](build_info.json): build provenance (commit, version, tool versions, whether the docs match the package)

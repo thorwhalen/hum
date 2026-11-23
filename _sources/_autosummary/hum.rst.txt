@@ -1,0 +1,20 @@
+﻿hum
+===
+
+.. automodule:: hum
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   event_params
+   extra_util
+   pyo_synths
+   pyo_util
+   pyo_util_examples
+   synth_funcs
+   util
+   utils
