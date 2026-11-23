@@ -1,0 +1,60 @@
+{
+  "collection_duration_seconds": 12.951384544372559,
+  "commit_message": "Merge 68300e50808afda8066c8cd4509fbaf501a60507 into 6300adc0d05d336756d4918d9dc8ee99b0165221",
+  "commit_sha": "d030b817fd8d91e971bbba4320f2f1092e4cd19f",
+  "metrics": {
+    "coverage": {
+      "branch_coverage": 0.0,
+      "error": "No coverage file found",
+      "line_coverage": 0.0,
+      "statements_covered": 0,
+      "statements_total": 0
+    },
+    "umpyre_stats": {
+      "comment_lines": 100741,
+      "comment_lines_ratio": 0.059047327657249904,
+      "docs_lines": 408949,
+      "empty_lines": 252311,
+      "empty_lines_ratio": 0.14788705977237054,
+      "errors": [
+        "testFiles.py: invalid non-printable character U+FEFF (testFiles.py, line 1)",
+        "_shape.py: invalid syntax (_shape.py, line 4)",
+        "_array_like.py: invalid syntax (_array_like.py, line 15)",
+        "_nbit.py: invalid syntax (_nbit.py, line 6)",
+        "_scalars.py: invalid syntax (_scalars.py, line 7)",
+        "_char_codes.py: invalid syntax (_char_codes.py, line 3)",
+        "_dtype_like.py: invalid syntax (_dtype_like.py, line 21)",
+        "mypy_plugin.py: invalid syntax (mypy_plugin.py, line 118)",
+        "_cubature.py: invalid syntax (_cubature.py, line 27)",
+        "_array_api.py: invalid syntax (_array_api.py, line 66)"
+      ],
+      "files_analyzed": 3150,
+      "function_lines": 1133286,
+      "function_lines_ratio": 0.6642529831089041,
+      "mean_lines_per_function": 21.547819142868008,
+      "num_classes": 7860,
+      "num_functions": 52594,
+      "pypi_version": "1.0.15",
+      "total_errors": 13,
+      "total_lines": 1706106
+    },
+    "wily": {
+      "cyclomatic_avg": 0.0,
+      "error": "wily report failed: Usage: wily report [OPTIONS] FILE [METRICS]...\nTry 'wily report --help' for help.\n\nError: Invalid value for '-f' / '--format': 'json' is not one of 'CONSOLE', 'HTML'.\n",
+      "files_analyzed": 0,
+      "maintainability_index": 0.0,
+      "total_loc": 0
+    },
+    "workflow_status": {
+      "last_run_status": "success",
+      "last_success_timestamp": "2026-11-23T05:28:57Z",
+      "recent_failure_count": 0,
+      "run_url": "https://github.com/thorwhalen/hum/actions/runs/45117897256",
+      "total_runs_analyzed": 10
+    }
+  },
+  "python_version": "3.10",
+  "schema_version": "1.0",
+  "timestamp": "2026-11-23T05:34:52.732160Z",
+  "workflow_status": {}
+}
