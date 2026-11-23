@@ -1,13 +1,12 @@
 # hum
 
-A python synthesizer for creating and manipulating audio signals.
+A Python synthesizer for creating and manipulating audio signals: play a sound, change its knobs while it plays, record every change, and replay or render the recording to an audio file.
 
-To install:	```pip install hum```
+```bash
+pip install hum
+```
 
-Note: Some functionalities depend on [pyo](https://belangeo.github.io/pyo/download.html), 
-which itself requires some tools  (namely, [portaudio](https://www.portaudio.com/) 
-and [Portmidi](https://github.com/PortMidi/portmidi)) that _may_ have to be 
-installed manually.
+Some functionality depends on [pyo](https://belangeo.github.io/pyo/download.html), which itself requires some tools (namely [portaudio](https://www.portaudio.com/) and [Portmidi](https://github.com/PortMidi/portmidi)) that _may_ have to be installed manually. The examples below need pyo and an audio output device.
 
 ## Overview
 
@@ -21,6 +20,7 @@ The `Synth` class is a powerful wrapper around Pyo's audio engine, providing:
 
 ## Getting Started with Synth
 
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
 ```python
 from hum.pyo_util import Synth
 ```
@@ -29,6 +29,7 @@ from hum.pyo_util import Synth
 
 Let's start with a simple sine wave synthesizer that demonstrates the basic functionality:
 
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
 ```python
 import time
 from pyo import Sine
@@ -61,6 +62,7 @@ with s:
 
 After playing the synth, you can retrieve the recorded events:
 
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
 ```python
 # Get the recorded events
 events = s.get_recording()
@@ -88,6 +90,7 @@ assert events == expected_events
 
 You can render these events to audio:
 
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
 ```python
 # Render events to WAV format bytes
 wav_bytes = s.render_events(events)
@@ -118,6 +121,7 @@ The `Synth` class distinguishes between two types of parameters:
 
 By default, all parameters are treated as dials. You can specify which parameters should be dials or settings using the decorator syntax:
 
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
 ```python
 from pyo import LFO, Adsr, Sine
 from hum.pyo_util import Synth
@@ -146,6 +150,7 @@ In this example:
 
 For interactive control in a REPL, you need to explicitly start and stop the synth:
 
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
 ```python
 # Start the synth (begins making sound)
 simple_waveform_synth.start()
@@ -168,6 +173,7 @@ simple_waveform_synth.stop()
 
 Note that when you restart a synth, it retains its last state:
 
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
 ```python
 # Start the synth again - it will use the last parameter values
 simple_waveform_synth.start()  # Still has square waveform and attack=0.5
@@ -185,6 +191,7 @@ simple_waveform_synth.stop()
 
 Instead of interactive control, you can also precompute a sequence of parameter changes:
 
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
 ```python
 from pyo import LFO, Adsr, Sine
 from hum.pyo_util import Synth
@@ -220,6 +227,7 @@ with simple_waveform_synth as s:
 
 The `Synth` class automatically records all parameter changes with timestamps:
 
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
 ```python
 # Get the recorded events after playing
 events = simple_waveform_synth.get_recording()
@@ -250,6 +258,7 @@ This gives you a list of timestamped parameter changes:
 
 You can round the timestamps for better readability:
 
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
 ```python
 from hum.pyo_util import round_event_times
 
@@ -309,6 +318,7 @@ events = [
 
 You can replay any event sequence through a compatible synth:
 
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
 ```python
 @Synth(dials="freq", settings="waveform attack")
 def simple_waveform_synth(freq=440, attack=0.01, waveform="sine"):
@@ -331,6 +341,7 @@ simple_waveform_synth.replay_events(events)
 
 You can render events to audio without real-time playback:
 
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
 ```python
 import recode
 
@@ -352,6 +363,7 @@ disp_wf(wf, sr)
 
 The `ReplayEvents` class is a utility for replaying timestamped events with proper timing:
 
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
 ```python
 from hum.pyo_util import ReplayEvents
 
@@ -415,6 +427,7 @@ fifth_up = transpose(events, 7)
 
 You can create more sophisticated synthesis graphs by combining Pyo objects:
 
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
 ```python
 from pyo import Sine, Delay, Chorus, Harmonizer, MoogLP
 
@@ -468,6 +481,7 @@ This creates a two-octave piano keyboard layout on your QWERTY keyboard, where:
 
 You can also use the keyboard control module in your own code:
 
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
 ```python
 from hum.examples.keyboard_control import keyboard_reader
 from hum.pyo_synths import sine  # A pre-defined sine wave synth
@@ -501,6 +515,7 @@ for event in reader:
 
 You can map keys to complex parameter dictionaries for more control:
 
+<!-- wads-docs: skip needs pyo, numpy and an audio device -->
 ```python
 # Map keys to multiple parameters
 advanced_mapping = {
